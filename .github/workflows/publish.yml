@@ -1,0 +1,35 @@
+name: Publish to GitHub
+
+on: 
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
+
+jobs:
+    build:
+        runs-on: macos-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup xmake
+              uses: xmake-io/github-action-setup-xmake@v1
+              with:
+                xmake-version: latest
+
+            - name: Setup Build Script
+              if: ${{ runner.os != 'Windows' }}
+              run: chmod +x build.sh
+
+            - name: Build
+              run: ./build.sh
+
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: Vertex
+                path: |
+                    build/macosx/arm64/release/Jvav
+                    build/windows/x64/release/Jvav.exe
