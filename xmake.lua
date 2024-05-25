@@ -8,9 +8,13 @@ target("Jvav")
     add_files("src/**.cpp")
     add_headerfiles("src/**.h")
     set_languages("clatest", "c++latest")
-    add_linkdirs("/opt/homebrew/opt/llvm/lib/c++")
     add_packages("fast_io")
+    set_toolchains("llvm")
     add_includedirs("src/Vertex/")
+
+    if is_mode("debug") then
+        add_linkdirs("/opt/homebrew/opt/llvm/lib/c++") -- macOS compability
+    end
     if is_mode("release") then
         set_optimize("fastest")
     end
