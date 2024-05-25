@@ -19,6 +19,12 @@ jobs:
               with:
                 xmake-version: latest
 
+            - name: Setup Homebrew
+              run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+            - name: Setup LLVM
+              run: brew install llvm
+
             - name: Setup Build Script
               if: ${{ runner.os != 'Windows' }}
               run: chmod +x build.sh
