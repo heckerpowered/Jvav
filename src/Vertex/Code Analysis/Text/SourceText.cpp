@@ -70,7 +70,7 @@ std::size_t SourceText::GetLineBreakWidth(const String &Text, const std::size_t 
     return 0;
 }
 
-auto &&SourceText::operator[](this auto &&Self, std::size_t Position) noexcept {
+auto &&SourceText::operator[](this auto &&Self, const std::size_t Position) noexcept {
     return std::forward<decltype(Self)>(Self).Text.get()[Position];
 }
 

@@ -28,7 +28,7 @@ class SourceText : public std::enable_shared_from_this<SourceText> {
     [[nodiscard]] static std::size_t GetLineBreakWidth(const String &Text, const std::size_t Position) noexcept;
 
   public:
-    [[nodiscard]] auto &&operator[](this auto &&Self, std::size_t Position) noexcept;
+    [[nodiscard]] auto &&operator[](this auto &&Self, const std::size_t Position) noexcept;
 
     [[nodiscard]] std::size_t Length() const noexcept;
 
