@@ -11,10 +11,7 @@ target("Jvav")
     add_packages("fast_io")
     set_toolchains("llvm")
     add_includedirs("src/Vertex/")
-
-    if is_mode("debug") then
-        add_linkdirs("/opt/homebrew/opt/llvm/lib/c++") -- macOS compability
-    end
+    add_linkdirs("/opt/homebrew/opt/llvm/lib/c++") -- macOS compability
     if is_mode("release") then
         set_optimize("fastest")
     end
