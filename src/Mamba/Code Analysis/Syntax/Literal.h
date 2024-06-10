@@ -2,13 +2,12 @@
 
 #include "MambaCore.h"
 #include <cstdint>
-#include <memory>
 
 MAMBA_NAMESPACE_BEGIN
 
 union LiteralValue
 {
-    std::shared_ptr<const String> StringValue;
+    String StringValue;
     Char CharacterValue;
 
     std::uint8_t UnsignedByteValue;
@@ -45,7 +44,9 @@ enum class LiteralType
     Double,
     Float,
 
-    Boolean
+    Boolean,
+
+    Empty
 };
 
 struct Literal
