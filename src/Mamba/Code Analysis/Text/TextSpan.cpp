@@ -1,5 +1,4 @@
 #include "TextSpan.h"
-#include "VertexCore.h"
 #include <memory>
 
 MAMBA_NAMESPACE_BEGIN

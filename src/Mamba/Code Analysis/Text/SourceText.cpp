@@ -1,4 +1,4 @@
-#include "VertexCore.h"
+#include "MambaCore.h"
 
 #include "SourceText.h"
 #include "TextLine.h"
@@ -21,10 +21,10 @@ SourceText SourceText::From(const std::shared_ptr<const String>& Text,
     return SourceText(Text, FileName);
 }
 
-Vector<std::shared_ptr<const TextLine>> SourceText::ParseLines(const SourceText& SourceText,
-                                                               const String& Text) noexcept
+std::vector<std::shared_ptr<const TextLine>> SourceText::ParseLines(const SourceText& SourceText,
+                                                                    const String& Text) noexcept
 {
-    auto Result = Vector<std::shared_ptr<const TextLine>>();
+    auto Result = std::vector<std::shared_ptr<const TextLine>>();
 
     auto Position = 0uz;
     auto LineStart = 0uz;
@@ -54,7 +54,7 @@ Vector<std::shared_ptr<const TextLine>> SourceText::ParseLines(const SourceText&
     return Result;
 }
 
-void SourceText::AddLine(Vector<std::shared_ptr<const class TextLine>>& Result,
+void SourceText::AddLine(std::vector<std::shared_ptr<const class TextLine>>& Result,
                          const SourceText& SourceText,
                          const std::size_t Position,
                          const std::size_t LineStart,

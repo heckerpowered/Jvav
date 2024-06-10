@@ -1,4 +1,7 @@
-export module Mamba.CodeAnalysis.Syntax.SyntaxKind;
+#include "MambaCore.h"
+
+MAMBA_NAMESPACE_BEGIN
+
 enum class SyntaxKind
 {
     // Tokens
@@ -11,3 +14,5 @@ enum class SyntaxKind
     StarToken,
     SlashToken
 };
+
+MAMBA_NAMESPACE_END
