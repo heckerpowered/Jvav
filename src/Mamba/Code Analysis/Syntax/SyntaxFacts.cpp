@@ -232,7 +232,8 @@ SyntaxKind SyntaxFacts::GetBinaryOperatorOfAssignmentOperator(const SyntaxKind K
             return SyntaxKind::HatToken;
         default:
 #ifdef DEBUG
-            auto Message = Concat(TEXT("No binary operator for assignment operator: '"), GetText(Kind), TEXT("'"));
+            const auto Message =
+                Concat(TEXT("No binary operator for assignment operator: '"), GetText(Kind), TEXT("'"));
             fast_io::io::perrln(fast_io::mnp::code_cvt(Message));
 #endif
             std::unreachable();
