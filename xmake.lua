@@ -15,6 +15,9 @@ target("Jvav")
     if is_mode("release") then
         set_optimize("fastest")
     end
+    if is_mode("debug") then
+        add_defines("DEBUG")
+    end
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
