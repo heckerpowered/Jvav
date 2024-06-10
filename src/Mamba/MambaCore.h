@@ -61,6 +61,7 @@ using Char = char32_t;
 #endif
 
 using String = std::basic_string<Char>;
+using StringView = std::basic_string_view<Char>;
 
 template<typename... T> String Concat(T&&... Args)
 {
