@@ -63,6 +63,9 @@ using Char = char32_t;
 using String = std::basic_string<Char>;
 using StringView = std::basic_string_view<Char>;
 
+// Always same as std::shared_ptr<T>, but semantically nullable (although shared_ptr is also nullable)
+// Use NullableSharedPtr when you want to represent a shared_ptr with a nullable value.
+// All shared_ptr are considered valid by default in this project.
 template<typename T> using NullableSharedPtr = std::shared_ptr<T>;
 
 template<typename... T> String Concat(T&&... Args)
