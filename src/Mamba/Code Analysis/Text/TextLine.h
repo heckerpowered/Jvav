@@ -20,9 +20,9 @@ public:
     class TextSpan SpanIncludeLineBreak() const noexcept;
 
     [[nodiscard]] TextLine(const std::shared_ptr<const class SourceText>& Text,
-                           std::size_t Start,
-                           std::size_t Length,
-                           std::size_t LengthIncludeLineBreak) noexcept;
+                           const std::size_t Start,
+                           const std::size_t Length,
+                           const std::size_t LengthIncludeLineBreak) noexcept;
 
     [[nodiscard]] std::shared_ptr<const String> ToString() const noexcept;
 };
