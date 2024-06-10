@@ -10,10 +10,10 @@
 #include "fast_io_unit/string_impl/concat.h"
 
 #define MAMBA_NAMESPACE_BEGIN \
-    namespace Vertex          \
+    namespace Mamba           \
     {
 #define MAMBA_NAMESPACE_END }
-#define MAMBA ::Vertex::
+#define MAMBA ::Mamba::
 
 /**
  * Character type used in Vertex, possible value are:
@@ -53,8 +53,10 @@ using Char = char;
 #elif MAMBA_CHARACTER_TYPE == 1
 using Char = wchar_t;
 #elif MAMBA_CHARACTER_TYPE == 2
-using Char = char16_t;
+using Char = char8_t;
 #elif MAMBA_CHARACTER_TYPE == 3
+using Char = char16_t;
+#elif MAMBA_CHARACTER_TYPE == 4
 using Char = char32_t;
 #endif
 
@@ -105,13 +107,13 @@ template<typename T> struct Hatcher
     constexpr operator decltype(std::declval<T&&>()())() noexcept(noexcept(std::declval<T&&>()()))
         requires std::same_as<MAMBA Hatcher<T>&&, decltype(*this)>
     {
-        return Hatcher();
+        return std::move(Hatcher)();
     }
 
     constexpr operator decltype(std::declval<const T&&>()())() noexcept(noexcept(std::declval<const T&&>()()))
         requires std::same_as<const MAMBA Hatcher<T>&&, decltype(*this)>
     {
-        return Hatcher();
+        return std::move(Hatcher)();
     }
 };
 
