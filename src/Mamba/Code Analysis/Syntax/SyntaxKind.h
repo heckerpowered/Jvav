@@ -1,3 +1,5 @@
+#pragma once
+
 #include "MambaCore.h"
 
 MAMBA_NAMESPACE_BEGIN
