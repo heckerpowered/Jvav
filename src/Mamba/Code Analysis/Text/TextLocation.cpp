@@ -7,8 +7,8 @@
 
 MAMBA_NAMESPACE_BEGIN
 
-TextLocation::TextLocation(const std::shared_ptr<const class SourceText> Text, const TextSpan& Span) noexcept :
-    Text(Text), Span(std::make_unique<TextSpan>(Span))
+TextLocation::TextLocation(const std::shared_ptr<const class SourceText>& Text, const TextSpan Span) noexcept :
+    Text(Text), Span(Span)
 {
 }
 
@@ -19,7 +19,7 @@ std::shared_ptr<const String> TextLocation::FileName() const noexcept
 
 std::size_t TextLocation::StartLine() const noexcept
 {
-    return Text->GetLineIndex(Span->Start);
+    return Text->GetLineIndex(Span.Start);
 }
 
 std::size_t TextLocation::StartCharacter() const noexcept

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MambaCore.h"
+#include "TextSpan.h"
 
 #include <memory>
 
@@ -8,10 +9,10 @@ MAMBA_NAMESPACE_BEGIN
 
 struct TextLocation
 {
-    [[nodiscard]] TextLocation(const std::shared_ptr<const class SourceText> Text, const class TextSpan& Span) noexcept;
+    [[nodiscard]] TextLocation(const std::shared_ptr<const class SourceText>& Text, const TextSpan Span) noexcept;
 
     const std::shared_ptr<const class SourceText> Text;
-    const std::unique_ptr<const class TextSpan> Span;
+    const TextSpan Span;
 
     std::shared_ptr<const String> FileName() const noexcept;
 
