@@ -3,9 +3,10 @@
 #include "VertexCore.h"
 #include <memory>
 
-_VERTEX_BEGIN
+MAMBA_NAMESPACE_BEGIN
 
-struct TextSpan {
+struct TextSpan
+{
     const std::size_t Start;
     const std::size_t Length;
 
@@ -15,9 +16,9 @@ struct TextSpan {
 
     static TextSpan FromBounds(const std::size_t Start, const std::size_t End) noexcept;
 
-    [[nodiscard]] bool OverlapsWith(const TextSpan &Span) const noexcept;
+    [[nodiscard]] bool OverlapsWith(const TextSpan& Span) const noexcept;
 
     [[nodiscard]] std::shared_ptr<String> ToString() const noexcept;
 };
 
-_VERTEX_END
+MAMBA_NAMESPACE_END

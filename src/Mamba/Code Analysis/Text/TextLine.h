@@ -4,10 +4,11 @@
 #include <cstddef>
 #include <memory>
 
-_VERTEX_BEGIN
+MAMBA_NAMESPACE_BEGIN
 
-class TextLine {
-  public:
+class TextLine
+{
+public:
     const std::shared_ptr<const class SourceText> Text;
     const std::size_t Start;
     const std::size_t Length;
@@ -18,10 +19,12 @@ class TextLine {
     class TextSpan Span() const noexcept;
     class TextSpan SpanIncludeLineBreak() const noexcept;
 
-    [[nodiscard]] TextLine(const std::shared_ptr<const class SourceText> &Text, std::size_t Start, std::size_t Length,
+    [[nodiscard]] TextLine(const std::shared_ptr<const class SourceText>& Text,
+                           std::size_t Start,
+                           std::size_t Length,
                            std::size_t LengthIncludeLineBreak) noexcept;
 
     [[nodiscard]] std::shared_ptr<const String> ToString() const noexcept;
 };
 
-_VERTEX_END
+MAMBA_NAMESPACE_END

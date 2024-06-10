@@ -1,6 +1,6 @@
-#pragma once
-
-enum class SyntaxKind {
+export module Mamba.CodeAnalysis.Syntax.SyntaxKind;
+enum class SyntaxKind
+{
     // Tokens
     BadToken,
     EndOfFileToken,

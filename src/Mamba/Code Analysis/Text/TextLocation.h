@@ -4,10 +4,11 @@
 
 #include <memory>
 
-_VERTEX_BEGIN
+MAMBA_NAMESPACE_BEGIN
 
-struct TextLocation {
-    [[nodiscard]] TextLocation(const std::shared_ptr<const class SourceText> Text, const class TextSpan &Span) noexcept;
+struct TextLocation
+{
+    [[nodiscard]] TextLocation(const std::shared_ptr<const class SourceText> Text, const class TextSpan& Span) noexcept;
 
     const std::shared_ptr<const class SourceText> Text;
     const std::unique_ptr<const class TextSpan> Span;
@@ -35,4 +36,4 @@ struct TextLocation {
     std::size_t EndCharacter() const noexcept;
 };
 
-_VERTEX_END
+MAMBA_NAMESPACE_END
