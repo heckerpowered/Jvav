@@ -1,5 +1,6 @@
 #include "SyntaxNode.h"
 #include "MambaCore.h"
+#include "SyntaxTree.h"
 
 #include <memory>
 #include <ranges>
@@ -10,7 +11,7 @@ SyntaxNode::SyntaxNode(const std::shared_ptr<const class SyntaxTree> SyntaxTree)
 
 const std::shared_ptr<const class SyntaxNode> SyntaxNode::Parent() const noexcept
 {
-    return SyntaxTree->GetParent(*this);
+    return SyntaxTree->GetParent(shared_from_this());
 }
 
 TextSpan SyntaxNode::Span() const noexcept
