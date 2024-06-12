@@ -54,7 +54,7 @@ std::vector<std::shared_ptr<const SyntaxNode>> SyntaxNode::Ancestors() const noe
 
 std::shared_ptr<const class SyntaxToken> SyntaxNode::LastToken() const noexcept
 {
-    if (auto Token = std::dynamic_pointer_cast<SyntaxToken>(shared_from_this()))
+    if (auto Token = std::dynamic_pointer_cast<const SyntaxToken>(shared_from_this()))
     {
         return Token;
     }
