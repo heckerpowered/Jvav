@@ -15,11 +15,11 @@ enum class DiagnosticSeverity
 
 class Diagnostic final
 {
+public:
     [[nodiscard]] Diagnostic(const DiagnosticSeverity Severity,
                              const TextLocation Location,
                              const std::shared_ptr<const String>& Message) noexcept;
 
-public:
     const DiagnosticSeverity Severity;
     const TextLocation Location;
     const std::shared_ptr<const String> Message;
