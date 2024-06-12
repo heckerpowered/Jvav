@@ -29,13 +29,14 @@ void DiagnosticBag::ReportInformation(const TextLocation Location, const std::sh
 
 void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character)
 {
-    const auto Message = std::make_shared<const String>(Concat("Invalid character '", Character, "'."));
+    const auto Message = std::make_shared<const String>(
+        Hatcher([&] { return Concat(TEXT("Invalid character '"), Character, TEXT("'.")); }));
     ReportError(Location, Message);
 }
 
 void DiagnosticBag::ReportUnterminatedString(const TextLocation Location)
 {
-    const auto Message = std::make_shared<const String>("Unterminated string literal.");
+    const auto Message = std::make_shared<const String>(TEXT("Unterminated string literal."));
     ReportError(Location, Message);
 }
 
