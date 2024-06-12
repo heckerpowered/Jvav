@@ -40,13 +40,14 @@ public:
     [[nodiscard]] const std::shared_ptr<const class CompilationUnitSyntax> Root() const noexcept;
     [[nodiscard]] const std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics() const noexcept;
 
-    [[nodiscard]] static SyntaxTree Load(const StringView FileName) noexcept;
+    [[nodiscard]] static SyntaxTree Load(const std::shared_ptr<const String> FileName) noexcept;
 
-    [[nodiscard]] static SyntaxTree Parse(const StringView Text) noexcept;
+    [[nodiscard]] static SyntaxTree Parse(const std::shared_ptr<const String> Text) noexcept;
     [[nodiscard]] static SyntaxTree Parse(const std::shared_ptr<const class SourceText> Text) noexcept;
 
-    [[nodiscard]] static SyntaxTree ParseTokens(const StringView Text, const bool IncludeEndOfFile = false) noexcept;
-    [[nodiscard]] static SyntaxTree ParseTokens(const StringView Text,
+    [[nodiscard]] static SyntaxTree ParseTokens(const std::shared_ptr<const String>,
+                                                const bool IncludeEndOfFile = false) noexcept;
+    [[nodiscard]] static SyntaxTree ParseTokens(const std::shared_ptr<const String>,
                                                 std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics,
                                                 const bool IncludeEndOfFile = false) noexcept;
 
