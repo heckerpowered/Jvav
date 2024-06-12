@@ -19,7 +19,7 @@ public:
     class TextSpan Span() const noexcept;
     class TextSpan SpanIncludeLineBreak() const noexcept;
 
-    [[nodiscard]] TextLine(const std::shared_ptr<const class SourceText>& Text,
+    [[nodiscard]] TextLine(const std::shared_ptr<const class SourceText> Text,
                            const std::size_t Start,
                            const std::size_t Length,
                            const std::size_t LengthIncludeLineBreak) noexcept;

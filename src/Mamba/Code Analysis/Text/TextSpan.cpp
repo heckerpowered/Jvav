@@ -16,7 +16,7 @@ TextSpan TextSpan::FromBounds(const std::size_t Start, const std::size_t End) no
     return TextSpan(Start, Length);
 }
 
-bool TextSpan::OverlapsWith(const TextSpan& Span) const noexcept
+bool TextSpan::OverlapsWith(const TextSpan Span) const noexcept
 {
     return Start < Span.End() && End() > Span.Start;
 }

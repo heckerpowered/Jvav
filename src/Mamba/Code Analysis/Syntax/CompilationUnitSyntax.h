@@ -12,8 +12,8 @@ class CompilationUnitSyntax : public SyntaxNode
 public:
     using Super = SyntaxNode;
 
-    [[nodiscard]] CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree>& SyntaxTree,
-                                        const std::shared_ptr<const class SyntaxToken>& EndOfFileToken) noexcept;
+    [[nodiscard]] CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+                                        const std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept;
 
     virtual SyntaxKind Kind() const noexcept override;
 

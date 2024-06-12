@@ -7,7 +7,7 @@
 
 MAMBA_NAMESPACE_BEGIN
 
-TextLocation::TextLocation(const std::shared_ptr<const class SourceText>& Text, const TextSpan Span) noexcept :
+TextLocation::TextLocation(const std::shared_ptr<const class SourceText> Text, const TextSpan Span) noexcept :
     Text(Text), Span(Span)
 {
 }

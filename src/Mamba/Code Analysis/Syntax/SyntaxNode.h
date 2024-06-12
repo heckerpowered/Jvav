@@ -13,7 +13,7 @@ MAMBA_NAMESPACE_BEGIN
 class SyntaxNode : std::enable_shared_from_this<SyntaxNode>
 {
 protected:
-    [[nodiscard]] SyntaxNode(const std::shared_ptr<const class SyntaxTree>& SyntaxTree) noexcept;
+    [[nodiscard]] SyntaxNode(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
 
 public:
     const std::shared_ptr<const class SyntaxTree> SyntaxTree;

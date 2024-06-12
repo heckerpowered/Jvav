@@ -6,7 +6,7 @@
 
 MAMBA_NAMESPACE_BEGIN
 
-SyntaxNode::SyntaxNode(const std::shared_ptr<const class SyntaxTree>& SyntaxTree) noexcept : SyntaxTree(SyntaxTree) {}
+SyntaxNode::SyntaxNode(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept : SyntaxTree(SyntaxTree) {}
 
 const std::shared_ptr<const class SyntaxNode> SyntaxNode::Parent() const noexcept
 {

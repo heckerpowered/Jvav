@@ -15,8 +15,8 @@ SourceText::SourceText(const std::shared_ptr<const String>& Text,
 {
 }
 
-SourceText SourceText::From(const std::shared_ptr<const String>& Text,
-                            const std::shared_ptr<const String>& FileName) noexcept
+SourceText SourceText::From(const std::shared_ptr<const String> Text,
+                            const std::shared_ptr<const String> FileName) noexcept
 {
     return SourceText(Text, FileName);
 }
@@ -133,7 +133,7 @@ std::shared_ptr<String> SourceText::ToString(const std::size_t Start, const std:
     return std::make_shared<String>(Text->substr(Start, Length));
 }
 
-std::shared_ptr<const String> SourceText::ToString(const TextSpan& Span) const noexcept
+std::shared_ptr<const String> SourceText::ToString(const TextSpan Span) const noexcept
 {
     return ToString(Span.Start, Span.Length);
 }

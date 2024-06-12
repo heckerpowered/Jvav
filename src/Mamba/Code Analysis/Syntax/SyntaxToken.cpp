@@ -4,10 +4,10 @@
 
 MAMBA_NAMESPACE_BEGIN
 
-SyntaxToken::SyntaxToken(const std::shared_ptr<const class SyntaxTree>& SyntaxTree,
+SyntaxToken::SyntaxToken(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
                          const SyntaxKind Kind,
                          const std::size_t Position,
-                         const std::shared_ptr<const String>& Text,
+                         const std::shared_ptr<const String> Text,
                          const NullableSharedPtr<Literal> Value) noexcept :
     Super(SyntaxTree), KindValue(Kind), Position(Position), Text(Text), Value(Value)
 {

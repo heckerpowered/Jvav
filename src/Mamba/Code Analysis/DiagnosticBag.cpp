@@ -9,19 +9,19 @@ void DiagnosticBag::AddRange(const std::vector<std::shared_ptr<const class Diagn
     append_range(Diagnostics);
 }
 
-void DiagnosticBag::ReportError(const TextLocation Location, const std::shared_ptr<const String>& Message)
+void DiagnosticBag::ReportError(const TextLocation Location, const std::shared_ptr<const String> Message)
 {
     emplace_back(
         Hatcher([&] { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Error, Location, Message); }));
 }
 
-void DiagnosticBag::ReportWarning(const TextLocation Location, const std::shared_ptr<const String>& Message)
+void DiagnosticBag::ReportWarning(const TextLocation Location, const std::shared_ptr<const String> Message)
 {
     emplace_back(
         Hatcher([&] { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Warning, Location, Message); }));
 }
 
-void DiagnosticBag::ReportInformation(const TextLocation Location, const std::shared_ptr<const String>& Message)
+void DiagnosticBag::ReportInformation(const TextLocation Location, const std::shared_ptr<const String> Message)
 {
     emplace_back(Hatcher(
         [&] { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Information, Location, Message); }));

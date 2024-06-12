@@ -16,9 +16,9 @@ public:
     void AddRange(const std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept;
 
 private:
-    void ReportError(const TextLocation Location, const std::shared_ptr<const String>& Message);
-    void ReportWarning(const TextLocation Location, const std::shared_ptr<const String>& Message);
-    void ReportInformation(const TextLocation Location, const std::shared_ptr<const String>& Message);
+    void ReportError(const TextLocation Location, const std::shared_ptr<const String> Message);
+    void ReportWarning(const TextLocation Location, const std::shared_ptr<const String> Message);
+    void ReportInformation(const TextLocation Location, const std::shared_ptr<const String> Message);
 
     void ReportInvalidCharacter(const TextLocation Location, const Char Character);
     void ReportUnterminatedString(const TextLocation Location);

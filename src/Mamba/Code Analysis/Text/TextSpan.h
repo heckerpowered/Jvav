@@ -16,7 +16,7 @@ struct TextSpan
 
     static TextSpan FromBounds(const std::size_t Start, const std::size_t End) noexcept;
 
-    [[nodiscard]] bool OverlapsWith(const TextSpan& Span) const noexcept;
+    [[nodiscard]] bool OverlapsWith(const TextSpan Span) const noexcept;
 
     [[nodiscard]] std::shared_ptr<String> ToString() const noexcept;
 };

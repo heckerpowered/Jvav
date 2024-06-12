@@ -3,8 +3,8 @@
 
 MAMBA_NAMESPACE_BEGIN
 
-CompilationUnitSyntax::CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree>& SyntaxTree,
-                                             const std::shared_ptr<const class SyntaxToken>& EndOfFileToken) noexcept :
+CompilationUnitSyntax::CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+                                             const std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept :
     Super(SyntaxTree), EndOfFileToken(EndOfFileToken)
 {
 }

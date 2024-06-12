@@ -9,7 +9,7 @@ MAMBA_NAMESPACE_BEGIN
 
 struct TextLocation
 {
-    [[nodiscard]] TextLocation(const std::shared_ptr<const class SourceText>& Text, const TextSpan Span) noexcept;
+    [[nodiscard]] TextLocation(const std::shared_ptr<const class SourceText> Text, const TextSpan Span) noexcept;
 
     const std::shared_ptr<const class SourceText> Text;
     const TextSpan Span;

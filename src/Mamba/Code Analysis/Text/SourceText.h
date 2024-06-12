@@ -12,8 +12,8 @@ public:
     const std::shared_ptr<const String> FileName;
     const std::vector<std::shared_ptr<const class TextLine>> Lines;
 
-    [[nodiscard]] static SourceText From(const std::shared_ptr<const String>& Text,
-                                         const std::shared_ptr<const String>& FileName = {}) noexcept;
+    [[nodiscard]] static SourceText From(const std::shared_ptr<const String> Text,
+                                         const std::shared_ptr<const String> FileName = {}) noexcept;
 
 private:
     [[nodiscard]] SourceText(const std::shared_ptr<const String>& Text,
@@ -41,7 +41,7 @@ public:
 
     [[nodiscard]] std::shared_ptr<String> ToString(const std::size_t Start, const std::size_t Length) const noexcept;
 
-    [[nodiscard]] std::shared_ptr<const String> ToString(const class TextSpan& Span) const noexcept;
+    [[nodiscard]] std::shared_ptr<const String> ToString(const class TextSpan Span) const noexcept;
 };
 
 MAMBA_NAMESPACE_END

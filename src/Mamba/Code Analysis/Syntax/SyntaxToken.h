@@ -14,10 +14,10 @@ class SyntaxToken : public SyntaxNode
     using Super = SyntaxNode;
 
 public:
-    [[nodiscard]] SyntaxToken(const std::shared_ptr<const class SyntaxTree>& SyntaxTree,
+    [[nodiscard]] SyntaxToken(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
                               const SyntaxKind Kind,
                               const std::size_t Position,
-                              const std::shared_ptr<const String>& Text,
+                              const std::shared_ptr<const String> Text,
                               const NullableSharedPtr<Literal> Value) noexcept;
 
     virtual SyntaxKind Kind() const noexcept override;
