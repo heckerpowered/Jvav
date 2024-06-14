@@ -107,7 +107,7 @@ std::vector<std::shared_ptr<const class SyntaxToken>>
 
             if (Token->Kind() == SyntaxKind::EndOfFileToken)
             {
-                Root = std::make_shared<const CompilationUnitSyntax>(SyntaxTree, Tokens);
+                Root = std::make_shared<const CompilationUnitSyntax>(SyntaxTree, Token);
                 break;
             }
         }
