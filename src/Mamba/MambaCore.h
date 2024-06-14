@@ -60,6 +60,9 @@ using Char = char16_t;
 using Char = char32_t;
 #endif
 
+static_assert(std::is_same_v<Char, char> || std::is_same_v<Char, wchar_t> || std::is_same_v<Char, char8_t>
+              || std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>);
+
 using String = std::basic_string<Char>;
 using StringView = std::basic_string_view<Char>;
 
@@ -70,8 +73,6 @@ template<typename T> using NullableSharedPtr = std::shared_ptr<T>;
 
 template<typename... T> String Concat(T&&... Args)
 {
-    static_assert(std::is_same_v<Char, char> || std::is_same_v<Char, wchar_t> || std::is_same_v<Char, char8_t>
-                  || std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>);
     if constexpr (std::is_same_v<Char, char>)
     {
         return fast_io::concat(std::forward<T>(Args)...);
