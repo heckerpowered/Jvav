@@ -1,5 +1,7 @@
 #include "CompilationUnitSyntax.h"
 #include "MambaCore.h"
+#include "SyntaxNode.h"
+#include "SyntaxToken.h"
 
 MAMBA_NAMESPACE_BEGIN
 
@@ -12,6 +14,11 @@ CompilationUnitSyntax::CompilationUnitSyntax(const std::shared_ptr<const class S
 SyntaxKind CompilationUnitSyntax::Kind() const noexcept
 {
     return SyntaxKind::CompilationUnit;
+}
+
+std::vector<std::shared_ptr<const SyntaxNode>> CompilationUnitSyntax::Children() const noexcept
+{
+    return { std::dynamic_pointer_cast<const SyntaxNode>(EndOfFileToken) };
 }
 
 MAMBA_NAMESPACE_END

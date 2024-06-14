@@ -16,6 +16,7 @@ public:
                                         const std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept;
 
     virtual SyntaxKind Kind() const noexcept override;
+    virtual std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
 
     const std::shared_ptr<const class SyntaxToken> EndOfFileToken;
 };
