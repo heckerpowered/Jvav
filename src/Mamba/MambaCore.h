@@ -7,8 +7,6 @@
 #include <fast_io.h>
 #include <string>
 
-#include "fast_io_unit/string_impl/concat.h"
-
 #define MAMBA_NAMESPACE_BEGIN \
     namespace Mamba           \
     {
@@ -70,6 +68,11 @@ using StringView = std::basic_string_view<Char>;
 // Use NullableSharedPtr when you want to represent a shared_ptr with a nullable value.
 // All shared_ptr are considered valid by default in this project.
 template<typename T> using NullableSharedPtr = std::shared_ptr<T>;
+
+// Always same as T*, but semantically nullable (although pointer is also nullable)
+// Use NullablePointer when you want to represent a pointer with a nullable value.
+// All pointers are considered valid by default in this project.
+template<typename T> using NullablePointer = T*;
 
 template<typename... T> String Concat(T&&... Args)
 {
