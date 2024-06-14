@@ -4,6 +4,7 @@
 #include "TextLine.h"
 #include "TextSpan.h"
 
+#include <cstddef>
 #include <memory>
 #include <utility>
 
@@ -24,10 +25,10 @@ SourceText SourceText::From(const std::shared_ptr<const String> Text,
 std::vector<std::shared_ptr<const TextLine>> SourceText::ParseLines(const SourceText& SourceText,
                                                                     const String& Text) noexcept
 {
-    auto Result = std::vector<std::shared_ptr<const TextLine>>();
+    std::vector<std::shared_ptr<const TextLine>> Result{};
 
-    auto Position = 0uz;
-    auto LineStart = 0uz;
+    std::size_t Position{};
+    std::size_t LineStart{};
 
     while (Position < Text.length())
     {
@@ -97,7 +98,7 @@ std::size_t SourceText::Length() const noexcept
 
 std::size_t SourceText::GetLineIndex(const std::size_t Position) const noexcept
 {
-    auto Lower = 0uz;
+    std::size_t Lower{};
     auto Upper = Lines.size() - 1;
 
     while (Lower <= Upper)

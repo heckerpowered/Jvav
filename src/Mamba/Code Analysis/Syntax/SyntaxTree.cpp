@@ -1,23 +1,28 @@
 #include "SyntaxTree.h"
+#include "Lexer.h"
 #include "MambaCore.h"
 #include "Parser.h"
 #include "SourceText.h"
+#include "SyntaxKind.h"
+#include "SyntaxToken.h"
 
 #include <fast_io.h>
+#include <memory>
+#include <mutex>
 
 MAMBA_NAMESPACE_BEGIN
 
 [[nodiscard]] String ReadFile(const StringView FileName) noexcept
 {
-    auto NativeFileLoader = fast_io::native_file_loader(FileName);
+    fast_io::native_file_loader NativeFileLoader{ FileName };
     return String(NativeFileLoader.begin(), NativeFileLoader.end());
 }
 
-void Parse(const std::shared_ptr<const SyntaxTree> SyntaxTree,
-           std::shared_ptr<const class CompilationUnitSyntax>& Root,
-           std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept
+void SyntaxTree::Parse(const std::shared_ptr<const SyntaxTree> SyntaxTree,
+                       std::shared_ptr<const class CompilationUnitSyntax>& Root,
+                       std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept
 {
-    auto Parser = MAMBA Parser(SyntaxTree);
+    Parser Parser{ SyntaxTree };
     Root = Parser.ParseCompilationUnit();
     Diagnostics = std::move(Parser.Diagnostics);
 }
@@ -42,7 +47,95 @@ SyntaxTree SyntaxTree::Load(const std::shared_ptr<const String> FileName) noexce
 
 SyntaxTree SyntaxTree::Parse(const std::shared_ptr<const String> Text) noexcept
 {
-    // return SyntaxTree();
+    const auto SourceText = std::make_shared<const class SourceText>(Hatcher([&] { return SourceText::From(Text); }));
+    return Parse(SourceText);
+}
+
+SyntaxTree SyntaxTree::Parse(const std::shared_ptr<const class SourceText> Text) noexcept
+{
+    using SyntaxTreeType = const std::shared_ptr<const SyntaxTree>;
+    using RootType = std::shared_ptr<const class CompilationUnitSyntax>&;
+    using DiagnosticsType = std::vector<std::shared_ptr<const class Diagnostic>>&;
+
+    using ParseFunctionType = void (&)(SyntaxTreeType, RootType, DiagnosticsType) noexcept;
+
+    return SyntaxTree(Text, static_cast<ParseFunctionType>(Parse));
+}
+
+std::vector<std::shared_ptr<const class SyntaxToken>> SyntaxTree::ParseTokens(const std::shared_ptr<const String> Text,
+                                                                              const bool IncludeEndOfFile) noexcept
+{
+    const auto SourceText = std::make_shared<const class SourceText>(Hatcher([&] { return SourceText::From(Text); }));
+    return ParseTokens(SourceText, IncludeEndOfFile);
+}
+
+std::vector<std::shared_ptr<const class SyntaxToken>>
+    SyntaxTree::ParseTokens(const std::shared_ptr<const class SourceText> Text, const bool IncludeEndOfFile) noexcept
+{
+    return ParseTokens(Text, {}, IncludeEndOfFile);
+}
+
+std::vector<std::shared_ptr<const class SyntaxToken>>
+    SyntaxTree::ParseTokens(const std::shared_ptr<const String> Text,
+                            NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+                            const bool IncludeEndOfFile) noexcept
+{
+    const auto SourceText = std::make_shared<const class SourceText>(Hatcher([&] { return SourceText::From(Text); }));
+    return ParseTokens(SourceText, Diagnostics, IncludeEndOfFile);
+}
+
+std::vector<std::shared_ptr<const class SyntaxToken>>
+    SyntaxTree::ParseTokens(const std::shared_ptr<const class SourceText> Text,
+                            NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+                            const bool IncludeEndOfFile) noexcept
+{
+    auto Tokens = std::vector<std::shared_ptr<const SyntaxToken>>();
+
+    const auto ParseTokens = [&](const std::shared_ptr<const SyntaxTree> SyntaxTree,
+                                 std::shared_ptr<const CompilationUnitSyntax>& Root,
+                                 std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept
+    {
+        Lexer Lexer{ SyntaxTree };
+        while (true)
+        {
+            const auto Token = Lexer.Lex();
+
+            if (Token->Kind() != SyntaxKind::EndOfFileToken || IncludeEndOfFile)
+            {
+                Tokens.emplace_back(Token);
+            }
+
+            if (Token->Kind() == SyntaxKind::EndOfFileToken)
+            {
+                Root = std::make_shared<const CompilationUnitSyntax>(SyntaxTree, Tokens);
+                break;
+            }
+        }
+
+        Diagnostics = std::move(Lexer.Diagnostics);
+    };
+
+    MAMBA SyntaxTree SyntaxTree{ Text, ParseTokens };
+    if (Diagnostics)
+    {
+        *Diagnostics = SyntaxTree.Diagnostics();
+    }
+
+    return Tokens;
+}
+
+NullableSharedPtr<const class SyntaxNode>
+    SyntaxTree::GetParent(const std::shared_ptr<const class SyntaxNode> Node) const noexcept
+{
+    static std::mutex Mutex{};
+
+    std::lock_guard<std::mutex> LockGuard(Mutex);
+    if (!Parents)
+    {
+        const auto Parents = CreateParentsMap(Root());
+    }
+
+    return Parents->at(Node);
 }
 
 MAMBA_NAMESPACE_END

@@ -15,7 +15,7 @@ class SyntaxTree : std::enable_shared_from_this<SyntaxTree>
     using ParentsMapType =
         std::unordered_map<std::shared_ptr<const class SyntaxNode>, NullableSharedPtr<const class SyntaxNode>>;
 
-    ParentsMapType Parents;
+    std::optional<ParentsMapType> Parents;
 
     [[nodiscard]] SyntaxTree(const std::shared_ptr<const class SourceText> Text, auto&& Handler) noexcept
         requires requires {
@@ -45,17 +45,19 @@ public:
     [[nodiscard]] static SyntaxTree Parse(const std::shared_ptr<const String> Text) noexcept;
     [[nodiscard]] static SyntaxTree Parse(const std::shared_ptr<const class SourceText> Text) noexcept;
 
-    [[nodiscard]] static SyntaxTree ParseTokens(const std::shared_ptr<const String>,
-                                                const bool IncludeEndOfFile = false) noexcept;
-    [[nodiscard]] static SyntaxTree ParseTokens(const std::shared_ptr<const String>,
-                                                std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics,
-                                                const bool IncludeEndOfFile = false) noexcept;
+    [[nodiscard]] static std::vector<std::shared_ptr<const class SyntaxToken>>
+        ParseTokens(const std::shared_ptr<const String> Text, const bool IncludeEndOfFile = false) noexcept;
+    [[nodiscard]] static std::vector<std::shared_ptr<const class SyntaxToken>>
+        ParseTokens(const std::shared_ptr<const String> Text,
+                    NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+                    const bool IncludeEndOfFile = false) noexcept;
 
-    [[nodiscard]] static SyntaxTree ParseTokens(const std::shared_ptr<const class SourceText> Text,
-                                                const bool IncludeEndOfFile = false) noexcept;
-    [[nodiscard]] static SyntaxTree ParseTokens(const std::shared_ptr<const class SourceText> Text,
-                                                std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics,
-                                                const bool IncludeEndOfFile = false) noexcept;
+    [[nodiscard]] static std::vector<std::shared_ptr<const class SyntaxToken>>
+        ParseTokens(const std::shared_ptr<const class SourceText> Text, const bool IncludeEndOfFile = false) noexcept;
+    [[nodiscard]] static std::vector<std::shared_ptr<const class SyntaxToken>>
+        ParseTokens(const std::shared_ptr<const class SourceText> Text,
+                    NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+                    const bool IncludeEndOfFile = false) noexcept;
 
     [[nodiscard]] NullableSharedPtr<const class SyntaxNode>
         GetParent(const std::shared_ptr<const class SyntaxNode> Node) const noexcept;
