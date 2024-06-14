@@ -22,7 +22,7 @@ void SyntaxTree::Parse(const std::shared_ptr<const SyntaxTree> SyntaxTree,
                        std::shared_ptr<const class CompilationUnitSyntax>& Root,
                        std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept
 {
-    Parser Parser{ SyntaxTree };
+    Parser Parser(SyntaxTree);
     Root = Parser.ParseCompilationUnit();
     Diagnostics = std::move(Parser.Diagnostics);
 }
@@ -95,7 +95,7 @@ std::vector<std::shared_ptr<const class SyntaxToken>>
                                  std::shared_ptr<const CompilationUnitSyntax>& Root,
                                  std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept
     {
-        Lexer Lexer{ SyntaxTree };
+        Lexer Lexer(SyntaxTree);
         while (true)
         {
             const auto Token = Lexer.Lex();
@@ -115,7 +115,7 @@ std::vector<std::shared_ptr<const class SyntaxToken>>
         Diagnostics = std::move(Lexer.Diagnostics);
     };
 
-    MAMBA SyntaxTree SyntaxTree{ Text, ParseTokens };
+    MAMBA SyntaxTree SyntaxTree(Text, ParseTokens);
     if (Diagnostics)
     {
         *Diagnostics = SyntaxTree.Diagnostics();
@@ -127,7 +127,7 @@ std::vector<std::shared_ptr<const class SyntaxToken>>
 NullableSharedPtr<const class SyntaxNode>
     SyntaxTree::GetParent(const std::shared_ptr<const class SyntaxNode> Node) const noexcept
 {
-    static std::mutex Mutex{};
+    static std::mutex Mutex;
 
     std::lock_guard<std::mutex> LockGuard(Mutex);
     if (!Parents)
