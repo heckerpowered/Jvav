@@ -94,32 +94,34 @@ template<typename... T> String Concat(T&&... Args)
     }
 }
 
+// Hatcher stores a callable object, so that the result of the call can be emplace constructed into a container by copy
+// elision, the container must support adding new elements by forwarding arguments to the constructor (emplace).
 template<typename T> struct Hatcher
 {
-    T Hatcher;
+    T Expression;
 
     constexpr operator decltype(std::declval<T&>()())() noexcept(noexcept(std::declval<T&>()()))
-        requires std::same_as<MAMBA Hatcher<T>&, decltype(*this)>
+        requires std::same_as<Hatcher<T>&, decltype(*this)>
     {
-        return Hatcher();
+        return Expression();
     }
 
     constexpr operator decltype(std::declval<const T&>()())() noexcept(noexcept(std::declval<const T&>()()))
-        requires std::same_as<const MAMBA Hatcher<T>&, decltype(*this)>
+        requires std::same_as<const Hatcher<T>&, decltype(*this)>
     {
-        return Hatcher();
+        return Expression();
     }
 
     constexpr operator decltype(std::declval<T&&>()())() noexcept(noexcept(std::declval<T&&>()()))
-        requires std::same_as<MAMBA Hatcher<T>&&, decltype(*this)>
+        requires std::same_as<Hatcher<T>&&, decltype(*this)>
     {
-        return std::move(Hatcher)();
+        return std::move(Expression)();
     }
 
     constexpr operator decltype(std::declval<const T&&>()())() noexcept(noexcept(std::declval<const T&&>()()))
-        requires std::same_as<const MAMBA Hatcher<T>&&, decltype(*this)>
+        requires std::same_as<const Hatcher<T>&&, decltype(*this)>
     {
-        return std::move(Hatcher)();
+        return std::move(Expression)();
     }
 };
 
