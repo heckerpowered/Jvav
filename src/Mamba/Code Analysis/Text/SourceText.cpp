@@ -6,7 +6,6 @@
 
 #include <cstddef>
 #include <memory>
-#include <utility>
 
 MAMBA_NAMESPACE_BEGIN
 
@@ -84,11 +83,6 @@ std::size_t SourceText::GetLineBreakWidth(const String& Text, const std::size_t 
     }
 
     return 0;
-}
-
-auto&& SourceText::operator[](this auto&& Self, const std::size_t Position) noexcept
-{
-    return std::forward<decltype(Self)>(Self).Text.get()[Position];
 }
 
 std::size_t SourceText::Length() const noexcept

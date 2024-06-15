@@ -31,7 +31,10 @@ private:
     [[nodiscard]] static std::size_t GetLineBreakWidth(const String& Text, const std::size_t Position) noexcept;
 
 public:
-    [[nodiscard]] auto&& operator[](this auto&& Self, const std::size_t Position) noexcept;
+    [[nodiscard]] auto&& operator[](this auto&& Self, const std::size_t Position) noexcept
+    {
+        return (*std::forward<decltype(Self)>(Self).Text)[Position];
+    }
 
     [[nodiscard]] std::size_t Length() const noexcept;
 
