@@ -14,7 +14,7 @@
 #define MAMBA ::Mamba::
 
 /**
- * Character type used in Vertex, possible value are:
+ * Character type used in Mamba, possible value are:
  * 0 - char
  * 1 - wchar_t
  * 2 - char8_t
