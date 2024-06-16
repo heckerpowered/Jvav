@@ -20,6 +20,7 @@ private:
     void ReportWarning(const TextLocation Location, const std::shared_ptr<const String> Message);
     void ReportInformation(const TextLocation Location, const std::shared_ptr<const String> Message);
 
+public:
     void ReportInvalidCharacter(const TextLocation Location, const Char Character);
     void ReportUnterminatedString(const TextLocation Location);
 };
