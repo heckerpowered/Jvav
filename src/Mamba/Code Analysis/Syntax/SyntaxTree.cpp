@@ -127,9 +127,9 @@ std::vector<std::shared_ptr<const class SyntaxToken>>
 NullableSharedPtr<const class SyntaxNode>
     SyntaxTree::GetParent(const std::shared_ptr<const class SyntaxNode> Node) const noexcept
 {
-    static std::mutex Mutex;
+    static auto Mutex = std::mutex{};
 
-    std::lock_guard<std::mutex> LockGuard(Mutex);
+    const auto LockGuard = std::lock_guard<std::mutex>(Mutex);
     if (!Parents)
     {
         const auto Parents = CreateParentsMap(Root());

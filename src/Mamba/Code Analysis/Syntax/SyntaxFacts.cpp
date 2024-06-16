@@ -57,7 +57,7 @@ std::size_t SyntaxFacts::GetBinaryOperatorPrecedence(const SyntaxKind Kind) noex
 
 SyntaxKind SyntaxFacts::GetKeywordKind(const StringView Text) noexcept
 {
-    static const std::unordered_map<StringView, SyntaxKind> KeywordsMap = {
+    static const auto KeywordsMap = std::unordered_map<StringView, SyntaxKind>{
         std::make_pair(TEXT("if"), SyntaxKind::IfKeyword),
         std::make_pair(TEXT("else"), SyntaxKind::ElseKeyword),
 

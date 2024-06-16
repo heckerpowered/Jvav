@@ -24,10 +24,10 @@ SourceText SourceText::From(const std::shared_ptr<const String> Text,
 std::vector<std::shared_ptr<const TextLine>> SourceText::ParseLines(const SourceText& SourceText,
                                                                     const String& Text) noexcept
 {
-    std::vector<std::shared_ptr<const TextLine>> Result{};
+    auto Result = std::vector<std::shared_ptr<const TextLine>>();
 
-    std::size_t Position{};
-    std::size_t LineStart{};
+    auto Position = 0uz;
+    auto LineStart = 0uz;
 
     while (Position < Text.length())
     {
@@ -92,7 +92,7 @@ std::size_t SourceText::Length() const noexcept
 
 std::size_t SourceText::GetLineIndex(const std::size_t Position) const noexcept
 {
-    std::size_t Lower{};
+    auto Lower = 0uz;
     auto Upper = Lines.size() - 1;
 
     while (Lower <= Upper)

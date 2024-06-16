@@ -36,7 +36,7 @@ TextLocation SyntaxNode::Location() const noexcept
 
 std::vector<std::shared_ptr<const SyntaxNode>> SyntaxNode::AncestorsAndSelf() const noexcept
 {
-    std::vector<std::shared_ptr<const SyntaxNode>> Ancestors;
+    auto Ancestors = std::vector<std::shared_ptr<const SyntaxNode>>();
     auto Node = shared_from_this();
     while (Node)
     {
