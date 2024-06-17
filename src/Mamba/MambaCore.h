@@ -74,7 +74,7 @@ template<typename T> using NullableSharedPtr = std::shared_ptr<T>;
 // All pointers are considered valid by default in this project.
 template<typename T> using NullablePointer = T*;
 
-template<typename... T> String Concat(T&&... Args)
+template<typename... T> String Concat(T&&... Args) noexcept
 {
     if constexpr (std::is_same_v<Char, char>)
     {
@@ -96,6 +96,34 @@ template<typename... T> String Concat(T&&... Args)
     {
         return fast_io::u32concat(std::forward<T>(Args)...);
     }
+
+    std::unreachable();
+}
+
+template<typename TargetType, typename... ArgumentTypes> void To(ArgumentTypes&&... Arguments) noexcept
+{
+    if constexpr (std::is_same_v<Char, char>)
+    {
+        return fast_io::to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+    }
+    else if constexpr (std::is_same_v<Char, wchar_t>)
+    {
+        return fast_io::wto<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+    }
+    else if constexpr (std::is_same_v<Char, char8_t>)
+    {
+        return fast_io::u8to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+    }
+    else if constexpr (std::is_same_v<Char, char16_t>)
+    {
+        return fast_io::u16to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+    }
+    else if constexpr (std::is_same_v<Char, char32_t>)
+    {
+        return fast_io::u32to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+    }
+
+    std::unreachable();
 }
 
 // Hatcher stores a callable object, so that the result of the call can be emplace constructed into a container by copy
@@ -130,3 +158,11 @@ template<typename T> struct Hatcher
 };
 
 MAMBA_NAMESPACE_END
+
+#ifdef __cpp_exceptions
+    #if defined(_MSC_VER) && (!defined(_HAS_EXCEPTIONS) || _HAS_EXCEPTIONS == 0)
+        #define MAMBA_NO_EXCEPTIONS
+    #endif
+#else
+    #define MAMBA_NO_EXCEPTIONS
+#endif
