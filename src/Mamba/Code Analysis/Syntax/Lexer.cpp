@@ -1,13 +1,14 @@
 #include "Lexer.h"
 #include "DiagnosticBag.h"
 #include "MambaCore.h"
-#include "SourceText.h"
 #include "SyntaxFacts.h"
 #include "SyntaxKind.h"
 #include "SyntaxToken.h"
 #include "TextLocation.h"
 #include "TextSpan.h"
 
+#include <cstdint>
+#include <limits>
 #include <memory>
 
 MAMBA_NAMESPACE_BEGIN
@@ -254,9 +255,7 @@ void Lexer::ReadToken() noexcept
             ReadIdentifierOrKeyword();
             break;
         default:
-            const auto IsLetter = (Current() >= TEXT('a') && Current() <= TEXT('z'))
-                               || (Current() >= TEXT('A') && Current() <= TEXT('Z'));
-            if (IsLetter)
+            if (IsLetter(Current()))
             {
                 ReadIdentifierOrKeyword();
             }
@@ -269,6 +268,193 @@ void Lexer::ReadToken() noexcept
             }
             break;
     }
+}
+
+void Lexer::ReadString() noexcept
+{
+    // Skip the current quote
+    ++Position;
+
+    bool Done = false;
+    while (!Done)
+    {
+        switch (Current())
+        {
+            case TEXT('\0'):
+            case TEXT('\r'):
+            case TEXT('\n'):
+            {
+                const auto Span = TextSpan(Start, 1);
+                const auto Location = TextLocation(Text, Span);
+                Diagnostics.ReportUnterminatedString(Location);
+                Done = true;
+                break;
+            }
+            case TEXT('"'):
+                if (Lookahead() == TEXT('"'))
+                {
+                    Position += 2;
+                }
+                else
+                {
+                    ++Position;
+                    Done = true;
+                }
+                break;
+            default:
+                ++Position;
+                break;
+        }
+    }
+
+    const auto Length = Position - Start;
+
+    Kind = SyntaxKind::StringToken;
+    Value = std::make_shared<Literal>(Literal(Text->ToString(Start + 1, Length - 1)));
+}
+
+void Lexer::ReadIdentifierOrKeyword() noexcept
+{
+    while (IsLetterOrDigit(Current()) || Current() == TEXT('_'))
+    {
+        ++Position;
+    }
+
+    const auto Length = Position - Start;
+    const auto Span = TextSpan(Start, Length);
+    const auto Text = this->Text->ToView(Span);
+    Kind = SyntaxFacts::GetKeywordKind(Text);
+}
+
+void Lexer::ReadNumber() noexcept
+{
+    // Decimal-literal is a non-zero decimal digit, followed by zero or more decimal digits.
+    // Octal-literal is digit zero (0) followed by zero or more octal digits (0-7).
+    // Hex-literal is the character sequence 0x or the character sequence 0X followed by one or more hexadecimal digits
+    // (0-9, a-f, A-F).
+    // Binary-literal is the character sequence 0b or the character sequence 0B followed by one or more binary digits
+    // (0, 1)
+
+    // The current is guaranteed to be a digit
+    if (Current() != TEXT('0'))
+    {
+        ReadDecimal();
+    }
+    else if (Lookahead() == TEXT('x') || Lookahead() == TEXT('X'))
+    {
+        ReadHexadecimal();
+    }
+    else if (Lookahead() == TEXT('b') || Lookahead() == TEXT('B'))
+    {
+        ReadBinary();
+    }
+
+    ReadOctal();
+
+    Kind = SyntaxKind::NumberToken;
+}
+
+void Lexer::ReadDecimal() noexcept
+{
+    while (IsDecimalDigit(Current()))
+    {
+        ++Position;
+    }
+
+    const auto Length = Position - Start;
+    const auto Span = TextSpan(Start, Length);
+    const auto Number = ParseNumber<10>(Span);
+    NarrowNumber(Number);
+}
+
+void Lexer::ReadHexadecimal() noexcept
+{
+    while (IsHexadecimalDigit(Current()))
+    {
+        ++Position;
+    }
+
+    // Skip the '0x' or '0X' character sequence
+    const auto Length = Position - Start;
+    const auto Span = TextSpan(Start + 2, Length);
+    const auto Number = ParseNumber<16>(Span);
+    NarrowNumber(Number);
+}
+
+void Lexer::ReadBinary() noexcept
+{
+    while (IsHexadecimalDigit(Current()))
+    {
+        ++Position;
+    }
+
+    // Skip the '0b' or '0B' character sequence
+    const auto Length = Position - Start;
+    const auto Span = TextSpan(Start + 2, Length);
+    const auto Number = ParseNumber<2>(Span);
+    NarrowNumber(Number);
+}
+
+void Lexer::ReadOctal() noexcept
+{
+    while (IsHexadecimalDigit(Current()))
+    {
+        ++Position;
+    }
+
+    // Skip the 0 prefix
+    const auto Length = Position - Start;
+    const auto Span = TextSpan(Start + 1, Length);
+    const auto Number = ParseNumber<8>(Span);
+    NarrowNumber(Number);
+}
+
+bool Lexer::IsLetter(const Char Character) const noexcept
+{
+    return (Current() >= TEXT('a') && Current() <= TEXT('z')) || (Current() >= TEXT('A') && Current() <= TEXT('Z'));
+}
+
+bool Lexer::IsLetterOrDigit(const Char Character) const noexcept
+{
+    return IsLetter(Character) || IsDecimalDigit(Character);
+}
+
+bool Lexer::IsDecimalDigit(const Char Character) const noexcept
+{
+    return Character >= TEXT('0') && Character <= TEXT('9');
+}
+
+bool Lexer::IsHexadecimalDigit(const Char Character) const noexcept
+{
+    return (Character >= TEXT('0') && Character <= TEXT('9')) || (Character >= TEXT('a') && Character <= TEXT('f'))
+        || (Character >= TEXT('A') && Character <= TEXT('F'));
+}
+
+bool Lexer::IsBinaryDigit(const Char Character) const noexcept
+{
+    return Character == TEXT('0') || Character == TEXT('1');
+}
+
+bool Lexer::IsOctalDigit(const Char Character) const noexcept
+{
+    return Character >= TEXT('0') && Character <= TEXT('7');
+}
+
+void Lexer::NarrowNumber(const std::uint64_t Value) noexcept
+{
+    // Literals can be represented by int32 if they are capable of being represented by int32,
+    // otherwise they are int64. If the literal represents a value outside the range of int64,
+    // it is represented by unsigned int64, otherwise diagnostics are required.
+    if (Value <= std::numeric_limits<std::int32_t>::max())
+    {
+        this->Value = std::make_shared<Literal>(static_cast<std::int32_t>(Value));
+    }
+    else if (Value <= std::numeric_limits<std::int64_t>::max())
+    {
+        this->Value = std::make_shared<Literal>(static_cast<std::int64_t>(Value));
+    }
+
+    this->Value = std::make_shared<Literal>(Value);
 }
 
 MAMBA_NAMESPACE_END
