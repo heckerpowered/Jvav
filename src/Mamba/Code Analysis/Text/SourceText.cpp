@@ -133,4 +133,18 @@ std::shared_ptr<const String> SourceText::ToString(const TextSpan Span) const no
     return ToString(Span.Start, Span.Length);
 }
 
+StringView SourceText::ToView(const std::size_t Start, const std::size_t Length) const noexcept
+{
+    const auto End = Start + Length;
+    const auto ViewBegin = Text->data() + Start;
+    const auto ViewEnd = Text->data() + End;
+
+    return StringView(ViewBegin, ViewEnd);
+}
+
+StringView SourceText::ToView(const TextSpan Span) const noexcept
+{
+    return ToView(Span.Start, Span.Length);
+}
+
 MAMBA_NAMESPACE_END

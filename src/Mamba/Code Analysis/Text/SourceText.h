@@ -1,3 +1,5 @@
+#pragma once
+
 #include "MambaCore.h"
 
 #include <memory>
@@ -45,6 +47,10 @@ public:
     [[nodiscard]] std::shared_ptr<String> ToString(const std::size_t Start, const std::size_t Length) const noexcept;
 
     [[nodiscard]] std::shared_ptr<const String> ToString(const class TextSpan Span) const noexcept;
+
+    [[nodiscard]] StringView ToView(const std::size_t Start, const std::size_t Length) const noexcept;
+
+    [[nodiscard]] StringView ToView(const class TextSpan Span) const noexcept;
 };
 
 MAMBA_NAMESPACE_END
