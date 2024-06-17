@@ -27,11 +27,15 @@ union LiteralValue
     bool BooleanValue;
 
     LiteralValue() noexcept;
+    LiteralValue(const StringView String) noexcept;
+    LiteralValue(const std::int32_t Integer) noexcept;
+    LiteralValue(const std::int64_t Integer) noexcept;
+    LiteralValue(const std::uint64_t Integer) noexcept;
 
 private:
-    // In general, for some types of literal such as strings, this type only stores a view of the value, and the value
-    // is generally stored in the objects that holds this object. To ensure the validity of the view, this object can
-    // only be copied when the object that holds this object is copied.
+    // In general, for some types of literal such as strings, this type only stores a view of the value, and the
+    // value is generally stored in the objects that holds this object. To ensure the validity of the view, this
+    // object can only be copied when the object that holds this object is copied.
     //
     // For example, Literal has a StringValue member variable, then the StringValue of this type is its view. This
     // object can be only copied if the Literal object is copied.
@@ -72,6 +76,10 @@ struct Literal
     std::optional<std::shared_ptr<const String>> StringValue;
 
     [[nodiscard]] Literal() noexcept;
+    [[nodiscard]] Literal(const std::shared_ptr<String> String) noexcept;
+    [[nodiscard]] Literal(const std::int32_t Integer) noexcept;
+    [[nodiscard]] Literal(const std::int64_t Integer) noexcept;
+    [[nodiscard]] Literal(const std::uint64_t Integer) noexcept;
 };
 
 MAMBA_NAMESPACE_END
