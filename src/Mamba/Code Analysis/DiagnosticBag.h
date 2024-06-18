@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MambaCore.h"
+#include "SyntaxKind.h"
 #include "TextLocation.h"
 
 #include <memory>
@@ -28,6 +29,10 @@ public:
     void ReportInvalidHexadecimal(const TextLocation Location, const StringView Literal) noexcept;
     void ReportInvalidBinary(const TextLocation Location, const StringView Literal) noexcept;
     void ReportInvalidOctal(const TextLocation Location, const StringView Literal) noexcept;
+
+    void ReportUnexpectedToken(const TextLocation Location,
+                               const SyntaxKind Kind,
+                               const SyntaxKind ExpectedKind) noexcept;
 };
 
 MAMBA_NAMESPACE_END

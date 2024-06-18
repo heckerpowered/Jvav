@@ -1,6 +1,7 @@
 #include "DiagnosticBag.h"
 #include "Diagnostic.h"
 #include "MambaCore.h"
+#include "SyntaxFacts.h"
 
 MAMBA_NAMESPACE_BEGIN
 
@@ -42,26 +43,40 @@ void DiagnosticBag::ReportUnterminatedString(const TextLocation Location) noexce
 
 void DiagnosticBag::ReportInvalidDecimal(const TextLocation Location, const StringView Literal) noexcept
 {
-    const auto Message = std::make_shared<const String>(Concat(TEXT("Invalid decimal number '"), Literal, TEXT("'")));
+    const auto Message = std::make_shared<const String>(Concat(TEXT("Invalid decimal number '"), Literal, TEXT("'.")));
     ReportError(Location, Message);
 }
 
 void DiagnosticBag::ReportInvalidHexadecimal(const TextLocation Location, const StringView Literal) noexcept
 {
     const auto Message =
-        std::make_shared<const String>(Concat(TEXT("Invalid hexadecimal number '"), Literal, TEXT("'")));
+        std::make_shared<const String>(Concat(TEXT("Invalid hexadecimal number '"), Literal, TEXT("'.")));
     ReportError(Location, Message);
 }
 
 void DiagnosticBag::ReportInvalidBinary(const TextLocation Location, const StringView Literal) noexcept
 {
-    const auto Message = std::make_shared<const String>(Concat(TEXT("Invalid binary number '"), Literal, TEXT("'")));
+    const auto Message = std::make_shared<const String>(Concat(TEXT("Invalid binary number '"), Literal, TEXT("'.")));
     ReportError(Location, Message);
 }
 
 void DiagnosticBag::ReportInvalidOctal(const TextLocation Location, const StringView Literal) noexcept
 {
-    const auto Message = std::make_shared<const String>(Concat(TEXT("Invalid octal number '"), Literal, TEXT("'")));
+    const auto Message = std::make_shared<const String>(Concat(TEXT("Invalid octal number '"), Literal, TEXT("'.")));
+    ReportError(Location, Message);
+}
+
+void DiagnosticBag::ReportUnexpectedToken(const TextLocation Location,
+                                          const SyntaxKind Kind,
+                                          const SyntaxKind ExpectedKind) noexcept
+{
+    // Unexpected token 'Kind', Expected: 'ExpectedKind'.
+    const auto Message = std::make_shared<const String>(Concat(TEXT("Unexpected token '"),
+                                                               SyntaxFacts::GetText(Kind),
+                                                               TEXT("'"),
+                                                               "Expected: '",
+                                                               SyntaxFacts::GetText(ExpectedKind),
+                                                               "'."));
     ReportError(Location, Message);
 }
 
