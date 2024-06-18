@@ -44,120 +44,122 @@
 
 #define TEXT(x) MAMBA_TEXT(x)
 
-MAMBA_NAMESPACE_BEGIN
+namespace Mamba
+{
 
 #if MAMBA_CHARACTER_TYPE == 0
-using Char = char;
+    using Char = char;
 #elif MAMBA_CHARACTER_TYPE == 1
-using Char = wchar_t;
+    using Char = wchar_t;
 #elif MAMBA_CHARACTER_TYPE == 2
-using Char = char8_t;
+    using Char = char8_t;
 #elif MAMBA_CHARACTER_TYPE == 3
-using Char = char16_t;
+    using Char = char16_t;
 #elif MAMBA_CHARACTER_TYPE == 4
-using Char = char32_t;
+    using Char = char32_t;
 #endif
 
-static_assert(std::is_same_v<Char, char> || std::is_same_v<Char, wchar_t> || std::is_same_v<Char, char8_t>
-              || std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>);
+    static_assert(std::is_same_v<Char, char> || std::is_same_v<Char, wchar_t> || std::is_same_v<Char, char8_t>
+                  || std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>);
 
-using String = std::basic_string<Char>;
-using StringView = std::basic_string_view<Char>;
+    using String = std::basic_string<Char>;
+    using StringView = std::basic_string_view<Char>;
 
-// Always same as std::shared_ptr<T>, but semantically nullable (although shared_ptr is also nullable)
-// Use NullableSharedPtr when you want to represent a shared_ptr with a nullable value.
-// All shared_ptr are considered valid by default in this project.
-template<typename T> using NullableSharedPtr = std::shared_ptr<T>;
+    // Always same as std::shared_ptr<T>, but semantically nullable (although shared_ptr is also nullable)
+    // Use NullableSharedPtr when you want to represent a shared_ptr with a nullable value.
+    // All shared_ptr are considered valid by default in this project.
+    template<typename T> using NullableSharedPtr = std::shared_ptr<T>;
 
-// Always same as T*, but semantically nullable (although pointer is also nullable)
-// Use NullablePointer when you want to represent a pointer with a nullable value.
-// All pointers are considered valid by default in this project.
-template<typename T> using NullablePointer = T*;
+    // Always same as T*, but semantically nullable (although pointer is also nullable)
+    // Use NullablePointer when you want to represent a pointer with a nullable value.
+    // All pointers are considered valid by default in this project.
+    template<typename T> using NullablePointer = T*;
 
-template<typename... T> String Concat(T&&... Args) noexcept
-{
-    if constexpr (std::is_same_v<Char, char>)
+    template<typename... T> String Concat(T&&... Args) noexcept
     {
-        return fast_io::concat(std::forward<T>(Args)...);
-    }
-    else if constexpr (std::is_same_v<Char, wchar_t>)
-    {
-        return fast_io::wconcat(std::forward<T>(Args)...);
-    }
-    else if constexpr (std::is_same_v<Char, char8_t>)
-    {
-        return fast_io::u8concat(std::forward<T>(Args)...);
-    }
-    else if constexpr (std::is_same_v<Char, char16_t>)
-    {
-        return fast_io::u16concat(std::forward<T>(Args)...);
-    }
-    else if constexpr (std::is_same_v<Char, char32_t>)
-    {
-        return fast_io::u32concat(std::forward<T>(Args)...);
-    }
+        if constexpr (std::is_same_v<Char, char>)
+        {
+            return fast_io::concat(std::forward<T>(Args)...);
+        }
+        else if constexpr (std::is_same_v<Char, wchar_t>)
+        {
+            return fast_io::wconcat(std::forward<T>(Args)...);
+        }
+        else if constexpr (std::is_same_v<Char, char8_t>)
+        {
+            return fast_io::u8concat(std::forward<T>(Args)...);
+        }
+        else if constexpr (std::is_same_v<Char, char16_t>)
+        {
+            return fast_io::u16concat(std::forward<T>(Args)...);
+        }
+        else if constexpr (std::is_same_v<Char, char32_t>)
+        {
+            return fast_io::u32concat(std::forward<T>(Args)...);
+        }
 
-    std::unreachable();
-}
-
-template<typename TargetType, typename... ArgumentTypes> void To(ArgumentTypes&&... Arguments) noexcept
-{
-    if constexpr (std::is_same_v<Char, char>)
-    {
-        return fast_io::to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
-    }
-    else if constexpr (std::is_same_v<Char, wchar_t>)
-    {
-        return fast_io::wto<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
-    }
-    else if constexpr (std::is_same_v<Char, char8_t>)
-    {
-        return fast_io::u8to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
-    }
-    else if constexpr (std::is_same_v<Char, char16_t>)
-    {
-        return fast_io::u16to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
-    }
-    else if constexpr (std::is_same_v<Char, char32_t>)
-    {
-        return fast_io::u32to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+        std::unreachable();
     }
 
-    std::unreachable();
-}
-
-// Hatcher stores a callable object, so that the result of the call can be emplace constructed into a container by copy
-// elision, the container must support adding new elements by forwarding arguments to the constructor (emplace).
-template<typename T> struct Hatcher
-{
-    T Expression;
-
-    constexpr operator decltype(std::declval<T&>()())() noexcept(noexcept(std::declval<T&>()()))
-        requires std::same_as<Hatcher<T>&, decltype(*this)>
+    template<typename TargetType, typename... ArgumentTypes> void To(ArgumentTypes&&... Arguments) noexcept
     {
-        return Expression();
+        if constexpr (std::is_same_v<Char, char>)
+        {
+            return fast_io::to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+        }
+        else if constexpr (std::is_same_v<Char, wchar_t>)
+        {
+            return fast_io::wto<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+        }
+        else if constexpr (std::is_same_v<Char, char8_t>)
+        {
+            return fast_io::u8to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+        }
+        else if constexpr (std::is_same_v<Char, char16_t>)
+        {
+            return fast_io::u16to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+        }
+        else if constexpr (std::is_same_v<Char, char32_t>)
+        {
+            return fast_io::u32to<TargetType>(std::forward<ArgumentTypes>(Arguments)...);
+        }
+
+        std::unreachable();
     }
 
-    constexpr operator decltype(std::declval<const T&>()())() noexcept(noexcept(std::declval<const T&>()()))
-        requires std::same_as<const Hatcher<T>&, decltype(*this)>
+    // Hatcher stores a callable object, so that the result of the call can be emplace constructed into a container by
+    // copy elision, the container must support adding new elements by forwarding arguments to the constructor
+    // (emplace).
+    template<typename T> struct Hatcher
     {
-        return Expression();
-    }
+        T Expression;
 
-    constexpr operator decltype(std::declval<T&&>()())() noexcept(noexcept(std::declval<T&&>()()))
-        requires std::same_as<Hatcher<T>&&, decltype(*this)>
-    {
-        return std::move(Expression)();
-    }
+        constexpr operator decltype(std::declval<T&>()())() noexcept(noexcept(std::declval<T&>()()))
+            requires std::same_as<Hatcher<T>&, decltype(*this)>
+        {
+            return Expression();
+        }
 
-    constexpr operator decltype(std::declval<const T&&>()())() noexcept(noexcept(std::declval<const T&&>()()))
-        requires std::same_as<const Hatcher<T>&&, decltype(*this)>
-    {
-        return std::move(Expression)();
-    }
-};
+        constexpr operator decltype(std::declval<const T&>()())() noexcept(noexcept(std::declval<const T&>()()))
+            requires std::same_as<const Hatcher<T>&, decltype(*this)>
+        {
+            return Expression();
+        }
 
-MAMBA_NAMESPACE_END
+        constexpr operator decltype(std::declval<T&&>()())() noexcept(noexcept(std::declval<T&&>()()))
+            requires std::same_as<Hatcher<T>&&, decltype(*this)>
+        {
+            return std::move(Expression)();
+        }
+
+        constexpr operator decltype(std::declval<const T&&>()())() noexcept(noexcept(std::declval<const T&&>()()))
+            requires std::same_as<const Hatcher<T>&&, decltype(*this)>
+        {
+            return std::move(Expression)();
+        }
+    };
+
+    MAMBA_NAMESPACE_END
 
 #ifdef __cpp_exceptions
     #if defined(_MSC_VER) && (!defined(_HAS_EXCEPTIONS) || _HAS_EXCEPTIONS == 0)

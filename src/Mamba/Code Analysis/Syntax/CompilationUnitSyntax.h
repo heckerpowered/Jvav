@@ -5,20 +5,21 @@
 
 #include <memory>
 
-MAMBA_NAMESPACE_BEGIN
-
-class CompilationUnitSyntax : public SyntaxNode
+namespace Mamba
 {
-public:
-    using Super = SyntaxNode;
 
-    [[nodiscard]] CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                        const std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept;
+    class CompilationUnitSyntax : public SyntaxNode
+    {
+    public:
+        using Super = SyntaxNode;
 
-    virtual SyntaxKind Kind() const noexcept override;
-    virtual std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
+        [[nodiscard]] CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+                                            const std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept;
 
-    const std::shared_ptr<const class SyntaxToken> EndOfFileToken;
-};
+        virtual SyntaxKind Kind() const noexcept override;
+        virtual std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
 
-MAMBA_NAMESPACE_END
+        const std::shared_ptr<const class SyntaxToken> EndOfFileToken;
+    };
+
+} // namespace Mamba

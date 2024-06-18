@@ -3,22 +3,24 @@
 #include "SyntaxNode.h"
 #include "SyntaxToken.h"
 
-MAMBA_NAMESPACE_BEGIN
-
-CompilationUnitSyntax::CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                             const std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept :
-    Super(SyntaxTree), EndOfFileToken(EndOfFileToken)
+namespace Mamba
 {
-}
 
-SyntaxKind CompilationUnitSyntax::Kind() const noexcept
-{
-    return SyntaxKind::CompilationUnit;
-}
+    CompilationUnitSyntax::CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+                                                 const std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept
+        :
+        Super(SyntaxTree), EndOfFileToken(EndOfFileToken)
+    {
+    }
 
-std::vector<std::shared_ptr<const SyntaxNode>> CompilationUnitSyntax::Children() const noexcept
-{
-    return { std::dynamic_pointer_cast<const SyntaxNode>(EndOfFileToken) };
-}
+    SyntaxKind CompilationUnitSyntax::Kind() const noexcept
+    {
+        return SyntaxKind::CompilationUnit;
+    }
 
-MAMBA_NAMESPACE_END
+    std::vector<std::shared_ptr<const SyntaxNode>> CompilationUnitSyntax::Children() const noexcept
+    {
+        return { std::dynamic_pointer_cast<const SyntaxNode>(EndOfFileToken) };
+    }
+
+} // namespace Mamba

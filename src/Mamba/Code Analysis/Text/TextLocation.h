@@ -5,36 +5,35 @@
 
 #include <memory>
 
-MAMBA_NAMESPACE_BEGIN
-
-struct TextLocation
+namespace Mamba
 {
-    [[nodiscard]] TextLocation(const std::shared_ptr<const class SourceText> Text, const TextSpan Span) noexcept;
+    struct TextLocation
+    {
+        [[nodiscard]] TextLocation(const std::shared_ptr<const class SourceText> Text, const TextSpan Span) noexcept;
 
-    const std::shared_ptr<const class SourceText> Text;
-    const TextSpan Span;
+        const std::shared_ptr<const class SourceText> Text;
+        const TextSpan Span;
 
-    std::shared_ptr<const String> FileName() const noexcept;
+        std::shared_ptr<const String> FileName() const noexcept;
 
-    /**
-     * Get the line index of the start line
-     */
-    std::size_t StartLine() const noexcept;
+        /**
+         * Get the line index of the start line
+         */
+        std::size_t StartLine() const noexcept;
 
-    /**
-     * Get position of the start character
-     */
-    std::size_t StartCharacter() const noexcept;
+        /**
+         * Get position of the start character
+         */
+        std::size_t StartCharacter() const noexcept;
 
-    /**
-     * Get the end line
-     */
-    std::size_t EndLine() const noexcept;
+        /**
+         * Get the end line
+         */
+        std::size_t EndLine() const noexcept;
 
-    /**
-     * Get the end position of the character
-     */
-    std::size_t EndCharacter() const noexcept;
-};
-
-MAMBA_NAMESPACE_END
+        /**
+         * Get the end position of the character
+         */
+        std::size_t EndCharacter() const noexcept;
+    };
+} // namespace Mamba
