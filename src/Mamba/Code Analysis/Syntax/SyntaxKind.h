@@ -81,7 +81,7 @@ namespace Mamba
         LiteralExpression,
         NameExpression,
         UnaryExpression,
-        BinaryExpressionSyntax,
+        BinaryExpression,
         CompoundAssignmentExpression,
         ParenthesizedExpression,
         AssignmentExpression,
