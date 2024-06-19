@@ -1,5 +1,4 @@
 #include "SyntaxNode.h"
-#include "MambaCore.h"
 #include "SyntaxToken.h"
 #include "SyntaxTree.h"
 
