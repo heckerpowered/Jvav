@@ -159,7 +159,10 @@ namespace Mamba
         }
     };
 
-    MAMBA_NAMESPACE_END
+    // Tested on MSVC & Clang, there's no deduction guide needed, but apple clang needs deduction guide to work.
+    // Bugs of Apple Clang are reported to Apple, remove it when Apple fixes the bug.
+    template<typename T> Hatcher(T) -> Hatcher<T>;
+} // namespace Mamba
 
 #ifdef __cpp_exceptions
     #if defined(_MSC_VER) && (!defined(_HAS_EXCEPTIONS) || _HAS_EXCEPTIONS == 0)
