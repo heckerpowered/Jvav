@@ -1,7 +1,5 @@
 #pragma once
 
-#include "MambaCore.h"
-
 namespace Mamba
 {
     enum class SyntaxKind
@@ -61,6 +59,32 @@ namespace Mamba
         WhileKeyword,
         DoKeyword,
 
-        CompilationUnit
+        // Nodes
+        CompilationUnit,
+        FunctionDeclaration,
+        GlobalStatement,
+        Parameter,
+        TypeClause,
+        ElseClause,
+
+        // Statements
+        BlockStatement,
+        VariableDeclaration,
+        IfStatement,
+        WhileStatement,
+        DoWhileStatement,
+        ForStatement,
+        ReturnStatement,
+        ExpressionStatement,
+
+        // Expressions
+        LiteralExpression,
+        NameExpression,
+        UnaryExpression,
+        BinaryExpressionSyntax,
+        CompoundAssignmentExpression,
+        ParenthesizedExpression,
+        AssignmentExpression,
+        CallExpression,
     };
 } // namespace Mamba
