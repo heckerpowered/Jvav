@@ -1,5 +1,4 @@
 #include "CompilationUnitSyntax.h"
-#include "MambaCore.h"
 #include "SyntaxNode.h"
 #include "SyntaxToken.h"
 

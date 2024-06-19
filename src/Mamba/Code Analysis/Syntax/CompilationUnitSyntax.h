@@ -1,6 +1,5 @@
 #pragma once
 
-#include "MambaCore.h"
 #include "SyntaxNode.h"
 
 #include <memory>
