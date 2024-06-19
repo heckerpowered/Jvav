@@ -1,6 +1,20 @@
 build/
+
+# XMake files
 .xmake/
+
+# VS Code files
 .cache/
 .vscode/
 compile_commands.json
+
+# macOS files
 .DS_Store
+
+# XCode files
+Jvav.xcodeproj/
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+CMakeLists.txt
+CMakeCache.txt
