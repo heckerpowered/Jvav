@@ -78,9 +78,9 @@ namespace Mamba
         const auto Message = std::make_shared<const String>(Concat(TEXT("Unexpected token '"),
                                                                    SyntaxFacts::GetText(Kind),
                                                                    TEXT("'"),
-                                                                   "Expected: '",
+                                                                   TEXT("Expected: '"),
                                                                    SyntaxFacts::GetText(ExpectedKind),
-                                                                   "'."));
+                                                                   TEXT("'.")));
         ReportError(Location, Message);
     }
 } // namespace Mamba
