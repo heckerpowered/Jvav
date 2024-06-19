@@ -159,9 +159,11 @@ namespace Mamba
         }
     };
 
-    // Tested on MSVC & Clang, there's no deduction guide needed, but apple clang needs deduction guide to work.
-    // Bugs of Apple Clang are reported to Apple, remove it when Apple fixes the bug.
+#ifdef __apple_build_version__
+    // Potential compiler bug: Apple clang needs deduction guide to use Hatcher
     template<typename T> Hatcher(T) -> Hatcher<T>;
+#endif
+
 } // namespace Mamba
 
 #ifdef __cpp_exceptions
