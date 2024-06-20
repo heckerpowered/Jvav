@@ -29,6 +29,11 @@ namespace Mamba
         [[nodiscard]] std::vector<std::shared_ptr<const SyntaxNode>> Ancestors() const noexcept;
         [[nodiscard]] virtual std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept = 0;
 
+        template<template<typename> typename ContainerType> [[nodiscard]] auto Children() const noexcept
+        {
+            return Children() | std::ranges::to<ContainerType>();
+        }
+
         [[nodiscard]] std::shared_ptr<const class SyntaxToken> LastToken() const noexcept;
     };
 } // namespace Mamba
