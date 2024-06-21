@@ -1,7 +1,3 @@
-/**
- * Mamba, the compiler of the Jvav programming language.
- * Jvav is a programming language first purposed by Mr. Haoyang Zhang, and first implemented by heckerpowered.
- */
 #pragma once
 
 #include <fast_io.h>
@@ -13,23 +9,14 @@
 #define MAMBA_NAMESPACE_END }
 #define MAMBA ::Mamba::
 
-/**
- * Character type used in Mamba, possible value are:
- * 0 - char
- * 1 - wchar_t
- * 2 - char8_t
- * 3 - char16_t
- * 4 - char32_t
- */
+// Character type used in Mamba, which may be following values:
+// 0 - char
+// 1 - wchar_t
+// 2 - char8_t
+// 3 - char16_t
+// 4 - char32_t
 #define MAMBA_CHARACTER_TYPE 2
 
-/**
- * char -> "..."
- * wchar_t -> L"..."
- * char8_t -> u8"..."
- * char16_t -> u"..."
- * char32_t -> U"..."
- */
 #if MAMBA_CHARACTER_TYPE == 0
     #define MAMBA_TEXT(x) x
 #elif MAMBA_CHARACTER_TYPE == 1
@@ -46,7 +33,6 @@
 
 namespace Mamba
 {
-
 #if MAMBA_CHARACTER_TYPE == 0
     using Char = char;
 #elif MAMBA_CHARACTER_TYPE == 1
@@ -60,7 +46,8 @@ namespace Mamba
 #endif
 
     static_assert(std::is_same_v<Char, char> || std::is_same_v<Char, wchar_t> || std::is_same_v<Char, char8_t>
-                  || std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>);
+                      || std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>,
+                  "Unsupported character type");
 
     using String = std::basic_string<Char>;
     using StringView = std::basic_string_view<Char>;
@@ -75,7 +62,7 @@ namespace Mamba
     // All pointers are considered valid by default in this project.
     template<typename T> using NullablePointer = T*;
 
-    template<typename... T> String Concat(T&&... Args) noexcept
+    template<typename... T> String Concat(T&&... Args)
     {
         if constexpr (std::is_same_v<Char, char>)
         {
