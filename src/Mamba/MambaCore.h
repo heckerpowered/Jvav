@@ -1,7 +1,8 @@
 #pragma once
 
-#include <fast_io.h>
 #include <string>
+
+#include <fast_io.h>
 
 #define MAMBA_NAMESPACE_BEGIN \
     namespace Mamba           \
