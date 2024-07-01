@@ -76,6 +76,8 @@ namespace Mamba
         ForStatement,
         ReturnStatement,
         ExpressionStatement,
+        ContinueStatement,
+        BreakStatement,
 
         // Expressions
         LiteralExpression,
