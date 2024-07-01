@@ -24,9 +24,13 @@ namespace Mamba
         [[nodiscard]] virtual TextSpan FullSpan() const noexcept;
         [[nodiscard]] TextLocation Location() const noexcept;
 
+        // Gets all children of the node, children are member variables of types that indirectly or directly derived
+        // from SyntaxNode, when implementing, the result sequence of children should conform to the sequence in which
+        // they were defined within the type. If the member variable is a container whose element type is, or directly
+        // or indirectly derived from SyntaxNode, it should be expanded and inserted in its original sequence.
+        [[nodiscard]] virtual std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept = 0;
         [[nodiscard]] std::vector<std::shared_ptr<const SyntaxNode>> AncestorsAndSelf() const noexcept;
         [[nodiscard]] std::vector<std::shared_ptr<const SyntaxNode>> Ancestors() const noexcept;
-        [[nodiscard]] virtual std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept = 0;
 
         template<template<typename...> typename ContainerType> [[nodiscard]] auto Children() const noexcept
         {
