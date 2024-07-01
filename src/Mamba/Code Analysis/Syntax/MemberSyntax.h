@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SyntaxNode.h"
+
 #include <memory>
 
 namespace Mamba
