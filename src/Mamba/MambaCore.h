@@ -62,6 +62,10 @@ namespace Mamba
     // All pointers are considered valid by default in this project.
     template<typename T> using NullablePointer = T*;
 
+    namespace Private
+    {
+    } // namespace Private
+
     template<typename... T> String Concat(T&&... Args)
     {
         if constexpr (std::is_same_v<Char, char>)
