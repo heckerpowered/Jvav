@@ -1,6 +1,5 @@
 #pragma once
 
-#include "MambaCore.h"
 #include "TextSpan.h"
 
 #include <memory>
