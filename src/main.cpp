@@ -1,6 +1,11 @@
 #include <print>
 
-int main(int argc, char **argv) {
-    std::println("Hello, world!");
-    return 0;
-}
+#include <fast_io.h>
+
+class A
+{
+};
+
+void f() {}
+
+int main() {}

@@ -1,3 +1,152 @@
-IndentWidth: 4
-IndentAccessModifiers: false
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments: 
+  Enabled: false
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCompound: true
+  AlignFunctionPointers: false
+  PadOperators: true
+
+AlignConsecutiveBitFields:
+  Enabled: false
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCompound: true
+  AlignFunctionPointers: false
+  PadOperators: true
+
+AlignConsecutiveDeclarations:
+  Enabled: false
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCompound: true
+  AlignFunctionPointers: false
+  PadOperators: true
+
+AlignConsecutiveMacros:
+  Enabled: false
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCompound: true
+  AlignFunctionPointers: false
+  PadOperators: true
+
+AlignConsecutiveShortCaseStatements:
+  Enabled: false
+  AcrossEmptyLines: false
+  AcrossComments: true
+  AlignCaseColons: true
+
+AlignEscapedNewlines: Left
+AlignOperands: AlignAfterOperator
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 0
+
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortCompoundRequirementOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Inline
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakBeforeMultilineStrings: true
+BinPackArguments: false
+BinPackParameters: false
+BitFieldColonSpacing: Both
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: false
+  IndentBraces: true
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+BracedInitializerIndentWidth: 4
+BreakAdjacentStringLiterals: true
+BreakAfterAttributes: Leave
+# BreakAfterReturnType: Automatic
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Allman
+BreakBeforeConceptDeclarations: Allowed
+BreakBeforeInlineASMColon: OnlyMultiline
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterComma
+BreakStringLiterals: true
 ColumnLimit: 120
+CompactNamespaces: true
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+Cpp11BracedListStyle: false
+EmptyLineAfterAccessModifier: Never
+FixNamespaceComments: true
+IncludeBlocks: Preserve
+IndentAccessModifiers: false
+IndentCaseBlocks: false
+IndentCaseLabels: true
+IndentExternBlock: Indent
+IndentGotoLabels: true
+IndentPPDirectives: BeforeHash
+IndentRequiresClause: true
+IndentWidth: 4
+IndentWrappedFunctionNames: true
+InsertBraces: true
+InsertNewlineAtEOF: false
+InsertTrailingCommas: None
+KeepEmptyLinesAtEOF: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+LambdaBodyIndentation: Signature
+Language: Cpp
+NamespaceIndentation: All
+PPIndentWidth: 4
+PackConstructorInitializers: NextLine
+PointerAlignment: Left
+QualifierAlignment: Left
+ReferenceAlignment: Left
+ReflowComments: true
+RemoveBracesLLVM: false
+RemoveParentheses: MultipleParentheses
+RemoveSemicolon: true
+# RequiresClausePosition
+RequiresExpressionIndentation: OuterScope
+SeparateDefinitionBlocks: Always
+SortIncludes: CaseInsensitive
+SortUsingDeclarations: LexicographicNumeric
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceAroundPointerQualifiers: Default
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCaseColon: false
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles: Never
+SpacesInLineCommentPrefix: 
+  Minimum: 1
+  Maximum: -1
+SpacesInParens: Never
+SpacesInSquareBrackets: false
+Standard: Latest
+TabWidth: 4
