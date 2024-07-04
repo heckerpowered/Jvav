@@ -93,7 +93,7 @@ namespace Mamba
         std::unreachable();
     }
 
-    template<typename TargetType, typename... ArgumentTypes> void To(ArgumentTypes&&... Arguments) noexcept
+    template<typename TargetType, typename... ArgumentTypes> void To(ArgumentTypes&&... Arguments)
     {
         if constexpr (std::is_same_v<Char, char>)
         {
