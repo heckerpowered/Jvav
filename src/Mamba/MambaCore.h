@@ -67,7 +67,7 @@ namespace Mamba
     {
     } // namespace Private
 
-    template<typename... T> String Concat(T&&... Args)
+    template<typename... T> constexpr String Concat(T&&... Args)
     {
         if constexpr (std::is_same_v<Char, char>)
         {
@@ -93,7 +93,7 @@ namespace Mamba
         std::unreachable();
     }
 
-    template<typename TargetType, typename... ArgumentTypes> void To(ArgumentTypes&&... Arguments)
+    template<typename TargetType, typename... ArgumentTypes> constexpr void To(ArgumentTypes&&... Arguments)
     {
         if constexpr (std::is_same_v<Char, char>)
         {
