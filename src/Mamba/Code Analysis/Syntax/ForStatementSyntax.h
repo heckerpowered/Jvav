@@ -18,12 +18,12 @@ namespace Mamba
                                          const std::shared_ptr<const class SyntaxToken> Keyword,
                                          const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
                                          const std::shared_ptr<const class StatementSyntax> InitStatement,
-                                         const std::shared_ptr<const class SyntaxToken> PrimarySemicolonToken,
+                                         const std::shared_ptr<const class SyntaxToken> InitStatementColonToken,
                                          const std::shared_ptr<const class ExpressionSyntax> Condition,
-                                         const std::shared_ptr<const class SyntaxToken> SecondarySemicolonToken,
+                                         const std::shared_ptr<const class SyntaxToken> ConditionColonToken,
                                          const std::shared_ptr<const class ExpressionSyntax> Expression,
                                          const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
-                                         const std::shared_ptr<const class StatementSyntax> Statement) noexcept;
+                                         const std::shared_ptr<const class StatementSyntax> Body) noexcept;
 
         virtual SyntaxKind Kind() const noexcept override;
         virtual std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
@@ -31,11 +31,11 @@ namespace Mamba
         const std::shared_ptr<const class SyntaxToken> Keyword;
         const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken;
         const std::shared_ptr<const class StatementSyntax> InitStatement;
-        const std::shared_ptr<const class SyntaxToken> PrimarySemicolonToken;
+        const std::shared_ptr<const class SyntaxToken> InitStatementColonToken;
         const std::shared_ptr<const class ExpressionSyntax> Condition;
-        const std::shared_ptr<const class SyntaxToken> SecondarySemicolonToken;
+        const std::shared_ptr<const class SyntaxToken> ConditionColonToken;
         const std::shared_ptr<const class ExpressionSyntax> Expression;
         const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken;
-        const std::shared_ptr<const class StatementSyntax> Statement;
+        const std::shared_ptr<const class StatementSyntax> Body;
     };
 } // namespace Mamba
