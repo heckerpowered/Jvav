@@ -320,7 +320,7 @@ namespace Mamba
         const auto Length = Position - Start;
 
         Kind = SyntaxKind::StringToken;
-        Value = std::make_shared<Literal>(Literal(Text->ToString(Start + 1, Length - 1)));
+        Value = std::make_shared<Literal>(Literal(Text->ToString(Start + 1, Length - 2)));
     }
 
     void Lexer::ReadIdentifierOrKeyword() noexcept
