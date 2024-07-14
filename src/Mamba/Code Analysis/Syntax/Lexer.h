@@ -44,12 +44,12 @@ namespace Mamba
         void ReadBinary() noexcept;
         void ReadOctal() noexcept;
 
-        [[nodiscard]] bool IsLetter(const Char Character) const noexcept;
-        [[nodiscard]] bool IsLetterOrDigit(const Char Character) const noexcept;
-        [[nodiscard]] bool IsDecimalDigit(const Char Character) const noexcept;
-        [[nodiscard]] bool IsHexadecimalDigit(const Char Character) const noexcept;
-        [[nodiscard]] bool IsBinaryDigit(const Char Character) const noexcept;
-        [[nodiscard]] bool IsOctalDigit(const Char Character) const noexcept;
+        [[nodiscard]] static bool IsLetter(const Char Character) noexcept;
+        [[nodiscard]] static bool IsLetterOrDigit(const Char Character) noexcept;
+        [[nodiscard]] static bool IsDecimalDigit(const Char Character) noexcept;
+        [[nodiscard]] static bool IsHexadecimalDigit(const Char Character) noexcept;
+        [[nodiscard]] static bool IsBinaryDigit(const Char Character) noexcept;
+        [[nodiscard]] static bool IsOctalDigit(const Char Character) noexcept;
 
         // Narrow down the supplied number, choose the smallest type that can represent it,
         // and save it to the member variable 'Value'.

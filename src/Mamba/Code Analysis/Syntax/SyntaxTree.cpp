@@ -111,7 +111,8 @@ namespace Mamba
 
                 if (Token->Kind() == SyntaxKind::EndOfFileToken)
                 {
-                    Root = std::make_shared<const CompilationUnitSyntax>(SyntaxTree, Token);
+                    Root = std::make_shared<const CompilationUnitSyntax>(
+                        SyntaxTree, std::vector<std::shared_ptr<const class MemberSyntax>>{}, Token);
                     break;
                 }
             }

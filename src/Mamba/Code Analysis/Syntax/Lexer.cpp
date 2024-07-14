@@ -409,33 +409,33 @@ namespace Mamba
         NarrowNumber(Number);
     }
 
-    bool Lexer::IsLetter(const Char Character) const noexcept
+    bool Lexer::IsLetter(const Char Character) noexcept
     {
-        return (Current() >= TEXT('a') && Current() <= TEXT('z')) || (Current() >= TEXT('A') && Current() <= TEXT('Z'));
+        return (Character >= TEXT('a') && Character <= TEXT('z')) || (Character >= TEXT('A') && Character <= TEXT('Z'));
     }
 
-    bool Lexer::IsLetterOrDigit(const Char Character) const noexcept
+    bool Lexer::IsLetterOrDigit(const Char Character) noexcept
     {
         return IsLetter(Character) || IsDecimalDigit(Character);
     }
 
-    bool Lexer::IsDecimalDigit(const Char Character) const noexcept
+    bool Lexer::IsDecimalDigit(const Char Character) noexcept
     {
         return Character >= TEXT('0') && Character <= TEXT('9');
     }
 
-    bool Lexer::IsHexadecimalDigit(const Char Character) const noexcept
+    bool Lexer::IsHexadecimalDigit(const Char Character) noexcept
     {
         return (Character >= TEXT('0') && Character <= TEXT('9')) || (Character >= TEXT('a') && Character <= TEXT('f'))
             || (Character >= TEXT('A') && Character <= TEXT('F'));
     }
 
-    bool Lexer::IsBinaryDigit(const Char Character) const noexcept
+    bool Lexer::IsBinaryDigit(const Char Character) noexcept
     {
         return Character == TEXT('0') || Character == TEXT('1');
     }
 
-    bool Lexer::IsOctalDigit(const Char Character) const noexcept
+    bool Lexer::IsOctalDigit(const Char Character) noexcept
     {
         return Character >= TEXT('0') && Character <= TEXT('7');
     }

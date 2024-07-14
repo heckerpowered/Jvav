@@ -13,6 +13,8 @@ namespace Mamba
 
     LiteralValue::LiteralValue(const std::uint64_t Integer) noexcept : UnsignedLongValue(Integer) {}
 
+    LiteralValue::LiteralValue(const bool Value) noexcept : BooleanValue(Value) {}
+
     Literal::Literal() noexcept {}
 
     Literal::Literal(const std::shared_ptr<String> String) noexcept :
@@ -25,4 +27,6 @@ namespace Mamba
     Literal::Literal(const std::int64_t Integer) noexcept : Value(Integer), Type(LiteralType::SignedLong) {}
 
     Literal::Literal(const std::uint64_t Integer) noexcept : Value(Integer), Type(LiteralType::UnsignedLong) {}
+
+    Literal::Literal(const bool Value) noexcept : Value(Value), Type(LiteralType::Boolean) {}
 } // namespace Mamba
