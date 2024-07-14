@@ -18,16 +18,14 @@ namespace Mamba
                                              const std::shared_ptr<const String> FileName = {}) noexcept;
 
     private:
-        [[nodiscard]] SourceText(const std::shared_ptr<const String>& Text,
-                                 const std::shared_ptr<const String>& FileName = {}) noexcept;
+        [[nodiscard]] SourceText(const std::shared_ptr<const String> Text,
+                                 const std::shared_ptr<const String> FileName = {}) noexcept;
 
         [[nodiscard]] static std::vector<std::shared_ptr<const class TextLine>> ParseLines(const SourceText& SourceText,
                                                                                            const String& Text) noexcept;
 
-        static void AddLine(std::vector<std::shared_ptr<const class TextLine>>& Result,
-                            const SourceText& SourceText,
-                            const std::size_t Position,
-                            const std::size_t LineStart,
+        static void AddLine(std::vector<std::shared_ptr<const class TextLine>>& Result, const SourceText& SourceText,
+                            const std::size_t Position, const std::size_t LineStart,
                             const std::size_t LineBreakWidth) noexcept;
 
         [[nodiscard]] static std::size_t GetLineBreakWidth(const String& Text, const std::size_t Position) noexcept;

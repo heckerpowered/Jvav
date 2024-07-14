@@ -9,7 +9,7 @@
 
 namespace Mamba
 {
-    class SyntaxNode : std::enable_shared_from_this<SyntaxNode>
+    class SyntaxNode : public std::enable_shared_from_this<SyntaxNode>
     {
     protected:
         [[nodiscard]] SyntaxNode(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
@@ -38,5 +38,11 @@ namespace Mamba
         }
 
         [[nodiscard]] std::shared_ptr<const class SyntaxToken> LastToken() const noexcept;
+
+        String ToString() const noexcept;
+
+    private:
+        static void PrettyPrint(std::basic_stringstream<Char>& Stream, const std::shared_ptr<const SyntaxNode> Node,
+                                String Indent = TEXT(""), const bool IsLast = true) noexcept;
     };
 } // namespace Mamba

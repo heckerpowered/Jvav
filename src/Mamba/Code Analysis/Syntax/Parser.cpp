@@ -32,7 +32,7 @@
 namespace Mamba
 {
     Parser::Parser(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept :
-        SyntaxTree(SyntaxTree), Text(SyntaxTree->Text)
+        SyntaxTree(SyntaxTree), Text(SyntaxTree->Text), Position()
     {
         auto Lexer = ::Mamba::Lexer(SyntaxTree);
         auto Token = std::shared_ptr<const SyntaxToken>();
@@ -118,7 +118,7 @@ namespace Mamba
 
     std::shared_ptr<const MemberSyntax> Parser::ParseMember() noexcept
     {
-        if (Current()->Kind() == SyntaxKind::FunctionDeclaration)
+        if (Current()->Kind() == SyntaxKind::FunctionKeyword)
         {
             return ParseFunctionDeclaration();
         }
@@ -153,7 +153,7 @@ namespace Mamba
             NodesAndSeperators.emplace_back(
                 Hatcher([&] { return std::dynamic_pointer_cast<const SyntaxNode>(ParseParameter()); }));
 
-            if (Current()->Kind() != SyntaxKind::CommaToken)
+            if (Current()->Kind() == SyntaxKind::CommaToken)
             {
                 NodesAndSeperators.emplace_back(Hatcher(
                     [&] { return std::dynamic_pointer_cast<const SyntaxNode>(MatchToken(SyntaxKind::CommaToken)); }));

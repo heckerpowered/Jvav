@@ -37,6 +37,7 @@ namespace Mamba
         void ReadToken() noexcept;
         void ReadString() noexcept;
         void ReadIdentifierOrKeyword() noexcept;
+        void ReadWhitespace() noexcept;
 
         void ReadNumber() noexcept;
         void ReadDecimal() noexcept;

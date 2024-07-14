@@ -4,6 +4,7 @@
 #include "SyntaxFacts.h"
 #include "SyntaxKind.h"
 #include "SyntaxToken.h"
+#include "SyntaxTree.h"
 #include "TextLocation.h"
 #include "TextSpan.h"
 
@@ -13,7 +14,10 @@
 
 namespace Mamba
 {
-    Lexer::Lexer(const std::shared_ptr<const class SyntaxTree> SyntaxTree) : SyntaxTree(SyntaxTree) {}
+    Lexer::Lexer(const std::shared_ptr<const class SyntaxTree> SyntaxTree) :
+        SyntaxTree(SyntaxTree), Text(SyntaxTree->Text), Start(), Position(), Kind(SyntaxKind::BadToken)
+    {
+    }
 
     std::shared_ptr<const class SyntaxToken> Lexer::Lex() noexcept
     {
@@ -252,6 +256,11 @@ namespace Mamba
             case TEXT('9'):
                 ReadNumber();
                 break;
+            case TEXT(' '):
+            case TEXT('\t'):
+            case TEXT('\r'):
+                ReadWhitespace();
+                break;
             case TEXT('_'):
                 ReadIdentifierOrKeyword();
                 break;
@@ -325,6 +334,16 @@ namespace Mamba
         const auto Span = TextSpan(Start, Length);
         const auto Text = this->Text->ToView(Span);
         Kind = SyntaxFacts::GetKeywordKind(Text);
+    }
+
+    void Lexer::ReadWhitespace() noexcept
+    {
+        while (Current() == TEXT(' ') || Current() == TEXT('\t') || Current() == TEXT('\r'))
+        {
+            ++Position;
+        }
+
+        Kind = SyntaxKind::WhitespaceToken;
     }
 
     void Lexer::ReadNumber() noexcept

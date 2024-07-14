@@ -40,9 +40,11 @@ namespace Mamba
         Children.emplace_back(FunctionKeyword);
         Children.emplace_back(Identifier);
         Children.emplace_back(OpenParenthesisToken);
-        Children.append_range(Parameters->WithSeperators());
         Children.emplace_back(CloseParenthesisToken);
-        Children.emplace_back(Type);
+        if (Type)
+        {
+            Children.emplace_back(Type);
+        }
         Children.emplace_back(Body);
 
         return Children;

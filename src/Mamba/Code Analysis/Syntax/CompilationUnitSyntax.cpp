@@ -1,4 +1,5 @@
 #include "CompilationUnitSyntax.h"
+#include "MemberSyntax.h"
 #include "SyntaxNode.h"
 #include "SyntaxToken.h"
 
@@ -26,7 +27,11 @@ namespace Mamba
 
     std::vector<std::shared_ptr<const SyntaxNode>> CompilationUnitSyntax::Children() const noexcept
     {
-        return { EndOfFileToken };
+        auto Children = std::vector<std::shared_ptr<const SyntaxNode>>();
+        Children.reserve(Members.size() + 1);
+        Children.append_range(Members);
+        Children.emplace_back(EndOfFileToken);
+        return Children;
     }
 
 } // namespace Mamba
