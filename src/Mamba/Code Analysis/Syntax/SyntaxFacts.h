@@ -19,7 +19,8 @@ namespace Mamba
         [[nodiscard]] static SyntaxKind GetKeywordKind(const StringView Text) noexcept;
         [[nodiscard]] static std::vector<SyntaxKind> GetUnaryOperatorKinds() noexcept;
         [[nodiscard]] static std::vector<SyntaxKind> GetBinaryOperatorKinds() noexcept;
-        [[nodiscard]] static StringView GetText(const SyntaxKind Kind) noexcept;
+        [[nodiscard]] static String GetText(const SyntaxKind Kind) noexcept;
+        [[nodiscard]] static String ToString(const SyntaxKind Kind) noexcept;
         [[nodiscard]] static bool IsKeyword(const SyntaxKind Kind) noexcept;
         [[nodiscard]] static bool IsToken(const SyntaxKind Kind) noexcept;
         [[nodiscard]] static SyntaxKind GetBinaryOperatorOfAssignmentOperator(const SyntaxKind Kind) noexcept;

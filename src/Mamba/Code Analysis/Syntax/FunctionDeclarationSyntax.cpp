@@ -12,7 +12,7 @@ namespace Mamba
         const std::shared_ptr<const class SyntaxToken> FunctionKeyword,
         const std::shared_ptr<const class SyntaxToken> Identifier,
         const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-        const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class ParameterSyntax>>> Parameters,
+        const std::shared_ptr<const SeperatedSyntaxList<const std::shared_ptr<const SyntaxNode>>> Parameters,
         const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
         const NullableSharedPtr<const class TypeClauseSyntax> Type,
         const std::shared_ptr<const class BlockStatementSyntax> Body) noexcept :
@@ -40,9 +40,11 @@ namespace Mamba
         Children.emplace_back(FunctionKeyword);
         Children.emplace_back(Identifier);
         Children.emplace_back(OpenParenthesisToken);
-        Children.append_range(Parameters->WithSeperators());
         Children.emplace_back(CloseParenthesisToken);
-        Children.emplace_back(Type);
+        if (Type)
+        {
+            Children.emplace_back(Type);
+        }
         Children.emplace_back(Body);
 
         return Children;

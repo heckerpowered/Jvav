@@ -42,6 +42,7 @@ namespace Mamba
         ColonToken,
         CommaToken,
         IdentifierToken,
+        WhitespaceToken,
 
         // Keywords
         BreakKeyword,

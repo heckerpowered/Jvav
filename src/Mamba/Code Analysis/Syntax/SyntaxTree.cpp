@@ -41,7 +41,7 @@ namespace Mamba
     {
         const auto Text = std::make_shared<const String>(Hatcher([&] { return ReadFile(*FileName); }));
         const auto SourceText =
-            std::make_shared<const class SourceText>(Hatcher([&] { return SourceText::From(Text, FileName); }));
+            std::make_shared<const class SourceText>(Hatcher([=] { return SourceText::From(Text, FileName); }));
         return Parse(SourceText);
     }
 
@@ -111,7 +111,8 @@ namespace Mamba
 
                 if (Token->Kind() == SyntaxKind::EndOfFileToken)
                 {
-                    Root = std::make_shared<const CompilationUnitSyntax>(SyntaxTree, Token);
+                    Root = std::make_shared<const CompilationUnitSyntax>(
+                        SyntaxTree, std::vector<std::shared_ptr<const class MemberSyntax>>{}, Token);
                     break;
                 }
             }
@@ -140,5 +141,24 @@ namespace Mamba
         }
 
         return Parents->at(Node);
+    }
+
+    SyntaxTree::ParentsMapType
+        SyntaxTree::CreateParentsMap(const std::shared_ptr<const class CompilationUnitSyntax> Root) const noexcept
+    {
+        auto Result = ParentsMapType();
+        Result.emplace(Root, nullptr);
+        CreateParentsMap(Result, Root);
+        return Result;
+    }
+
+    void SyntaxTree::CreateParentsMap(ParentsMapType& Result,
+                                      const std::shared_ptr<const class SyntaxNode> Node) const noexcept
+    {
+        for (auto&& Child : Node->Children())
+        {
+            Result.emplace(Child, Node);
+            CreateParentsMap(Result, Child);
+        }
     }
 } // namespace Mamba

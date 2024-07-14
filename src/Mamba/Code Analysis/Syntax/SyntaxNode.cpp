@@ -1,9 +1,14 @@
 #include "SyntaxNode.h"
+#include "fast_io.h"
+#include "MambaCore.h"
+#include "SyntaxFacts.h"
 #include "SyntaxToken.h"
 #include "SyntaxTree.h"
 
+#include <iostream>
 #include <memory>
 #include <ranges>
+#include <sstream>
 
 namespace Mamba
 {
@@ -62,5 +67,120 @@ namespace Mamba
 
         // A syntax node should always contain at least 1 token.
         return Children().back()->LastToken();
+    }
+
+    String SyntaxNode::ToString() const noexcept
+    {
+        auto Stream = std::basic_stringstream<Char>();
+        PrettyPrint(Stream, shared_from_this());
+        return Stream.str();
+    }
+
+    void SyntaxNode::PrettyPrint(std::basic_stringstream<Char>& Stream, const std::shared_ptr<const SyntaxNode> Node,
+                                 String Indent, const bool IsLast) noexcept
+    {
+        const auto Token = std::dynamic_pointer_cast<const SyntaxToken>(Node);
+        const auto TokenMarker = String(IsLast ? TEXT("└──") : TEXT("├──"));
+
+        Stream.write(Indent.data(), Indent.size());
+        Stream.write(TokenMarker.data(), TokenMarker.size());
+
+        const auto KindText = SyntaxFacts::ToString(Node->Kind());
+        Stream.write(KindText.data(), KindText.size());
+
+        if (Token && Token->Value)
+        {
+            Stream.put(TEXT(' '));
+            switch (Token->Value->Type)
+            {
+                case LiteralType::String:
+                {
+                    const auto String = *Token->Value->StringValue;
+                    Stream.write(String->data(), String->size());
+                    break;
+                }
+                case LiteralType::Character:
+                    Stream.put(Token->Value->Value.CharacterValue);
+                case LiteralType::UnsignedByte:
+                {
+                    const auto String = Concat(static_cast<std::uint32_t>(Token->Value->Value.UnsignedByteValue));
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::UnsignedShort:
+                {
+                    const auto String = Concat(Token->Value->Value.UnsignedShortValue);
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::UnsignedInt:
+                {
+                    const auto String = Concat(Token->Value->Value.UnsignedIntValue);
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::UnsignedLong:
+                {
+                    const auto String = Concat(Token->Value->Value.UnsignedLongValue);
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::SignedByte:
+                {
+                    const auto String = Concat(static_cast<std::int32_t>(Token->Value->Value.SignedByteValue));
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::SignedShort:
+                {
+                    const auto String = Concat(Token->Value->Value.SignedShortValue);
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::SignedInt:
+                {
+                    const auto String = Concat(Token->Value->Value.SignedIntValue);
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::SignedLong:
+                {
+                    const auto String = Concat(Token->Value->Value.SignedLongValue);
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::Double:
+                {
+                    const auto String = Concat(Token->Value->Value.DoubleValue);
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::Float:
+                {
+                    const auto String = Concat(Token->Value->Value.FloatValue);
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::Boolean:
+                {
+                    const auto String = Concat(Token->Value->Value.BooleanValue);
+                    Stream.write(String.data(), String.size());
+                    break;
+                }
+                case LiteralType::Empty:
+                    break;
+            }
+        }
+
+        Stream.put(TEXT('\n'));
+
+        Indent += IsLast ? TEXT("    ") : TEXT("│   ");
+
+        const auto LastChild = Node->Children().size() == 0 ? nullptr : Node->Children().back();
+
+        for (const auto Child : Node->Children())
+        {
+            PrettyPrint(Stream, Child, Indent, Child == LastChild);
+        }
     }
 } // namespace Mamba

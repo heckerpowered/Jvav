@@ -31,6 +31,7 @@ namespace Mamba
         LiteralValue(const std::int32_t Integer) noexcept;
         LiteralValue(const std::int64_t Integer) noexcept;
         LiteralValue(const std::uint64_t Integer) noexcept;
+        LiteralValue(const bool Value) noexcept;
 
     private:
         // In general, for some types of literal such as strings, this type only stores a view of the value, and the
@@ -80,5 +81,6 @@ namespace Mamba
         [[nodiscard]] Literal(const std::int32_t Integer) noexcept;
         [[nodiscard]] Literal(const std::int64_t Integer) noexcept;
         [[nodiscard]] Literal(const std::uint64_t Integer) noexcept;
+        [[nodiscard]] Literal(const bool Value) noexcept;
     };
 } // namespace Mamba

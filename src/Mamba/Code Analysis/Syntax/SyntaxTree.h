@@ -19,13 +19,12 @@ namespace Mamba
 
         [[nodiscard]] SyntaxTree(const std::shared_ptr<const class SourceText> Text, auto&& Handler) noexcept
             requires requires {
-                Handler(shared_from_this(),
-                        std::declval<std::shared_ptr<const class CompilationUnitSyntax>&>(),
+                Handler(shared_from_this(), std::declval<std::shared_ptr<const class CompilationUnitSyntax>&>(),
                         std::declval<std::vector<std::shared_ptr<const class Diagnostic>>&>());
             }
             : Text(Text)
         {
-            Handler(shared_from_this(), PrivateRoot, PrivateDiagnostics);
+            Handler(std::make_shared<SyntaxTree>(*this), PrivateRoot, PrivateDiagnostics);
         }
 
         std::shared_ptr<const class CompilationUnitSyntax> PrivateRoot;

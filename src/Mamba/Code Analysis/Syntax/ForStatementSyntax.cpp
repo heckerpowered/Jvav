@@ -10,22 +10,22 @@ namespace Mamba
         const std::shared_ptr<const class SyntaxToken> Keyword,
         const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
         const std::shared_ptr<const class StatementSyntax> InitStatement,
-        const std::shared_ptr<const class SyntaxToken> PrimarySemicolonToken,
+        const std::shared_ptr<const class SyntaxToken> InitStatementColonToken,
         const std::shared_ptr<const class ExpressionSyntax> Condition,
-        const std::shared_ptr<const class SyntaxToken> SecondarySemicolonToken,
+        const std::shared_ptr<const class SyntaxToken> ConditionColonToken,
         const std::shared_ptr<const class ExpressionSyntax> Expression,
         const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
-        const std::shared_ptr<const class StatementSyntax> Statement) noexcept :
+        const std::shared_ptr<const class StatementSyntax> Body) noexcept :
         Super(SyntaxTree),
         Keyword(Keyword),
         OpenParenthesisToken(OpenParenthesisToken),
         InitStatement(InitStatement),
-        PrimarySemicolonToken(PrimarySemicolonToken),
+        InitStatementColonToken(InitStatementColonToken),
         Condition(Condition),
-        SecondarySemicolonToken(SecondarySemicolonToken),
+        ConditionColonToken(ConditionColonToken),
         Expression(Expression),
         CloseParenthesisToken(CloseParenthesisToken),
-        Statement(Statement)
+        Body(Body)
     {
     }
 
@@ -36,8 +36,8 @@ namespace Mamba
 
     std::vector<std::shared_ptr<const class SyntaxNode>> ForStatementSyntax::Children() const noexcept
     {
-        return { Keyword,   OpenParenthesisToken,    InitStatement, PrimarySemicolonToken,
-                 Condition, SecondarySemicolonToken, Expression,    CloseParenthesisToken,
-                 Statement };
+        return { Keyword,   OpenParenthesisToken, InitStatement, InitStatementColonToken,
+                 Condition, ConditionColonToken,  Expression,    CloseParenthesisToken,
+                 Body };
     }
 } // namespace Mamba

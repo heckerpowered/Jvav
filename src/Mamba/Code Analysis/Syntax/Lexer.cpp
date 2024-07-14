@@ -4,6 +4,7 @@
 #include "SyntaxFacts.h"
 #include "SyntaxKind.h"
 #include "SyntaxToken.h"
+#include "SyntaxTree.h"
 #include "TextLocation.h"
 #include "TextSpan.h"
 
@@ -13,7 +14,10 @@
 
 namespace Mamba
 {
-    Lexer::Lexer(const std::shared_ptr<const class SyntaxTree> SyntaxTree) : SyntaxTree(SyntaxTree) {}
+    Lexer::Lexer(const std::shared_ptr<const class SyntaxTree> SyntaxTree) :
+        SyntaxTree(SyntaxTree), Text(SyntaxTree->Text), Start(), Position(), Kind(SyntaxKind::BadToken)
+    {
+    }
 
     std::shared_ptr<const class SyntaxToken> Lexer::Lex() noexcept
     {
@@ -252,6 +256,11 @@ namespace Mamba
             case TEXT('9'):
                 ReadNumber();
                 break;
+            case TEXT(' '):
+            case TEXT('\t'):
+            case TEXT('\r'):
+                ReadWhitespace();
+                break;
             case TEXT('_'):
                 ReadIdentifierOrKeyword();
                 break;
@@ -325,6 +334,16 @@ namespace Mamba
         const auto Span = TextSpan(Start, Length);
         const auto Text = this->Text->ToView(Span);
         Kind = SyntaxFacts::GetKeywordKind(Text);
+    }
+
+    void Lexer::ReadWhitespace() noexcept
+    {
+        while (Current() == TEXT(' ') || Current() == TEXT('\t') || Current() == TEXT('\r'))
+        {
+            ++Position;
+        }
+
+        Kind = SyntaxKind::WhitespaceToken;
     }
 
     void Lexer::ReadNumber() noexcept
@@ -409,33 +428,33 @@ namespace Mamba
         NarrowNumber(Number);
     }
 
-    bool Lexer::IsLetter(const Char Character) const noexcept
+    bool Lexer::IsLetter(const Char Character) noexcept
     {
-        return (Current() >= TEXT('a') && Current() <= TEXT('z')) || (Current() >= TEXT('A') && Current() <= TEXT('Z'));
+        return (Character >= TEXT('a') && Character <= TEXT('z')) || (Character >= TEXT('A') && Character <= TEXT('Z'));
     }
 
-    bool Lexer::IsLetterOrDigit(const Char Character) const noexcept
+    bool Lexer::IsLetterOrDigit(const Char Character) noexcept
     {
         return IsLetter(Character) || IsDecimalDigit(Character);
     }
 
-    bool Lexer::IsDecimalDigit(const Char Character) const noexcept
+    bool Lexer::IsDecimalDigit(const Char Character) noexcept
     {
         return Character >= TEXT('0') && Character <= TEXT('9');
     }
 
-    bool Lexer::IsHexadecimalDigit(const Char Character) const noexcept
+    bool Lexer::IsHexadecimalDigit(const Char Character) noexcept
     {
         return (Character >= TEXT('0') && Character <= TEXT('9')) || (Character >= TEXT('a') && Character <= TEXT('f'))
             || (Character >= TEXT('A') && Character <= TEXT('F'));
     }
 
-    bool Lexer::IsBinaryDigit(const Char Character) const noexcept
+    bool Lexer::IsBinaryDigit(const Char Character) noexcept
     {
         return Character == TEXT('0') || Character == TEXT('1');
     }
 
-    bool Lexer::IsOctalDigit(const Char Character) const noexcept
+    bool Lexer::IsOctalDigit(const Char Character) noexcept
     {
         return Character >= TEXT('0') && Character <= TEXT('7');
     }

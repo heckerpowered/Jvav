@@ -105,7 +105,7 @@ namespace Mamba
                  SyntaxKind::HatToken };
     }
 
-    StringView SyntaxFacts::GetText(const SyntaxKind Kind) noexcept
+    String SyntaxFacts::GetText(const SyntaxKind Kind) noexcept
     {
         switch (Kind)
         {
@@ -199,6 +199,165 @@ namespace Mamba
                 return TEXT("do");
             default:
                 return {};
+        }
+    }
+
+    String SyntaxFacts::ToString(const SyntaxKind Kind) noexcept
+    {
+        switch (Kind)
+        {
+            case SyntaxKind::BadToken:
+                return TEXT("BadToken");
+            case SyntaxKind::EndOfFileToken:
+                return TEXT("EndOfFileToken");
+            case SyntaxKind::NumberToken:
+                return TEXT("NumberToken");
+            case SyntaxKind::StringToken:
+                return TEXT("StringToken");
+            case SyntaxKind::PlusToken:
+                return TEXT("PlusToken");
+            case SyntaxKind::PlusEqualsToken:
+                return TEXT("PlusEqualsToken");
+            case SyntaxKind::MinusToken:
+                return TEXT("MinusToken");
+            case SyntaxKind::MinusEqualsToken:
+                return TEXT("MinusEqualsToken");
+            case SyntaxKind::StarToken:
+                return TEXT("StarToken");
+            case SyntaxKind::StarEqualsToken:
+                return TEXT("StarEqualsToken");
+            case SyntaxKind::SlashToken:
+                return TEXT("SlashToken");
+            case SyntaxKind::SlashEqualsToken:
+                return TEXT("SlashEqualsToken");
+            case SyntaxKind::BangToken:
+                return TEXT("BangToken");
+            case SyntaxKind::EqualsToken:
+                return TEXT("EqualsToken");
+            case SyntaxKind::TildeToken:
+                return TEXT("TildeToken");
+            case SyntaxKind::HatToken:
+                return TEXT("HatToken");
+            case SyntaxKind::HatEqualsToken:
+                return TEXT("HatEqualsToken");
+            case SyntaxKind::AmpersandToken:
+                return TEXT("AmpersandToken");
+            case SyntaxKind::AmpersandAmpersandToken:
+                return TEXT("AmpersandAmpersandToken");
+            case SyntaxKind::AmpersandEqualsToken:
+                return TEXT("AmpersandEqualsToken");
+            case SyntaxKind::PipeToken:
+                return TEXT("PipeToken");
+            case SyntaxKind::PipeEqualsToken:
+                return TEXT("PipeEqualsToken");
+            case SyntaxKind::PipePipeToken:
+                return TEXT("PipePipeToken");
+            case SyntaxKind::EqualsEqualsToken:
+                return TEXT("EqualsEqualsToken");
+            case SyntaxKind::BangEqualsToken:
+                return TEXT("BangEqualsToken");
+            case SyntaxKind::LessToken:
+                return TEXT("LessToken");
+            case SyntaxKind::LessOrEqualsToken:
+                return TEXT("LessOrEqualsToken");
+            case SyntaxKind::GreaterToken:
+                return TEXT("GreaterToken");
+            case SyntaxKind::GreaterOrEqualsToken:
+                return TEXT("GreaterOrEqualsToken");
+            case SyntaxKind::OpenParenthesisToken:
+                return TEXT("OpenParenthesisToken");
+            case SyntaxKind::CloseParenthesisToken:
+                return TEXT("CloseParenthesisToken");
+            case SyntaxKind::OpenBraceToken:
+                return TEXT("OpenBraceToken");
+            case SyntaxKind::CloseBraceToken:
+                return TEXT("CloseBraceToken");
+            case SyntaxKind::ColonToken:
+                return TEXT("ColonToken");
+            case SyntaxKind::CommaToken:
+                return TEXT("CommaToken");
+            case SyntaxKind::IdentifierToken:
+                return TEXT("IdentifierToken");
+            case SyntaxKind::WhitespaceToken:
+                return TEXT("WhitespaceToken");
+            case SyntaxKind::BreakKeyword:
+                return TEXT("BreakKeyword");
+            case SyntaxKind::ContinueKeyword:
+                return TEXT("ContinueKeyword");
+            case SyntaxKind::ElseKeyword:
+                return TEXT("ElseKeyword");
+            case SyntaxKind::FalseKeyword:
+                return TEXT("FalseKeyword");
+            case SyntaxKind::ForKeyword:
+                return TEXT("ForKeyword");
+            case SyntaxKind::FunctionKeyword:
+                return TEXT("FunctionKeyword");
+            case SyntaxKind::IfKeyword:
+                return TEXT("IfKeyword");
+            case SyntaxKind::LetKeyword:
+                return TEXT("LetKeyword");
+            case SyntaxKind::VarKeyword:
+                return TEXT("VarKeyword");
+            case SyntaxKind::ReturnKeyword:
+                return TEXT("ReturnKeyword");
+            case SyntaxKind::ToKeyword:
+                return TEXT("ToKeyword");
+            case SyntaxKind::TrueKeyword:
+                return TEXT("TrueKeyword");
+            case SyntaxKind::WhileKeyword:
+                return TEXT("WhileKeyword");
+            case SyntaxKind::DoKeyword:
+                return TEXT("DoKeyword");
+            case SyntaxKind::CompilationUnit:
+                return TEXT("CompilationUnit");
+            case SyntaxKind::FunctionDeclaration:
+                return TEXT("FunctionDeclaration");
+            case SyntaxKind::GlobalStatement:
+                return TEXT("GlobalStatement");
+            case SyntaxKind::Parameter:
+                return TEXT("Parameter");
+            case SyntaxKind::TypeClause:
+                return TEXT("TypeClause");
+            case SyntaxKind::ElseClause:
+                return TEXT("ElseClause");
+            case SyntaxKind::BlockStatement:
+                return TEXT("BlockStatement");
+            case SyntaxKind::VariableDeclaration:
+                return TEXT("VariableDeclaration");
+            case SyntaxKind::IfStatement:
+                return TEXT("IfStatement");
+            case SyntaxKind::WhileStatement:
+                return TEXT("WhileStatement");
+            case SyntaxKind::DoWhileStatement:
+                return TEXT("DoWhileStatement");
+            case SyntaxKind::ForStatement:
+                return TEXT("ForStatement");
+            case SyntaxKind::ReturnStatement:
+                return TEXT("ReturnStatement");
+            case SyntaxKind::ExpressionStatement:
+                return TEXT("ExpressionStatement");
+            case SyntaxKind::ContinueStatement:
+                return TEXT("ContinueStatement");
+            case SyntaxKind::BreakStatement:
+                return TEXT("BreakStatement");
+            case SyntaxKind::LiteralExpression:
+                return TEXT("LiteralExpression");
+            case SyntaxKind::NameExpression:
+                return TEXT("NameExpression");
+            case SyntaxKind::UnaryExpression:
+                return TEXT("UnaryExpression");
+            case SyntaxKind::BinaryExpression:
+                return TEXT("BinaryExpression");
+            case SyntaxKind::CompoundAssignmentExpression:
+                return TEXT("CompoundAssignmentExpression");
+            case SyntaxKind::ParenthesizedExpression:
+                return TEXT("ParenthesizedExpression");
+            case SyntaxKind::AssignmentExpression:
+                return TEXT("AssignmentExpression");
+            case SyntaxKind::CallExpression:
+                return TEXT("CallExpression");
+            deafult:
+                return TEXT("Unknown");
         }
     }
 

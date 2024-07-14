@@ -6,7 +6,7 @@ namespace Mamba
         const std::shared_ptr<const class SyntaxTree> SyntaxTree,
         const std::shared_ptr<const class SyntaxToken> Identifier,
         const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-        const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class ExpressionSyntax>>> Arguments,
+        const std::shared_ptr<const SeperatedSyntaxList<const std::shared_ptr<const class SyntaxNode>>> Arguments,
         const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken) noexcept :
         Super(SyntaxTree),
         Identifier(Identifier),
