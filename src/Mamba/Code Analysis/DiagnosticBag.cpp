@@ -70,17 +70,13 @@ namespace Mamba
         ReportError(Location, Message);
     }
 
-    void DiagnosticBag::ReportUnexpectedToken(const TextLocation Location,
-                                              const SyntaxKind Kind,
+    void DiagnosticBag::ReportUnexpectedToken(const TextLocation Location, const SyntaxKind Kind,
                                               const SyntaxKind ExpectedKind) noexcept
     {
         // Unexpected token 'Kind', Expected: 'ExpectedKind'.
-        const auto Message = std::make_shared<const String>(Concat(TEXT("Unexpected token '"),
-                                                                   SyntaxFacts::GetText(Kind),
-                                                                   TEXT("'"),
-                                                                   TEXT("Expected: '"),
-                                                                   SyntaxFacts::GetText(ExpectedKind),
-                                                                   TEXT("'.")));
+        const auto Message = std::make_shared<const String>(
+            Concat(TEXT("Unexpected token '"), SyntaxFacts::GetText(Kind), TEXT("'"), TEXT("Expected: '"),
+                   SyntaxFacts::ToString(ExpectedKind), TEXT("'.")));
         ReportError(Location, Message);
     }
 } // namespace Mamba

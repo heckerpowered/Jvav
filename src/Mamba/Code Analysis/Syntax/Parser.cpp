@@ -40,7 +40,7 @@ namespace Mamba
         {
             Token = Lexer.Lex();
 
-            if (Token->Kind() != SyntaxKind::BadToken)
+            if (Token->Kind() != SyntaxKind::BadToken && Token->Kind() != SyntaxKind::WhitespaceToken)
             {
                 Tokens.emplace_back(Token);
             }
@@ -128,7 +128,7 @@ namespace Mamba
 
     std::shared_ptr<const FunctionDeclarationSyntax> Parser::ParseFunctionDeclaration() noexcept
     {
-        const auto FunctionKeyword = MatchToken(SyntaxKind::FunctionDeclaration);
+        const auto FunctionKeyword = MatchToken(SyntaxKind::FunctionKeyword);
         const auto IdentifierToken = MatchToken(SyntaxKind::IdentifierToken);
         const auto OpenParenthesisToken = MatchToken(SyntaxKind::OpenParenthesisToken);
         const auto Parameters = ParseParameterList();

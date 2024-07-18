@@ -1,11 +1,11 @@
 #include "SyntaxNode.h"
-#include "fast_io.h"
+
 #include "MambaCore.h"
+#include "SourceText.h"
 #include "SyntaxFacts.h"
+#include "SyntaxKind.h"
 #include "SyntaxToken.h"
 #include "SyntaxTree.h"
-
-#include <iostream>
 #include <memory>
 #include <ranges>
 #include <sstream>
@@ -170,6 +170,13 @@ namespace Mamba
                 case LiteralType::Empty:
                     break;
             }
+        }
+
+        if (Node->Kind() == SyntaxKind::IdentifierToken)
+        {
+            Stream.put(TEXT(' '));
+            const auto View = Node->SyntaxTree->Text->ToView(Node->Span());
+            Stream.write(View.data(), View.size());
         }
 
         Stream.put(TEXT('\n'));
