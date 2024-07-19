@@ -73,7 +73,7 @@ namespace Mamba
         [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseStringLiteral() noexcept;
         [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseNameOrCallExpression() noexcept;
         [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseCallExpression() noexcept;
-        [[nodiscard]] std::shared_ptr<const SeperatedSyntaxList<const std::shared_ptr<const class SyntaxNode>>>
+        [[nodiscard]] std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>>
             ParseArguments() noexcept;
         [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseNameExpression() noexcept;
     };

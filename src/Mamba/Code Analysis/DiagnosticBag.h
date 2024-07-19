@@ -12,7 +12,7 @@ namespace Mamba
     class DiagnosticBag : public std::vector<std::shared_ptr<const class Diagnostic>>
     {
     public:
-        using Super = std::vector<const class Diagnostic>;
+        using Super = std::vector<class Diagnostic>;
 
         void AddRange(const std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept;
 
@@ -30,8 +30,7 @@ namespace Mamba
         void ReportInvalidBinary(const TextLocation Location, const StringView Literal) noexcept;
         void ReportInvalidOctal(const TextLocation Location, const StringView Literal) noexcept;
 
-        void ReportUnexpectedToken(const TextLocation Location,
-                                   const SyntaxKind Kind,
+        void ReportUnexpectedToken(const TextLocation Location, const SyntaxKind Kind,
                                    const SyntaxKind ExpectedKind) noexcept;
     };
 
