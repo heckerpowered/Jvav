@@ -359,9 +359,6 @@ namespace Mamba
             default:
                 return TEXT("Unknown");
         }
-
-        // GCC & MSVC reports that control reaches end of non-void function [-Wreturn-type]
-        std::unreachable();
     }
 
     bool SyntaxFacts::IsKeyword(const SyntaxKind Kind) noexcept
