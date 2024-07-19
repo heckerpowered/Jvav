@@ -356,7 +356,7 @@ namespace Mamba
                 return TEXT("AssignmentExpression");
             case SyntaxKind::CallExpression:
                 return TEXT("CallExpression");
-            deafult:
+            default:
                 return TEXT("Unknown");
         }
 
