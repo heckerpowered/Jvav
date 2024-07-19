@@ -5,6 +5,7 @@
 #include "TextSpan.h"
 
 #include <memory>
+#include <ranges>
 #include <vector>
 
 namespace Mamba
@@ -32,10 +33,12 @@ namespace Mamba
         [[nodiscard]] std::vector<std::shared_ptr<const SyntaxNode>> AncestorsAndSelf() const noexcept;
         [[nodiscard]] std::vector<std::shared_ptr<const SyntaxNode>> Ancestors() const noexcept;
 
+#if __cpp_lib_ranges_to_container == 202202L
         template<template<typename...> typename ContainerType> [[nodiscard]] auto Children() const noexcept
         {
             return Children() | std::ranges::to<ContainerType>();
         }
+#endif
 
         [[nodiscard]] std::shared_ptr<const class SyntaxToken> LastToken() const noexcept;
 

@@ -1,6 +1,5 @@
-#include "MambaCore.h"
-
 #include "SourceText.h"
+
 #include "TextLine.h"
 #include "TextSpan.h"
 
