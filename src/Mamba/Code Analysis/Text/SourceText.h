@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MambaCore.h"
+#include "TextSpan.h"
 
 #include <memory>
 #include <vector>
@@ -45,10 +46,10 @@ namespace Mamba
         [[nodiscard]] std::shared_ptr<String> ToString(const std::size_t Start,
                                                        const std::size_t Length) const noexcept;
 
-        [[nodiscard]] std::shared_ptr<const String> ToString(const class TextSpan Span) const noexcept;
+        [[nodiscard]] std::shared_ptr<const String> ToString(const TextSpan Span) const noexcept;
 
         [[nodiscard]] StringView ToView(const std::size_t Start, const std::size_t Length) const noexcept;
 
-        [[nodiscard]] StringView ToView(const class TextSpan Span) const noexcept;
+        [[nodiscard]] StringView ToView(const TextSpan Span) const noexcept;
     };
 } // namespace Mamba
