@@ -141,10 +141,9 @@ namespace Mamba
                                                            Type, Body);
     }
 
-    std::shared_ptr<const SeperatedSyntaxList<const std::shared_ptr<const SyntaxNode>>>
-        Parser::ParseParameterList() noexcept
+    std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const SyntaxNode>>> Parser::ParseParameterList() noexcept
     {
-        auto NodesAndSeperators = std::vector<const std::shared_ptr<const SyntaxNode>>();
+        auto NodesAndSeperators = std::vector<std::shared_ptr<const SyntaxNode>>();
 
         auto ParseNextParameter = true;
         while (ParseNextParameter && Current()->Kind() != SyntaxKind::CloseParenthesisToken
@@ -164,7 +163,7 @@ namespace Mamba
             }
         }
 
-        return std::make_shared<const SeperatedSyntaxList<const std::shared_ptr<const SyntaxNode>>>(
+        return std::make_shared<const SeperatedSyntaxList<std::shared_ptr<const SyntaxNode>>>(
             std::move(NodesAndSeperators));
     }
 
@@ -494,10 +493,10 @@ namespace Mamba
                                                             CloseParenthesisToken);
     }
 
-    std::shared_ptr<const SeperatedSyntaxList<const std::shared_ptr<const class SyntaxNode>>>
+    std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>>
         Parser::ParseArguments() noexcept
     {
-        auto NodesAndSeperators = std::vector<const std::shared_ptr<const SyntaxNode>>();
+        auto NodesAndSeperators = std::vector<std::shared_ptr<const SyntaxNode>>();
 
         auto ParseNextArgument = true;
         while (ParseNextArgument && Current()->Kind() != SyntaxKind::CloseParenthesisToken
@@ -517,8 +516,7 @@ namespace Mamba
             }
         }
 
-        return std::make_shared<SeperatedSyntaxList<const std::shared_ptr<const SyntaxNode>>>(
-            std::move(NodesAndSeperators));
+        return std::make_shared<SeperatedSyntaxList<std::shared_ptr<const SyntaxNode>>>(std::move(NodesAndSeperators));
     }
 
     std::shared_ptr<const class ExpressionSyntax> Parser::ParseNameExpression() noexcept

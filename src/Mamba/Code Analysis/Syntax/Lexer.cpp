@@ -354,7 +354,7 @@ namespace Mamba
         // digits (0-9, a-f, A-F). Binary-literal is the character sequence 0b or the character sequence 0B followed by
         // one or more binary digits (0, 1)
 
-        // The current is guaranteed to be a digit
+        // The current character is guaranteed to be a digit
         if (Current() != TEXT('0'))
         {
             ReadDecimal();
