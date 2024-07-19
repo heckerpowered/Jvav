@@ -3,11 +3,20 @@
 #include "MambaCore.h"
 #include "SyntaxFacts.h"
 
+#include <vector>
+
 namespace Mamba
 {
-    void DiagnosticBag::AddRange(const std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept
+    void DiagnosticBag::AddRange(const std::vector<std::shared_ptr<const Diagnostic>>& Diagnostics) noexcept
     {
+#if __cpp_lib_containers_ranges == 202202L
         append_range(Diagnostics);
+#else
+        for (auto&& Diagnostic : Diagnostics)
+        {
+            emplace_back(std::forward<decltype(Diagnostic)>(Diagnostic));
+        }
+#endif
     }
 
     void DiagnosticBag::ReportError(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept

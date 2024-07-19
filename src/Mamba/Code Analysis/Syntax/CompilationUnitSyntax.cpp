@@ -29,7 +29,14 @@ namespace Mamba
     {
         auto Children = std::vector<std::shared_ptr<const SyntaxNode>>();
         Children.reserve(Members.size() + 1);
+#if __cpp_lib_containers_ranges == 202202L
         Children.append_range(Members);
+#else
+        for (auto&& Member : Members)
+        {
+            Children.emplace_back(std::forward<decltype(Member)>(Member));
+        }
+#endif
         Children.emplace_back(EndOfFileToken);
         return Children;
     }

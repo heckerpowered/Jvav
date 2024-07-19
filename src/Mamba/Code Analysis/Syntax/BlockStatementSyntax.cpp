@@ -39,7 +39,14 @@ namespace Mamba
         Result.reserve(Statements.size() + 2);
 
         Result.emplace_back(OpenBraceToken);
+#if __cpp_lib_containers_ranges == 202202L
         Result.append_range(Statements);
+#else
+        for (auto&& Statement : Statements)
+        {
+            Result.emplace_back(std::forward<decltype(Statement)>(Statement));
+        }
+#endif
         Result.emplace_back(CloseBraceToken);
 
         return Result;

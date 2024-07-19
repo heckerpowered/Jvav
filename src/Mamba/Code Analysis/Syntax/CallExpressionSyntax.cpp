@@ -29,7 +29,14 @@ namespace Mamba
         Result.reserve(2 + Arguments->Count() * 2);
         Result.emplace_back(Identifier);
         Result.emplace_back(OpenParenthesisToken);
+#if __cpp_lib_containers_ranges == 202202L
         Result.append_range(Arguments->WithSeperators());
+#else
+        for (auto&& Argument : Arguments->WithSeperators())
+        {
+            Result.emplace_back(std::forward<decltype(Argument)>(Argument));
+        }
+#endif
         Result.emplace_back(CloseParenthesisToken);
 
         return Result;

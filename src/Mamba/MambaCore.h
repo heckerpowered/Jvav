@@ -1,6 +1,8 @@
 #pragma once
 
+#include <memory>
 #include <string>
+#include <utility>
 
 #include <fast_io.h>
 

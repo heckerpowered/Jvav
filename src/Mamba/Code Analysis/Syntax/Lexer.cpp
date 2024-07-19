@@ -1,6 +1,7 @@
 #include "Lexer.h"
 #include "DiagnosticBag.h"
 #include "MambaCore.h"
+#include "SourceText.h"
 #include "SyntaxFacts.h"
 #include "SyntaxKind.h"
 #include "SyntaxToken.h"
