@@ -1,8 +1,10 @@
 #pragma once
 
 #include "MambaCore.h"
+
 #include <cstdint>
 #include <memory>
+#include <optional>
 
 namespace Mamba
 {
