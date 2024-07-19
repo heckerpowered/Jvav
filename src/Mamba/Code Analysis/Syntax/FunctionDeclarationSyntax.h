@@ -18,7 +18,7 @@ namespace Mamba
             const std::shared_ptr<const class SyntaxToken> FunctionKeyword,
             const std::shared_ptr<const class SyntaxToken> Identifier,
             const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-            const std::shared_ptr<const SeperatedSyntaxList<const std::shared_ptr<const class SyntaxNode>>> Parameters,
+            const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>> Parameters,
             const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
             const NullableSharedPtr<const class TypeClauseSyntax> Type,
             const std::shared_ptr<const class BlockStatementSyntax> Body) noexcept;
@@ -29,7 +29,7 @@ namespace Mamba
         const std::shared_ptr<const class SyntaxToken> FunctionKeyword;
         const std::shared_ptr<const class SyntaxToken> Identifier;
         const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken;
-        const std::shared_ptr<const SeperatedSyntaxList<const std::shared_ptr<const class SyntaxNode>>> Parameters;
+        const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>> Parameters;
         const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken;
         const NullableSharedPtr<const class TypeClauseSyntax> Type;
         const std::shared_ptr<const class BlockStatementSyntax> Body;

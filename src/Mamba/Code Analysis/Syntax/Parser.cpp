@@ -141,8 +141,7 @@ namespace Mamba
                                                            Type, Body);
     }
 
-    std::shared_ptr<const SeperatedSyntaxList<const std::shared_ptr<const SyntaxNode>>>
-        Parser::ParseParameterList() noexcept
+    std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const SyntaxNode>>> Parser::ParseParameterList() noexcept
     {
         auto NodesAndSeperators = std::vector<std::shared_ptr<const SyntaxNode>>();
 
@@ -164,7 +163,7 @@ namespace Mamba
             }
         }
 
-        return std::make_shared<const SeperatedSyntaxList<const std::shared_ptr<const SyntaxNode>>>(
+        return std::make_shared<const SeperatedSyntaxList<std::shared_ptr<const SyntaxNode>>>(
             std::move(NodesAndSeperators));
     }
 
