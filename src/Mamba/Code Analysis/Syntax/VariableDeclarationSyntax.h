@@ -1,10 +1,8 @@
 #pragma once
 
-#include "MambaCore.h"
-#include "StatementSyntax.h"
-#include "TypeClauseSyntax.h"
-
 #include <memory>
+
+#include "StatementSyntax.h"
 
 namespace Mamba
 {

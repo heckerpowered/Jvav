@@ -1,33 +1,40 @@
 #include "Parser.h"
+
+#include <memory>
+
 #include "AssignmentExpressionSyntax.h"
 #include "BinaryExpressionSyntax.h"
+#include "BlockStatementSyntax.h"
 #include "BreakStatementSyntax.h"
 #include "CallExpressionSyntax.h"
+#include "CompilationUnitSyntax.h"
 #include "ContinueStatementSyntax.h"
 #include "DoWhileStatementSyntax.h"
+#include "ElseClauseSyntax.h"
+#include "ExpressionStatementSyntax.h"
 #include "ExpressionSyntax.h"
 #include "ForStatementSyntax.h"
+#include "FunctionDeclarationSyntax.h"
 #include "GlobalStatementSyntax.h"
 #include "IfStatementSyntax.h"
 #include "Lexer.h"
+#include "Literal.h"
 #include "LiteralExpressionSyntax.h"
 #include "MambaCore.h"
 #include "NameExpressionSyntax.h"
 #include "ParameterSyntax.h"
 #include "ParenthesizedExpressionSyntax.h"
 #include "ReturnStatementSyntax.h"
+#include "StatementSyntax.h"
 #include "SyntaxFacts.h"
 #include "SyntaxKind.h"
 #include "SyntaxNode.h"
 #include "SyntaxToken.h"
 #include "SyntaxTree.h"
+#include "TypeClauseSyntax.h"
 #include "UnaryExpressionSyntax.h"
 #include "VariableDeclarationSyntax.h"
-
-#include "MambaCore.h"
 #include "WhileStatementSyntax.h"
-
-#include <memory>
 
 namespace Mamba
 {
@@ -234,8 +241,8 @@ namespace Mamba
         }
 
         const auto CloseBraceToken = MatchToken(SyntaxKind::CloseBraceToken);
-        return std::make_shared<BlockStatementSyntax>(SyntaxTree, OpenBraceToken, std::move(Statements),
-                                                      CloseBraceToken);
+        return std::make_shared<const BlockStatementSyntax>(SyntaxTree, OpenBraceToken, std::move(Statements),
+                                                            CloseBraceToken);
     }
 
     std::shared_ptr<const StatementSyntax> Parser::ParseVariableDeclaration() noexcept
@@ -354,7 +361,7 @@ namespace Mamba
     std::shared_ptr<const ExpressionStatementSyntax> Parser::ParseExpressionStatement() noexcept
     {
         const auto Expression = ParseExpression();
-        return std::make_shared<ExpressionStatementSyntax>(SyntaxTree, Expression);
+        return std::make_shared<const ExpressionStatementSyntax>(SyntaxTree, Expression);
     }
 
     std::shared_ptr<const ExpressionSyntax> Parser::ParseExpression() noexcept
@@ -451,26 +458,27 @@ namespace Mamba
         const auto Left = MatchToken(SyntaxKind::OpenParenthesisToken);
         const auto Expression = ParseExpression();
         const auto Right = MatchToken(SyntaxKind::CloseParenthesisToken);
-        return std::make_shared<ParenthesizedExpressionSyntax>(SyntaxTree, Left, Expression, Right);
+        return std::make_shared<const ParenthesizedExpressionSyntax>(SyntaxTree, Left, Expression, Right);
     }
 
     std::shared_ptr<const class ExpressionSyntax> Parser::ParseBooleanLiteral() noexcept
     {
         const auto IsTrue = Current()->Kind() == SyntaxKind::TrueKeyword;
         const auto KeywordToken = MatchToken(IsTrue ? SyntaxKind::TrueKeyword : SyntaxKind::FalseKeyword);
-        return std::make_shared<LiteralExpressionSyntax>(SyntaxTree, KeywordToken, std::make_shared<Literal>(IsTrue));
+        return std::make_shared<const LiteralExpressionSyntax>(SyntaxTree, KeywordToken,
+                                                               std::make_shared<const Literal>(IsTrue));
     }
 
     std::shared_ptr<const class ExpressionSyntax> Parser::ParseNumericLiteral() noexcept
     {
         const auto NumberToken = MatchToken(SyntaxKind::NumberToken);
-        return std::make_shared<LiteralExpressionSyntax>(SyntaxTree, NumberToken);
+        return std::make_shared<const LiteralExpressionSyntax>(SyntaxTree, NumberToken);
     }
 
     std::shared_ptr<const class ExpressionSyntax> Parser::ParseStringLiteral() noexcept
     {
         const auto StringToken = MatchToken(SyntaxKind::StringToken);
-        return std::make_shared<LiteralExpressionSyntax>(SyntaxTree, StringToken);
+        return std::make_shared<const LiteralExpressionSyntax>(SyntaxTree, StringToken);
     }
 
     std::shared_ptr<const class ExpressionSyntax> Parser::ParseNameOrCallExpression() noexcept

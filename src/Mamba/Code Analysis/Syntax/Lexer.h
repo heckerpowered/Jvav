@@ -1,7 +1,6 @@
 #pragma once
 
 #include "DiagnosticBag.h"
-#include "Literal.h"
 #include "MambaCore.h"
 #include "SourceText.h"
 #include "SyntaxKind.h"
@@ -20,7 +19,7 @@ namespace Mamba
         std::size_t Start;
 
         SyntaxKind Kind;
-        NullableSharedPtr<Literal> Value;
+        NullableSharedPtr<class Literal> Value;
 
     public:
         DiagnosticBag Diagnostics;
@@ -84,7 +83,7 @@ namespace Mamba
 
         // Report an invalid number diagnostic with the specified base and literal
         template<std::size_t Base>
-        void ReportInvalidNumber(const TextSpan& Span, const StringView& Literal)
+        void ReportInvalidNumber(const TextSpan Span, const StringView Literal)
 
             requires(Base == 2 || Base == 8 || Base == 10 || Base == 16)
         {

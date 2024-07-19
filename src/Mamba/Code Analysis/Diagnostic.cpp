@@ -1,10 +1,10 @@
 #include "Diagnostic.h"
+
 #include "MambaCore.h"
 
 namespace Mamba
 {
-    Diagnostic::Diagnostic(const DiagnosticSeverity Severity,
-                           const TextLocation Location,
+    Diagnostic::Diagnostic(const DiagnosticSeverity Severity, const TextLocation Location,
                            const std::shared_ptr<const String> Message) noexcept :
         Severity(Severity), Location(Location), Message(Message)
     {

@@ -1,5 +1,6 @@
 #include "SyntaxNode.h"
 
+#include "Literal.h"
 #include "MambaCore.h"
 #include "SourceText.h"
 #include "SyntaxFacts.h"

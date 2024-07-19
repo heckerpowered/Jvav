@@ -25,8 +25,13 @@ namespace Mamba
     {
         auto Result = std::vector<std::shared_ptr<const TextLine>>();
 
+#if __cpp_size_t_suffix == 202011L
         auto Position = 0uz;
         auto LineStart = 0uz;
+#else
+        auto Position = std::size_t();
+        auto LineStart = std::size_t();
+#endif
 
         while (Position < Text.length())
         {
@@ -89,7 +94,11 @@ namespace Mamba
 
     std::size_t SourceText::GetLineIndex(const std::size_t Position) const noexcept
     {
+#if __cpp_size_t_suffix == 202011L
         auto Lower = 0uz;
+#else
+        auto Lower = std::size_t();
+#endif
         auto Upper = Lines.size() - 1;
 
         while (Lower <= Upper)

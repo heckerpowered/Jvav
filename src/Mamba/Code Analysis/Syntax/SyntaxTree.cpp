@@ -1,9 +1,12 @@
 #include "SyntaxTree.h"
+
+#include "CompilationUnitSyntax.h"
 #include "Lexer.h"
 #include "MambaCore.h"
 #include "Parser.h"
 #include "SourceText.h"
 #include "SyntaxKind.h"
+#include "SyntaxNode.h"
 #include "SyntaxToken.h"
 
 #include <fast_io.h>
