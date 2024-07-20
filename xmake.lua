@@ -12,7 +12,9 @@ target("Jvav")
     set_toolchains("llvm")
     set_warnings("all")
     add_includedirs("src/Mamba", "src/Mamba/Code Analysis", "src/Mamba/Code Analysis/Syntax", "src/Mamba/Code Analysis/Text")
-    add_linkdirs("/opt/homebrew/opt/llvm/lib/c++") -- macOS compability
+    if is_os("macosx") then
+        add_linkdirs("/opt/homebrew/opt/llvm/lib/c++") -- macOS compability
+    end
     if is_mode("release") then
         set_optimize("fastest")
     end

@@ -32,10 +32,17 @@ namespace Mamba
         [[nodiscard]] static std::size_t GetLineBreakWidth(const String& Text, const std::size_t Position) noexcept;
 
     public:
+#if __cpp_explicit_this_parameter == 202110L
         [[nodiscard]] auto&& operator[](this auto&& Self, const std::size_t Position) noexcept
         {
             return (*std::forward<decltype(Self)>(Self).Text)[Position];
         }
+#else
+        [[nodiscard]] Char operator[](const std::size_t Position) const noexcept
+        {
+            return (*Text)[Position];
+        }
+#endif
 
         [[nodiscard]] std::size_t Length() const noexcept;
 

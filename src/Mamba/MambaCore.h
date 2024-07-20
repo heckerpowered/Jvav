@@ -5,6 +5,7 @@
 #include <utility>
 
 #include <fast_io.h>
+#include <fast_io_unit/string.h>
 
 #define MAMBA_NAMESPACE_BEGIN \
     namespace Mamba           \

@@ -16,6 +16,8 @@ namespace Mamba
         [[nodiscard]] SyntaxNode(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
 
     public:
+        virtual ~SyntaxNode() noexcept;
+
         const std::shared_ptr<const class SyntaxTree> SyntaxTree;
 
         [[nodiscard]] const NullableSharedPtr<const class SyntaxNode> Parent() const noexcept;

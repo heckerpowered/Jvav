@@ -17,6 +17,8 @@ namespace Mamba
     {
     }
 
+    SyntaxNode::~SyntaxNode() noexcept {}
+
     const std::shared_ptr<const class SyntaxNode> SyntaxNode::Parent() const noexcept
     {
         return SyntaxTree->GetParent(shared_from_this());
