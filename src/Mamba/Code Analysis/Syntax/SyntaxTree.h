@@ -1,9 +1,9 @@
 #pragma once
 
 #include "MambaCore.h"
-#include "TextLine.h"
 
 #include <memory>
+#include <optional>
 #include <unordered_map>
 #include <utility>
 #include <vector>

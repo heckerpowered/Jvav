@@ -1,5 +1,6 @@
-#include "SyntaxNode.h"
+﻿#include "SyntaxNode.h"
 
+#include "Literal.h"
 #include "MambaCore.h"
 #include "SourceText.h"
 #include "SyntaxFacts.h"
@@ -15,6 +16,8 @@ namespace Mamba
     SyntaxNode::SyntaxNode(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept : SyntaxTree(SyntaxTree)
     {
     }
+
+    SyntaxNode::~SyntaxNode() noexcept {}
 
     const std::shared_ptr<const class SyntaxNode> SyntaxNode::Parent() const noexcept
     {
@@ -185,7 +188,7 @@ namespace Mamba
 
         const auto LastChild = Node->Children().size() == 0 ? nullptr : Node->Children().back();
 
-        for (const auto Child : Node->Children())
+        for (auto&& Child : Node->Children())
         {
             PrettyPrint(Stream, Child, Indent, Child == LastChild);
         }

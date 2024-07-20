@@ -1,21 +1,10 @@
 #pragma once
 
-#include "BlockStatementSyntax.h"
-#include "CompilationUnitSyntax.h"
-#include "DiagnosticBag.h"
-#include "ElseClauseSyntax.h"
-#include "ExpressionStatementSyntax.h"
-#include "ExpressionSyntax.h"
-#include "FunctionDeclarationSyntax.h"
-#include "MambaCore.h"
-#include "MemberSyntax.h"
-#include "ParameterSyntax.h"
-#include "SeperatedSyntaxList.h"
-#include "StatementSyntax.h"
-#include "SyntaxKind.h"
-#include "SyntaxToken.h"
-#include "TypeClauseSyntax.h"
 #include <memory>
+#include <vector>
+
+#include "DiagnosticBag.h"
+#include "SeperatedSyntaxList.h"
 
 namespace Mamba
 {

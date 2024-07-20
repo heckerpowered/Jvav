@@ -1,11 +1,10 @@
 #pragma once
 
-#include "MambaCore.h"
-#include "SyntaxKind.h"
-#include "TextLocation.h"
-
 #include <memory>
 #include <vector>
+
+#include "SyntaxKind.h"
+#include "TextLocation.h"
 
 namespace Mamba
 {

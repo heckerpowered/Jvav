@@ -17,12 +17,15 @@ namespace Mamba
 
         [[nodiscard]] LiteralExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
                                               const std::shared_ptr<const class SyntaxToken> LiteralToken,
-                                              const std::shared_ptr<const class Literal> Value) noexcept;
+                                              // msvc bug, struct keyword is required here, class is not allowed
+                                              // https://eel.is/c++draft/dcl.dcl#dcl.type.elab-7
+                                              // https://zh.cppreference.com/w/cpp/language/elaborated_type_specifier
+                                              const std::shared_ptr<const struct Literal> Value) noexcept;
 
         virtual SyntaxKind Kind() const noexcept override;
         virtual std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
         const std::shared_ptr<const class SyntaxToken> LiteralToken;
-        const std::shared_ptr<const class Literal> Value;
+        const std::shared_ptr<const struct Literal> Value;
     };
 } // namespace Mamba

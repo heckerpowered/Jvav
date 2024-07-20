@@ -1,6 +1,7 @@
 #include "Lexer.h"
+
 #include "DiagnosticBag.h"
-#include "MambaCore.h"
+#include "Literal.h"
 #include "SourceText.h"
 #include "SyntaxFacts.h"
 #include "SyntaxKind.h"
@@ -16,11 +17,11 @@
 namespace Mamba
 {
     Lexer::Lexer(const std::shared_ptr<const class SyntaxTree> SyntaxTree) :
-        SyntaxTree(SyntaxTree), Text(SyntaxTree->Text), Start(), Position(), Kind(SyntaxKind::BadToken)
+        SyntaxTree(SyntaxTree), Text(SyntaxTree->Text), Position(), Start(), Kind(SyntaxKind::BadToken)
     {
     }
 
-    std::shared_ptr<const class SyntaxToken> Lexer::Lex() noexcept
+    std::shared_ptr<const SyntaxToken> Lexer::Lex() noexcept
     {
         const auto TokenStart = Position;
 

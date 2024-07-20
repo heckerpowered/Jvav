@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MambaCore.h"
+
 #include "TextLocation.h"
 #include <memory>
 
@@ -16,8 +17,7 @@ namespace Mamba
     class Diagnostic final
     {
     public:
-        [[nodiscard]] Diagnostic(const DiagnosticSeverity Severity,
-                                 const TextLocation Location,
+        [[nodiscard]] Diagnostic(const DiagnosticSeverity Severity, const TextLocation Location,
                                  const std::shared_ptr<const String> Message) noexcept;
 
         const DiagnosticSeverity Severity;

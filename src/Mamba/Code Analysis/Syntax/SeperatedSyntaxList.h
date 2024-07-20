@@ -12,7 +12,11 @@ namespace Mamba
         [[nodiscard]] constexpr Container<T> SkipSeperators(Container<T>&& NodesAndSeparators) const noexcept
         {
             auto Result = Container<T>(NodesAndSeparators.size() / 2);
+#if __cpp_size_t_suffix == 202011L
             for (auto Index = 0uz; Index < NodesAndSeparators.size() / 2; ++Index)
+#else
+            for (auto Index = std::size_t(); Index < NodesAndSeparators.size() / 2; ++Index)
+#endif
             {
                 Result[Index] = std::move(NodesAndSeparators[Index * 2]);
             }

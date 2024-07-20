@@ -1,8 +1,10 @@
 #pragma once
 
 #include "MambaCore.h"
+
 #include <cstdint>
 #include <memory>
+#include <optional>
 
 namespace Mamba
 {
@@ -43,7 +45,7 @@ namespace Mamba
         LiteralValue(const LiteralValue&) = default;
         LiteralValue(LiteralValue&&) = default;
 
-        friend class Literal;
+        friend struct Literal;
     };
 
     enum class LiteralType
@@ -74,7 +76,7 @@ namespace Mamba
         LiteralValue Value;
         LiteralType Type;
 
-        std::optional<std::shared_ptr<const String>> StringValue;
+        ::std::optional<std::shared_ptr<const String>> StringValue;
 
         [[nodiscard]] Literal() noexcept;
         [[nodiscard]] Literal(const std::shared_ptr<String> String) noexcept;
