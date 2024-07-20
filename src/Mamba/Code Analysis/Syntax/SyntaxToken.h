@@ -15,7 +15,7 @@ namespace Mamba
     public:
         [[nodiscard]] SyntaxToken(const std::shared_ptr<const class SyntaxTree> SyntaxTree, const SyntaxKind Kind,
                                   const std::size_t Position, const std::shared_ptr<const String> Text,
-                                  const NullableSharedPtr<class Literal> Value) noexcept;
+                                  const NullableSharedPtr<struct Literal> Value) noexcept;
 
         virtual SyntaxKind Kind() const noexcept override;
 

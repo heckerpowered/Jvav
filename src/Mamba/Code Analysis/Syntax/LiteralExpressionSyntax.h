@@ -26,6 +26,6 @@ namespace Mamba
         virtual std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
         const std::shared_ptr<const class SyntaxToken> LiteralToken;
-        const std::shared_ptr<const class Literal> Value;
+        const std::shared_ptr<const struct Literal> Value;
     };
 } // namespace Mamba

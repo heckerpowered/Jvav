@@ -19,7 +19,7 @@ namespace Mamba
         std::size_t Start;
 
         SyntaxKind Kind;
-        NullableSharedPtr<class Literal> Value;
+        NullableSharedPtr<struct Literal> Value;
 
     public:
         DiagnosticBag Diagnostics;

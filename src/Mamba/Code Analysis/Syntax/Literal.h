@@ -45,7 +45,7 @@ namespace Mamba
         LiteralValue(const LiteralValue&) = default;
         LiteralValue(LiteralValue&&) = default;
 
-        friend class Literal;
+        friend struct Literal;
     };
 
     enum class LiteralType

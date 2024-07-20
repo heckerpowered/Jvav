@@ -186,7 +186,7 @@ namespace Mamba
 
         const auto LastChild = Node->Children().size() == 0 ? nullptr : Node->Children().back();
 
-        for (const auto Child : Node->Children())
+        for (auto&& Child : Node->Children())
         {
             PrettyPrint(Stream, Child, Indent, Child == LastChild);
         }

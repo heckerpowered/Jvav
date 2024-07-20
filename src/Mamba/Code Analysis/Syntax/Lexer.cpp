@@ -17,7 +17,7 @@
 namespace Mamba
 {
     Lexer::Lexer(const std::shared_ptr<const class SyntaxTree> SyntaxTree) :
-        SyntaxTree(SyntaxTree), Text(SyntaxTree->Text), Start(), Position(), Kind(SyntaxKind::BadToken)
+        SyntaxTree(SyntaxTree), Text(SyntaxTree->Text), Position(), Start(), Kind(SyntaxKind::BadToken)
     {
     }
 
