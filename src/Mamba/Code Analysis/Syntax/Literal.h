@@ -76,7 +76,7 @@ namespace Mamba
         LiteralValue Value;
         LiteralType Type;
 
-        std::optional<std::shared_ptr<const String>> StringValue;
+        ::std::optional<std::shared_ptr<const String>> StringValue;
 
         [[nodiscard]] Literal() noexcept;
         [[nodiscard]] Literal(const std::shared_ptr<String> String) noexcept;
