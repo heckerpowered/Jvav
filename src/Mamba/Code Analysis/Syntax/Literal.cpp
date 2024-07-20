@@ -18,7 +18,7 @@ namespace Mamba
     Literal::Literal() noexcept {}
 
     Literal::Literal(const std::shared_ptr<String> String) noexcept :
-        StringValue(String), Value(StringView(*String)), Type(LiteralType::String)
+        Value(StringView(*String)), Type(LiteralType::String), StringValue(String)
     {
     }
 
