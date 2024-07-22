@@ -19,8 +19,8 @@ namespace Mamba
                                              const std::shared_ptr<const class SyntaxToken> WhileKeyword,
                                              const std::shared_ptr<const class ExpressionSyntax> Condition) noexcept;
 
-        virtual SyntaxKind Kind() const noexcept override;
-        virtual std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        SyntaxKind Kind() const noexcept override;
+        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
         const std::shared_ptr<const class SyntaxToken> DoKeyword;
         const std::shared_ptr<const class StatementSyntax> Body;

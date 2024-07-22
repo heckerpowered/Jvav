@@ -22,8 +22,8 @@ namespace Mamba
                                               // https://zh.cppreference.com/w/cpp/language/elaborated_type_specifier
                                               const std::shared_ptr<const struct Literal> Value) noexcept;
 
-        virtual SyntaxKind Kind() const noexcept override;
-        virtual std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        SyntaxKind Kind() const noexcept override;
+        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
         const std::shared_ptr<const class SyntaxToken> LiteralToken;
         const std::shared_ptr<const struct Literal> Value;

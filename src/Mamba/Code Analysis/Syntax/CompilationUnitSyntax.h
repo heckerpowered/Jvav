@@ -20,8 +20,8 @@ namespace Mamba
                                             std::vector<std::shared_ptr<const class MemberSyntax>>&& Members,
                                             std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept;
 
-        virtual SyntaxKind Kind() const noexcept override;
-        virtual std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
+        SyntaxKind Kind() const noexcept override;
+        std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
 
         const std::vector<std::shared_ptr<const class MemberSyntax>> Members;
         std::shared_ptr<const class SyntaxToken> EndOfFileToken;

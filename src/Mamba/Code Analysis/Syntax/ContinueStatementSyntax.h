@@ -14,8 +14,8 @@ namespace Mamba
         [[nodiscard]] ContinueStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
                                               const std::shared_ptr<const class SyntaxToken> Keyword) noexcept;
 
-        virtual SyntaxKind Kind() const noexcept override;
-        virtual std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        SyntaxKind Kind() const noexcept override;
+        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
         const std::shared_ptr<const class SyntaxToken> Keyword;
     };

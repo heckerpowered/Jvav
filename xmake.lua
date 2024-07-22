@@ -19,6 +19,9 @@ target("Jvav")
         set_optimize("fastest")
     end
     if is_mode("debug") then
+        add_cflags("-fsanitize=address")
+        add_ldflags("-fsanitize=address")
+        add_cxxflags("-fsanitize=address", "-fno-omit-frame-pointer", "-fno-optimize-sibling-calls")
         add_defines("DEBUG")
     end
 

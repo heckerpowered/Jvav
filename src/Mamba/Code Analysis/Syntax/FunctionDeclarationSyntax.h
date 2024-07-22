@@ -23,8 +23,8 @@ namespace Mamba
             const NullableSharedPtr<const class TypeClauseSyntax> Type,
             const std::shared_ptr<const class BlockStatementSyntax> Body) noexcept;
 
-        virtual SyntaxKind Kind() const noexcept override;
-        virtual std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        SyntaxKind Kind() const noexcept override;
+        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
         const std::shared_ptr<const class SyntaxToken> FunctionKeyword;
         const std::shared_ptr<const class SyntaxToken> Identifier;
