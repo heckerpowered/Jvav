@@ -4,10 +4,12 @@
 
 namespace Mamba
 {
-    TextLine::TextLine(const std::shared_ptr<const SourceText> Text,
-                       const std::size_t Start,
-                       const std::size_t Length,
-                       const std::size_t LengthIncludeLineBreak) noexcept :
+    TextLine::TextLine(
+        const std::shared_ptr<const SourceText> Text,
+        const std::size_t Start,
+        const std::size_t Length,
+        const std::size_t LengthIncludeLineBreak
+    ) noexcept :
         Text(Text), Start(Start), Length(Length), LengthIncludeLineBreak(LengthIncludeLineBreak)
     {
     }

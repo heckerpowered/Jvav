@@ -22,26 +22,32 @@ namespace Mamba
     void DiagnosticBag::ReportError(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept
     {
         emplace_back(
-            Hatcher([&] { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Error, Location, Message); }));
+            Hatcher([&] { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Error, Location, Message); })
+        );
     }
 
     void DiagnosticBag::ReportWarning(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept
     {
-        emplace_back(Hatcher(
-            [&] { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Warning, Location, Message); }));
+        emplace_back(
+            Hatcher([&] { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Warning, Location, Message); })
+        );
     }
 
-    void DiagnosticBag::ReportInformation(const TextLocation Location,
-                                          const std::shared_ptr<const String> Message) noexcept
+    void DiagnosticBag::ReportInformation(
+        const TextLocation Location,
+        const std::shared_ptr<const String> Message
+    ) noexcept
     {
         emplace_back(Hatcher(
-            [&] { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Information, Location, Message); }));
+            [&] { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Information, Location, Message); }
+        ));
     }
 
     void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept
     {
         const auto Message = std::make_shared<const String>(
-            Hatcher([&] { return Concat(TEXT("Invalid character '"), Character, TEXT("'.")); }));
+            Hatcher([&] { return Concat(TEXT("Invalid character '"), Character, TEXT("'.")); })
+        );
         ReportError(Location, Message);
     }
 
@@ -79,13 +85,17 @@ namespace Mamba
         ReportError(Location, Message);
     }
 
-    void DiagnosticBag::ReportUnexpectedToken(const TextLocation Location, const SyntaxKind Kind,
-                                              const SyntaxKind ExpectedKind) noexcept
+    void DiagnosticBag::ReportUnexpectedToken(
+        const TextLocation Location,
+        const SyntaxKind Kind,
+        const SyntaxKind ExpectedKind
+    ) noexcept
     {
         // Unexpected token 'Kind', Expected: 'ExpectedKind'.
-        const auto Message = std::make_shared<const String>(
-            Concat(TEXT("Unexpected token '"), SyntaxFacts::GetText(Kind), TEXT("'"), TEXT("Expected: '"),
-                   SyntaxFacts::ToString(ExpectedKind), TEXT("'.")));
+        const auto Message = std::make_shared<const String>(Concat(
+            TEXT("Unexpected token '"), SyntaxFacts::GetText(Kind), TEXT("'"), TEXT("Expected: '"),
+            SyntaxFacts::ToString(ExpectedKind), TEXT("'.")
+        ));
         ReportError(Location, Message);
     }
 } // namespace Mamba

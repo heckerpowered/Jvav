@@ -8,7 +8,8 @@ namespace Mamba
     ReturnStatementSyntax::ReturnStatementSyntax(
         const std::shared_ptr<const class SyntaxTree> SyntaxTree,
         const std::shared_ptr<const class SyntaxToken> ReturnKeyword,
-        const NullableSharedPtr<const class ExpressionSyntax> Expression) noexcept :
+        const NullableSharedPtr<const class ExpressionSyntax> Expression
+    ) noexcept :
         Super(SyntaxTree), ReturnKeyword(ReturnKeyword), Expression(Expression)
     {
     }

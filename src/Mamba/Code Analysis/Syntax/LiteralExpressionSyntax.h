@@ -12,15 +12,19 @@ namespace Mamba
     public:
         using Super = ExpressionSyntax;
 
-        [[nodiscard]] LiteralExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                              const std::shared_ptr<const class SyntaxToken> LiteralToken) noexcept;
+        [[nodiscard]] LiteralExpressionSyntax(
+            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+            const std::shared_ptr<const class SyntaxToken> LiteralToken
+        ) noexcept;
 
-        [[nodiscard]] LiteralExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                              const std::shared_ptr<const class SyntaxToken> LiteralToken,
-                                              // msvc bug, struct keyword is required here, class is not allowed
-                                              // https://eel.is/c++draft/dcl.dcl#dcl.type.elab-7
-                                              // https://zh.cppreference.com/w/cpp/language/elaborated_type_specifier
-                                              const std::shared_ptr<const struct Literal> Value) noexcept;
+        [[nodiscard]] LiteralExpressionSyntax(
+            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+            const std::shared_ptr<const class SyntaxToken> LiteralToken,
+            // use class in this elaborated-type-specifier is valid, but may cause linker error under Microsoft ABI
+            // https://eel.is/c++draft/dcl.dcl#dcl.type.elab-7
+            // https://zh.cppreference.com/w/cpp/language/elaborated_type_specifier
+            const std::shared_ptr<const struct Literal> Value
+        ) noexcept;
 
         SyntaxKind Kind() const noexcept override;
         std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;

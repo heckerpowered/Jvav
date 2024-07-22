@@ -29,8 +29,11 @@ namespace Mamba
         void ReportInvalidBinary(const TextLocation Location, const StringView Literal) noexcept;
         void ReportInvalidOctal(const TextLocation Location, const StringView Literal) noexcept;
 
-        void ReportUnexpectedToken(const TextLocation Location, const SyntaxKind Kind,
-                                   const SyntaxKind ExpectedKind) noexcept;
+        void ReportUnexpectedToken(
+            const TextLocation Location,
+            const SyntaxKind Kind,
+            const SyntaxKind ExpectedKind
+        ) noexcept;
     };
 
 } // namespace Mamba

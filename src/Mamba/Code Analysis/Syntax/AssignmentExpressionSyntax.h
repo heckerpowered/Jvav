@@ -13,10 +13,12 @@ namespace Mamba
     public:
         using Super = ExpressionSyntax;
 
-        [[nodiscard]] AssignmentExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                                 const std::shared_ptr<const class SyntaxToken> IdentifierToken,
-                                                 const std::shared_ptr<const class SyntaxToken> AssignmentToken,
-                                                 const std::shared_ptr<const ExpressionSyntax> Expression) noexcept;
+        [[nodiscard]] AssignmentExpressionSyntax(
+            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+            const std::shared_ptr<const class SyntaxToken> IdentifierToken,
+            const std::shared_ptr<const class SyntaxToken> AssignmentToken,
+            const std::shared_ptr<const ExpressionSyntax> Expression
+        ) noexcept;
 
         std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
         SyntaxKind Kind() const noexcept override;

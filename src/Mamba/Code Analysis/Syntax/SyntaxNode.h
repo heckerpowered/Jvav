@@ -47,7 +47,11 @@ namespace Mamba
         String ToString() const noexcept;
 
     private:
-        static void PrettyPrint(std::basic_stringstream<Char>& Stream, const std::shared_ptr<const SyntaxNode> Node,
-                                String Indent = TEXT(""), const bool IsLast = true) noexcept;
+        static void PrettyPrint(
+            std::basic_stringstream<Char>& Stream,
+            const std::shared_ptr<const SyntaxNode> Node,
+            String Indent = TEXT(""),
+            const bool IsLast = true
+        ) noexcept;
     };
 } // namespace Mamba

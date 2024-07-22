@@ -21,9 +21,13 @@ namespace Mamba
         return String(NativeFileLoader.begin(), NativeFileLoader.end());
     }
 
-    void SyntaxTree::Parse(const std::shared_ptr<const SyntaxTree> SyntaxTree,
-                           std::shared_ptr<const class CompilationUnitSyntax>& Root,
-                           std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept
+    SyntaxTree::SyntaxTree(const std::shared_ptr<const class SourceText> Text) noexcept : Text(Text) {}
+
+    void SyntaxTree::Parse(
+        const std::shared_ptr<const SyntaxTree> SyntaxTree,
+        std::shared_ptr<const class CompilationUnitSyntax>& Root,
+        std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics
+    ) noexcept
     {
         Parser Parser(SyntaxTree);
         Root = Parser.ParseCompilationUnit();
@@ -74,27 +78,30 @@ namespace Mamba
         return ParseTokens(SourceText, IncludeEndOfFile);
     }
 
-    std::vector<std::shared_ptr<const class SyntaxToken>>
-        SyntaxTree::ParseTokens(const std::shared_ptr<const class SourceText> Text,
-                                const bool IncludeEndOfFile) noexcept
+    std::vector<std::shared_ptr<const class SyntaxToken>> SyntaxTree::ParseTokens(
+        const std::shared_ptr<const class SourceText> Text,
+        const bool IncludeEndOfFile
+    ) noexcept
     {
         return ParseTokens(Text, {}, IncludeEndOfFile);
     }
 
-    std::vector<std::shared_ptr<const class SyntaxToken>>
-        SyntaxTree::ParseTokens(const std::shared_ptr<const String> Text,
-                                NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
-                                const bool IncludeEndOfFile) noexcept
+    std::vector<std::shared_ptr<const class SyntaxToken>> SyntaxTree::ParseTokens(
+        const std::shared_ptr<const String> Text,
+        NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+        const bool IncludeEndOfFile
+    ) noexcept
     {
         const auto SourceText =
             std::make_shared<const class SourceText>(Hatcher([&] { return SourceText::From(Text); }));
         return ParseTokens(SourceText, Diagnostics, IncludeEndOfFile);
     }
 
-    std::vector<std::shared_ptr<const class SyntaxToken>>
-        SyntaxTree::ParseTokens(const std::shared_ptr<const class SourceText> Text,
-                                NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
-                                const bool IncludeEndOfFile) noexcept
+    std::vector<std::shared_ptr<const class SyntaxToken>> SyntaxTree::ParseTokens(
+        const std::shared_ptr<const class SourceText> Text,
+        NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+        const bool IncludeEndOfFile
+    ) noexcept
     {
         auto Tokens = std::vector<std::shared_ptr<const SyntaxToken>>();
 
@@ -115,7 +122,8 @@ namespace Mamba
                 if (Token->Kind() == SyntaxKind::EndOfFileToken)
                 {
                     Root = std::make_shared<const CompilationUnitSyntax>(
-                        SyntaxTree, std::vector<std::shared_ptr<const class MemberSyntax>>{}, Token);
+                        SyntaxTree, std::vector<std::shared_ptr<const class MemberSyntax>>{}, Token
+                    );
                     break;
                 }
             }
@@ -132,8 +140,8 @@ namespace Mamba
         return Tokens;
     }
 
-    NullableSharedPtr<const class SyntaxNode>
-        SyntaxTree::GetParent(const std::shared_ptr<const class SyntaxNode> Node) const noexcept
+    NullableSharedPtr<const class SyntaxNode> SyntaxTree::GetParent(const std::shared_ptr<const class SyntaxNode> Node
+    ) const noexcept
     {
         static auto Mutex = std::mutex{};
 
@@ -155,8 +163,8 @@ namespace Mamba
         return Result;
     }
 
-    void SyntaxTree::CreateParentsMap(ParentsMapType& Result,
-                                      const std::shared_ptr<const class SyntaxNode> Node) const noexcept
+    void SyntaxTree::CreateParentsMap(ParentsMapType& Result, const std::shared_ptr<const class SyntaxNode> Node)
+        const noexcept
     {
         for (auto&& Child : Node->Children())
         {

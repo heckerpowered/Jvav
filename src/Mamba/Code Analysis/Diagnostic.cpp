@@ -4,8 +4,11 @@
 
 namespace Mamba
 {
-    Diagnostic::Diagnostic(const DiagnosticSeverity Severity, const TextLocation Location,
-                           const std::shared_ptr<const String> Message) noexcept :
+    Diagnostic::Diagnostic(
+        const DiagnosticSeverity Severity,
+        const TextLocation Location,
+        const std::shared_ptr<const String> Message
+    ) noexcept :
         Severity(Severity), Location(Location), Message(Message)
     {
     }
@@ -20,8 +23,8 @@ namespace Mamba
         return Diagnostic(DiagnosticSeverity::Warning, Location, Message);
     }
 
-    Diagnostic Diagnostic::Information(const TextLocation Location,
-                                       const std::shared_ptr<const String> Message) noexcept
+    Diagnostic
+        Diagnostic::Information(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept
     {
         return Diagnostic(DiagnosticSeverity::Information, Location, Message);
     }

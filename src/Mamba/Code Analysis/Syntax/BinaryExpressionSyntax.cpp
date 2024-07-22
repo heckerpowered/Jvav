@@ -2,10 +2,12 @@
 
 namespace Mamba
 {
-    BinaryExpressionSyntax::BinaryExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                                   const std::shared_ptr<const class ExpressionSyntax> Left,
-                                                   const std::shared_ptr<const class SyntaxToken> OperatorToken,
-                                                   const std::shared_ptr<const class ExpressionSyntax> Right) noexcept :
+    BinaryExpressionSyntax::BinaryExpressionSyntax(
+        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+        const std::shared_ptr<const class ExpressionSyntax> Left,
+        const std::shared_ptr<const class SyntaxToken> OperatorToken,
+        const std::shared_ptr<const class ExpressionSyntax> Right
+    ) noexcept :
         Super(SyntaxTree), Left(Left), OperatorToken(OperatorToken), Right(Right)
     {
     }

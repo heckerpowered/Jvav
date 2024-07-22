@@ -12,9 +12,11 @@ namespace Mamba
     public:
         using Super = SyntaxNode;
 
-        [[nodiscard]] ParameterSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                      const std::shared_ptr<const class SyntaxToken> Identifier,
-                                      const std::shared_ptr<const class TypeClauseSyntax> Type) noexcept;
+        [[nodiscard]] ParameterSyntax(
+            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+            const std::shared_ptr<const class SyntaxToken> Identifier,
+            const std::shared_ptr<const class TypeClauseSyntax> Type
+        ) noexcept;
 
         SyntaxKind Kind() const noexcept override;
         std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
