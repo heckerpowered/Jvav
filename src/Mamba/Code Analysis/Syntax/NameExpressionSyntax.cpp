@@ -2,9 +2,10 @@
 
 namespace Mamba
 {
-    NameExpressionSyntax::NameExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                               const std::shared_ptr<const class SyntaxToken> IdentifierToken) noexcept
-        :
+    NameExpressionSyntax::NameExpressionSyntax(
+        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+        const std::shared_ptr<const class SyntaxToken> IdentifierToken
+    ) noexcept :
         Super(SyntaxTree), IdentifierToken(IdentifierToken)
     {
     }

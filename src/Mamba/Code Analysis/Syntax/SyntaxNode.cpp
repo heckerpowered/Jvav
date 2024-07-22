@@ -1,5 +1,6 @@
 ﻿#include "SyntaxNode.h"
 
+#include "fast_io.h"
 #include "Literal.h"
 #include "MambaCore.h"
 #include "SourceText.h"
@@ -79,8 +80,12 @@ namespace Mamba
         return Stream.str();
     }
 
-    void SyntaxNode::PrettyPrint(std::basic_stringstream<Char>& Stream, const std::shared_ptr<const SyntaxNode> Node,
-                                 String Indent, const bool IsLast) noexcept
+    void SyntaxNode::PrettyPrint(
+        std::basic_stringstream<Char>& Stream,
+        const std::shared_ptr<const SyntaxNode> Node,
+        String Indent,
+        const bool IsLast
+    ) noexcept
     {
         const auto Token = std::dynamic_pointer_cast<const SyntaxToken>(Node);
         const auto TokenMarker = String(IsLast ? TEXT("└──") : TEXT("├──"));
@@ -188,7 +193,7 @@ namespace Mamba
 
         const auto LastChild = Node->Children().size() == 0 ? nullptr : Node->Children().back();
 
-        for (auto&& Child : Node->Children())
+        for (auto Child : Node->Children())
         {
             PrettyPrint(Stream, Child, Indent, Child == LastChild);
         }

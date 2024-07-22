@@ -8,20 +8,24 @@
 
 namespace Mamba
 {
-    SourceText::SourceText(const std::shared_ptr<const String> Text,
-                           const std::shared_ptr<const String> FileName) noexcept :
+    SourceText::SourceText(
+        const std::shared_ptr<const String> Text,
+        const std::shared_ptr<const String> FileName
+    ) noexcept :
         Text(Text), FileName(FileName), Lines(ParseLines(*this, *Text))
     {
     }
 
-    SourceText SourceText::From(const std::shared_ptr<const String> Text,
-                                const std::shared_ptr<const String> FileName) noexcept
+    SourceText SourceText::From(
+        const std::shared_ptr<const String> Text,
+        const std::shared_ptr<const String> FileName
+    ) noexcept
     {
         return SourceText(Text, FileName);
     }
 
-    std::vector<std::shared_ptr<const TextLine>> SourceText::ParseLines(const SourceText& SourceText,
-                                                                        const String& Text) noexcept
+    std::vector<std::shared_ptr<const TextLine>>
+        SourceText::ParseLines(const SourceText& SourceText, const String& Text) noexcept
     {
         auto Result = std::vector<std::shared_ptr<const TextLine>>();
 
@@ -58,14 +62,19 @@ namespace Mamba
         return Result;
     }
 
-    void SourceText::AddLine(std::vector<std::shared_ptr<const class TextLine>>& Result, const SourceText& SourceText,
-                             const std::size_t Position, const std::size_t LineStart,
-                             const std::size_t LineBreakWidth) noexcept
+    void SourceText::AddLine(
+        std::vector<std::shared_ptr<const class TextLine>>& Result,
+        const SourceText& SourceText,
+        const std::size_t Position,
+        const std::size_t LineStart,
+        const std::size_t LineBreakWidth
+    ) noexcept
     {
         const auto LineLength = Position - LineStart;
         const auto LineLengthIncludingLineBreak = LineLength + LineBreakWidth;
-        const auto Line = std::make_shared<TextLine>(std::make_shared<const class SourceText>(SourceText), LineStart,
-                                                     LineLength, LineLengthIncludingLineBreak);
+        const auto Line = std::make_shared<TextLine>(
+            std::make_shared<const class SourceText>(SourceText), LineStart, LineLength, LineLengthIncludingLineBreak
+        );
         Result.emplace_back(Line);
     }
 

@@ -12,8 +12,10 @@ namespace Mamba
     public:
         using Super = ExpressionSyntax;
 
-        [[nodiscard]] NameExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                           const std::shared_ptr<const class SyntaxToken> IdentifierToken) noexcept;
+        [[nodiscard]] NameExpressionSyntax(
+            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+            const std::shared_ptr<const class SyntaxToken> IdentifierToken
+        ) noexcept;
 
         SyntaxKind Kind() const noexcept override;
         std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;

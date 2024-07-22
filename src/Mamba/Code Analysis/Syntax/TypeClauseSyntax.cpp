@@ -4,9 +4,11 @@
 
 namespace Mamba
 {
-    TypeClauseSyntax::TypeClauseSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                       const std::shared_ptr<const class SyntaxToken> ColonToken,
-                                       const std::shared_ptr<const class SyntaxToken> Identifier) noexcept :
+    TypeClauseSyntax::TypeClauseSyntax(
+        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+        const std::shared_ptr<const class SyntaxToken> ColonToken,
+        const std::shared_ptr<const class SyntaxToken> Identifier
+    ) noexcept :
         Super(SyntaxTree), ColonToken(ColonToken), Identifier(Identifier)
     {
     }

@@ -4,9 +4,11 @@
 
 namespace Mamba
 {
-    ParameterSyntax::ParameterSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                     const std::shared_ptr<const class SyntaxToken> Identifier,
-                                     const std::shared_ptr<const class TypeClauseSyntax> Type) noexcept :
+    ParameterSyntax::ParameterSyntax(
+        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+        const std::shared_ptr<const class SyntaxToken> Identifier,
+        const std::shared_ptr<const class TypeClauseSyntax> Type
+    ) noexcept :
         Super(SyntaxTree), Identifier(Identifier), Type(Type)
     {
     }

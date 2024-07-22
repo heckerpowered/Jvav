@@ -12,7 +12,8 @@ namespace Mamba
         const std::shared_ptr<const class SyntaxToken> Identifier,
         const NullableSharedPtr<const class TypeClauseSyntax> TypeClauseSyntax,
         const std::shared_ptr<const class SyntaxToken> EqualsToken,
-        const std::shared_ptr<const class ExpressionSyntax> Initializer) noexcept :
+        const std::shared_ptr<const class ExpressionSyntax> Initializer
+    ) noexcept :
         Super(SyntaxTree),
         Keyword(Keyword),
         Identifier(Identifier),

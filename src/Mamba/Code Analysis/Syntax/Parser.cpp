@@ -85,8 +85,9 @@ namespace Mamba
         }
 
         Diagnostics.ReportUnexpectedToken(Current()->Location(), Current()->Kind(), Kind);
-        return std::make_shared<SyntaxToken>(SyntaxTree, Kind, Current()->Position, std::make_shared<String>(),
-                                             nullptr);
+        return std::make_shared<SyntaxToken>(
+            SyntaxTree, Kind, Current()->Position, std::make_shared<String>(), nullptr
+        );
     }
 
     std::shared_ptr<const CompilationUnitSyntax> Parser::ParseCompilationUnit() noexcept
@@ -143,9 +144,10 @@ namespace Mamba
         const auto Type = ParseOptionalTypeClause();
         const auto Body = ParseBlockStatement();
 
-        return std::make_shared<FunctionDeclarationSyntax>(SyntaxTree, FunctionKeyword, IdentifierToken,
-                                                           OpenParenthesisToken, Parameters, CloseParenthesisToken,
-                                                           Type, Body);
+        return std::make_shared<FunctionDeclarationSyntax>(
+            SyntaxTree, FunctionKeyword, IdentifierToken, OpenParenthesisToken, Parameters, CloseParenthesisToken, Type,
+            Body
+        );
     }
 
     std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const SyntaxNode>>> Parser::ParseParameterList() noexcept
@@ -157,12 +159,14 @@ namespace Mamba
                && Current()->Kind() != SyntaxKind::EndOfFileToken)
         {
             NodesAndSeperators.emplace_back(
-                Hatcher([&] { return std::dynamic_pointer_cast<const SyntaxNode>(ParseParameter()); }));
+                Hatcher([&] { return std::dynamic_pointer_cast<const SyntaxNode>(ParseParameter()); })
+            );
 
             if (Current()->Kind() == SyntaxKind::CommaToken)
             {
                 NodesAndSeperators.emplace_back(Hatcher(
-                    [&] { return std::dynamic_pointer_cast<const SyntaxNode>(MatchToken(SyntaxKind::CommaToken)); }));
+                    [&] { return std::dynamic_pointer_cast<const SyntaxNode>(MatchToken(SyntaxKind::CommaToken)); }
+                ));
             }
             else
             {
@@ -171,7 +175,8 @@ namespace Mamba
         }
 
         return std::make_shared<const SeperatedSyntaxList<std::shared_ptr<const SyntaxNode>>>(
-            std::move(NodesAndSeperators));
+            std::move(NodesAndSeperators)
+        );
     }
 
     std::shared_ptr<const ParameterSyntax> Parser::ParseParameter() noexcept
@@ -241,8 +246,9 @@ namespace Mamba
         }
 
         const auto CloseBraceToken = MatchToken(SyntaxKind::CloseBraceToken);
-        return std::make_shared<const BlockStatementSyntax>(SyntaxTree, OpenBraceToken, std::move(Statements),
-                                                            CloseBraceToken);
+        return std::make_shared<const BlockStatementSyntax>(
+            SyntaxTree, OpenBraceToken, std::move(Statements), CloseBraceToken
+        );
     }
 
     std::shared_ptr<const StatementSyntax> Parser::ParseVariableDeclaration() noexcept
@@ -254,8 +260,9 @@ namespace Mamba
         const auto TypeClause = ParseOptionalTypeClause();
         const auto Equals = MatchToken(SyntaxKind::EqualsToken);
         const auto Initializer = ParseExpression();
-        return std::make_shared<VariableDeclarationSyntax>(SyntaxTree, Keyword, Identifier, TypeClause, Equals,
-                                                           Initializer);
+        return std::make_shared<VariableDeclarationSyntax>(
+            SyntaxTree, Keyword, Identifier, TypeClause, Equals, Initializer
+        );
     }
 
     NullableSharedPtr<const TypeClauseSyntax> Parser::ParseOptionalTypeClause() noexcept
@@ -286,8 +293,9 @@ namespace Mamba
         const auto CloseParenthesisToken =
             OpenParenthesisToken ? MatchToken(SyntaxKind::CloseParenthesisToken) : nullptr;
         const auto ElseClause = ParseOptionalElseClause();
-        return std::make_shared<const IfStatementSyntax>(SyntaxTree, Keyword, OpenParenthesisToken, Condition,
-                                                         CloseParenthesisToken, Statement, ElseClause);
+        return std::make_shared<const IfStatementSyntax>(
+            SyntaxTree, Keyword, OpenParenthesisToken, Condition, CloseParenthesisToken, Statement, ElseClause
+        );
     }
 
     NullableSharedPtr<const ElseClauseSyntax> Parser::ParseOptionalElseClause() noexcept
@@ -330,9 +338,10 @@ namespace Mamba
         const auto Expression = ParseExpression();
         const auto CloseParenthesisToken = MatchToken(SyntaxKind::CloseParenthesisToken);
         const auto Body = ParseStatement();
-        return std::make_shared<ForStatementSyntax>(SyntaxTree, Keyword, OpenParenthesisToken, InitStatement,
-                                                    InitStatementColonToken, Condition, ConditionColonToken, Expression,
-                                                    CloseParenthesisToken, Body);
+        return std::make_shared<ForStatementSyntax>(
+            SyntaxTree, Keyword, OpenParenthesisToken, InitStatement, InitStatementColonToken, Condition,
+            ConditionColonToken, Expression, CloseParenthesisToken, Body
+        );
     }
 
     std::shared_ptr<const StatementSyntax> Parser::ParseBreakStatement() noexcept
@@ -465,8 +474,9 @@ namespace Mamba
     {
         const auto IsTrue = Current()->Kind() == SyntaxKind::TrueKeyword;
         const auto KeywordToken = MatchToken(IsTrue ? SyntaxKind::TrueKeyword : SyntaxKind::FalseKeyword);
-        return std::make_shared<const LiteralExpressionSyntax>(SyntaxTree, KeywordToken,
-                                                               std::make_shared<const Literal>(IsTrue));
+        return std::make_shared<const LiteralExpressionSyntax>(
+            SyntaxTree, KeywordToken, std::make_shared<const Literal>(IsTrue)
+        );
     }
 
     std::shared_ptr<const class ExpressionSyntax> Parser::ParseNumericLiteral() noexcept
@@ -497,8 +507,9 @@ namespace Mamba
         const auto OpenParenthesisToken = MatchToken(SyntaxKind::OpenParenthesisToken);
         const auto Arguments = ParseArguments();
         const auto CloseParenthesisToken = MatchToken(SyntaxKind::CloseParenthesisToken);
-        return std::make_shared<const CallExpressionSyntax>(SyntaxTree, Identifier, OpenParenthesisToken, Arguments,
-                                                            CloseParenthesisToken);
+        return std::make_shared<const CallExpressionSyntax>(
+            SyntaxTree, Identifier, OpenParenthesisToken, Arguments, CloseParenthesisToken
+        );
     }
 
     std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>>
@@ -511,12 +522,14 @@ namespace Mamba
                && Current()->Kind() != SyntaxKind::EndOfFileToken)
         {
             NodesAndSeperators.emplace_back(
-                Hatcher([&] { return std::dynamic_pointer_cast<const SyntaxNode>(ParseExpression()); }));
+                Hatcher([&] { return std::dynamic_pointer_cast<const SyntaxNode>(ParseExpression()); })
+            );
 
             if (Current()->Kind() == SyntaxKind::CommaToken)
             {
                 NodesAndSeperators.emplace_back(Hatcher(
-                    [&] { return std::dynamic_pointer_cast<const SyntaxNode>(MatchToken(SyntaxKind::CommaToken)); }));
+                    [&] { return std::dynamic_pointer_cast<const SyntaxNode>(MatchToken(SyntaxKind::CommaToken)); }
+                ));
             }
             else
             {

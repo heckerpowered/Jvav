@@ -17,8 +17,11 @@ namespace Mamba
     class Diagnostic final
     {
     public:
-        [[nodiscard]] Diagnostic(const DiagnosticSeverity Severity, const TextLocation Location,
-                                 const std::shared_ptr<const String> Message) noexcept;
+        [[nodiscard]] Diagnostic(
+            const DiagnosticSeverity Severity,
+            const TextLocation Location,
+            const std::shared_ptr<const String> Message
+        ) noexcept;
 
         const DiagnosticSeverity Severity;
         const TextLocation Location;
@@ -26,7 +29,7 @@ namespace Mamba
 
         static Diagnostic Error(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept;
         static Diagnostic Warning(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept;
-        static Diagnostic Information(const TextLocation Location,
-                                      const std::shared_ptr<const String> Message) noexcept;
+        static Diagnostic
+            Information(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept;
     };
 } // namespace Mamba

@@ -2,9 +2,11 @@
 
 namespace Mamba
 {
-    UnaryExpressionSyntax::UnaryExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                                 const std::shared_ptr<const class SyntaxToken> OperatorToken,
-                                                 const std::shared_ptr<const class ExpressionSyntax> Operand) noexcept :
+    UnaryExpressionSyntax::UnaryExpressionSyntax(
+        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+        const std::shared_ptr<const class SyntaxToken> OperatorToken,
+        const std::shared_ptr<const class ExpressionSyntax> Operand
+    ) noexcept :
         Super(SyntaxTree), OperatorToken(OperatorToken), Operand(Operand)
     {
     }

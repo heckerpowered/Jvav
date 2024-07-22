@@ -4,9 +4,13 @@
 
 namespace Mamba
 {
-    SyntaxToken::SyntaxToken(const std::shared_ptr<const class SyntaxTree> SyntaxTree, const SyntaxKind Kind,
-                             const std::size_t Position, const std::shared_ptr<const String> Text,
-                             const NullableSharedPtr<Literal> Value) noexcept :
+    SyntaxToken::SyntaxToken(
+        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+        const SyntaxKind Kind,
+        const std::size_t Position,
+        const std::shared_ptr<const String> Text,
+        const NullableSharedPtr<Literal> Value
+    ) noexcept :
         Super(SyntaxTree), Position(Position), Text(Text), Value(Value), KindValue(Kind)
     {
     }

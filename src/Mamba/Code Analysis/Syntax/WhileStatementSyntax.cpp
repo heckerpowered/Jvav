@@ -5,10 +5,12 @@
 
 namespace Mamba
 {
-    WhileStatementSyntax::WhileStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                               const std::shared_ptr<const class SyntaxToken> WhileKeyword,
-                                               const std::shared_ptr<const class ExpressionSyntax> Condition,
-                                               const std::shared_ptr<const class StatementSyntax> Body) noexcept :
+    WhileStatementSyntax::WhileStatementSyntax(
+        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
+        const std::shared_ptr<const class SyntaxToken> WhileKeyword,
+        const std::shared_ptr<const class ExpressionSyntax> Condition,
+        const std::shared_ptr<const class StatementSyntax> Body
+    ) noexcept :
         Super(SyntaxTree), WhileKeyword(WhileKeyword), Condition(Condition), Body(Body)
     {
     }
