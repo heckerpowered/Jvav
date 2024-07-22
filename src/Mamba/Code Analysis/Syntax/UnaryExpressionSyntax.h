@@ -16,8 +16,8 @@ namespace Mamba
                                             const std::shared_ptr<const class SyntaxToken> OperatorToken,
                                             const std::shared_ptr<const class ExpressionSyntax> Operand) noexcept;
 
-        virtual SyntaxKind Kind() const noexcept override;
-        virtual std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        SyntaxKind Kind() const noexcept override;
+        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
         const std::shared_ptr<const class SyntaxToken> OperatorToken;
         const std::shared_ptr<const class ExpressionSyntax> Operand;

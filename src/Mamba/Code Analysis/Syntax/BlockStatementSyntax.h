@@ -23,8 +23,8 @@ namespace Mamba
                                            std::vector<std::shared_ptr<const class StatementSyntax>>&& Statements,
                                            const std::shared_ptr<const class SyntaxToken> CloseBraceToken) noexcept;
 
-        virtual SyntaxKind Kind() const noexcept override;
-        virtual std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        SyntaxKind Kind() const noexcept override;
+        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
         const std::shared_ptr<const class SyntaxToken> OpenBraceToken;
         const std::vector<std::shared_ptr<const class StatementSyntax>> Statements;
