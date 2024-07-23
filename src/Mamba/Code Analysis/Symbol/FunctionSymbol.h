@@ -28,6 +28,7 @@ namespace Mamba
 
         const std::vector<std::shared_ptr<const class ParameterSymbol>> Parameters;
         const NullableSharedPtr<const class FunctionDeclarationSyntax> Declaration;
+        const std::shared_ptr<const class TypeSymbol> Type;
 
         SymbolKind Kind() const noexcept override;
     };

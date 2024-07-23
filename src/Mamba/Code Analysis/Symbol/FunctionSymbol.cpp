@@ -15,7 +15,8 @@ namespace Mamba
         Parameters(Parameters.begin(), Parameters.end())
 #endif
         ,
-        Declaration(Declaration)
+        Declaration(Declaration),
+        Type(Type)
     {
     }
 
@@ -25,7 +26,7 @@ namespace Mamba
         const std::shared_ptr<const class TypeSymbol> Type,
         const NullableSharedPtr<const class FunctionDeclarationSyntax> Declaration
     ) noexcept :
-        Super(Name), Parameters(std::move(Parameters)), Declaration(Declaration)
+        Super(Name), Parameters(std::move(Parameters)), Declaration(Declaration), Type(Type)
     {
     }
 
