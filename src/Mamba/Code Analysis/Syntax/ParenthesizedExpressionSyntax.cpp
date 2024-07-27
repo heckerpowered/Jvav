@@ -15,7 +15,7 @@ namespace Mamba
     {
     }
 
-    SyntaxKind Mamba::ParenthesizedExpressionSyntax::Kind() const noexcept
+    SyntaxKind ParenthesizedExpressionSyntax::Kind() const noexcept
     {
         return SyntaxKind::ParenthesizedExpression;
     }
