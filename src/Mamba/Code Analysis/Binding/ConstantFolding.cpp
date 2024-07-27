@@ -75,21 +75,25 @@ NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
             {
                 return std::make_shared<const BoundConstant>(*LeftValue + *RightValue);
             }
+            [[fallthrough]];
         case BoundBinaryOperatorKind::Subtraction:
             if (Left->Type() == TypeSymbol::Int)
             {
                 return std::make_shared<const BoundConstant>(*LeftValue - *RightValue);
             }
+            [[fallthrough]];
         case BoundBinaryOperatorKind::Multiplication:
             if (Left->Type() == TypeSymbol::Int)
             {
                 return std::make_shared<const BoundConstant>(*LeftValue * *RightValue);
             }
+            [[fallthrough]];
         case BoundBinaryOperatorKind::Division:
             if (Left->Type() == TypeSymbol::Int)
             {
                 return std::make_shared<const BoundConstant>(*LeftValue / *RightValue);
             }
+            [[fallthrough]];
         case BoundBinaryOperatorKind::LogicalAnd:
             return std::make_shared<const BoundConstant>(*LeftValue && *RightValue);
         case BoundBinaryOperatorKind::LogicalOr:
@@ -113,4 +117,6 @@ NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
         case BoundBinaryOperatorKind::GreaterOrEquals:
             return std::make_shared<const BoundConstant>(*LeftValue >= *RightValue);
     }
+
+    std::unreachable();
 }

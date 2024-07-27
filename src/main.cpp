@@ -1,3 +1,4 @@
+#include <cmath>
 #include <fast_io.h>
 #include <memory>
 #include <print>
@@ -10,6 +11,13 @@
 
 int main(int argc, char* argv[])
 {
+    auto vec = std::vector<char>();
+#if __cpp_lib_containers_ranges == 202202L
+    auto str = std::string(std::from_range, vec);
+#else
+    auto str = std::string(vec.begin(), vec.end());
+#endif
+
     try
     {
         for (auto i = 1; i < argc; ++i)
@@ -17,7 +25,8 @@ int main(int argc, char* argv[])
             auto Argument = fast_io::mnp::os_c_str(argv[i]);
             fast_io::io::println("Compiling: ", Argument);
             const auto SyntaxTree = Mamba::SyntaxTree::Load(
-                std::make_shared<const Mamba::String>(fast_io::u8concat(fast_io::mnp::code_cvt(Argument))));
+                std::make_shared<const Mamba::String>(fast_io::u8concat(fast_io::mnp::code_cvt(Argument)))
+            );
 
             fast_io::io::println(fast_io::mnp::code_cvt(SyntaxTree.Root()->ToString()));
 

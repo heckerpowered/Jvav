@@ -30,6 +30,7 @@ std::shared_ptr<const TypeSymbol> GetType(const std::shared_ptr<const Literal> V
         case LiteralType::Double:
         case LiteralType::Float:
         case LiteralType::Empty:
+        default:
             return TypeSymbol::Void;
     }
 }
