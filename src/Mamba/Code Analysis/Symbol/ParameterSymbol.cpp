@@ -5,7 +5,7 @@
 namespace Mamba
 {
     ParameterSymbol::ParameterSymbol(
-        const StringView Name,
+        const std::shared_ptr<const String> Name,
         const std::shared_ptr<const class TypeSymbol> Type,
         const std::size_t Oridinal
     ) noexcept :

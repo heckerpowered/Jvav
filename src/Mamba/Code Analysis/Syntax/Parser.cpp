@@ -86,7 +86,11 @@ namespace Mamba
 
         Diagnostics.ReportUnexpectedToken(Current()->Location(), Current()->Kind(), Kind);
         return std::make_shared<SyntaxToken>(
-            SyntaxTree, Kind, Current()->Position, std::make_shared<String>(), nullptr
+            SyntaxTree,
+            Kind,
+            Current()->Position,
+            std::make_shared<String>(),
+            nullptr
         );
     }
 
@@ -145,7 +149,13 @@ namespace Mamba
         const auto Body = ParseBlockStatement();
 
         return std::make_shared<FunctionDeclarationSyntax>(
-            SyntaxTree, FunctionKeyword, IdentifierToken, OpenParenthesisToken, Parameters, CloseParenthesisToken, Type,
+            SyntaxTree,
+            FunctionKeyword,
+            IdentifierToken,
+            OpenParenthesisToken,
+            Parameters,
+            CloseParenthesisToken,
+            Type,
             Body
         );
     }
@@ -247,7 +257,10 @@ namespace Mamba
 
         const auto CloseBraceToken = MatchToken(SyntaxKind::CloseBraceToken);
         return std::make_shared<const BlockStatementSyntax>(
-            SyntaxTree, OpenBraceToken, std::move(Statements), CloseBraceToken
+            SyntaxTree,
+            OpenBraceToken,
+            std::move(Statements),
+            CloseBraceToken
         );
     }
 
@@ -261,7 +274,12 @@ namespace Mamba
         const auto Equals = MatchToken(SyntaxKind::EqualsToken);
         const auto Initializer = ParseExpression();
         return std::make_shared<VariableDeclarationSyntax>(
-            SyntaxTree, Keyword, Identifier, TypeClause, Equals, Initializer
+            SyntaxTree,
+            Keyword,
+            Identifier,
+            TypeClause,
+            Equals,
+            Initializer
         );
     }
 
@@ -294,7 +312,13 @@ namespace Mamba
             OpenParenthesisToken ? MatchToken(SyntaxKind::CloseParenthesisToken) : nullptr;
         const auto ElseClause = ParseOptionalElseClause();
         return std::make_shared<const IfStatementSyntax>(
-            SyntaxTree, Keyword, OpenParenthesisToken, Condition, CloseParenthesisToken, Statement, ElseClause
+            SyntaxTree,
+            Keyword,
+            OpenParenthesisToken,
+            Condition,
+            CloseParenthesisToken,
+            Statement,
+            ElseClause
         );
     }
 
@@ -339,8 +363,16 @@ namespace Mamba
         const auto CloseParenthesisToken = MatchToken(SyntaxKind::CloseParenthesisToken);
         const auto Body = ParseStatement();
         return std::make_shared<ForStatementSyntax>(
-            SyntaxTree, Keyword, OpenParenthesisToken, InitStatement, InitStatementColonToken, Condition,
-            ConditionColonToken, Expression, CloseParenthesisToken, Body
+            SyntaxTree,
+            Keyword,
+            OpenParenthesisToken,
+            InitStatement,
+            InitStatementColonToken,
+            Condition,
+            ConditionColonToken,
+            Expression,
+            CloseParenthesisToken,
+            Body
         );
     }
 
@@ -475,7 +507,9 @@ namespace Mamba
         const auto IsTrue = Current()->Kind() == SyntaxKind::TrueKeyword;
         const auto KeywordToken = MatchToken(IsTrue ? SyntaxKind::TrueKeyword : SyntaxKind::FalseKeyword);
         return std::make_shared<const LiteralExpressionSyntax>(
-            SyntaxTree, KeywordToken, std::make_shared<const Literal>(IsTrue)
+            SyntaxTree,
+            KeywordToken,
+            std::make_shared<const Literal>(IsTrue)
         );
     }
 
@@ -508,7 +542,11 @@ namespace Mamba
         const auto Arguments = ParseArguments();
         const auto CloseParenthesisToken = MatchToken(SyntaxKind::CloseParenthesisToken);
         return std::make_shared<const CallExpressionSyntax>(
-            SyntaxTree, Identifier, OpenParenthesisToken, Arguments, CloseParenthesisToken
+            SyntaxTree,
+            Identifier,
+            OpenParenthesisToken,
+            Arguments,
+            CloseParenthesisToken
         );
     }
 
@@ -545,5 +583,4 @@ namespace Mamba
         const auto IdentifierToken = MatchToken(SyntaxKind::IdentifierToken);
         return std::make_shared<NameExpressionSyntax>(SyntaxTree, IdentifierToken);
     }
-
 } // namespace Mamba

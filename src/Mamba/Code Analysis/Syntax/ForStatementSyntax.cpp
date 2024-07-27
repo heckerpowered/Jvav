@@ -5,7 +5,7 @@
 
 namespace Mamba
 {
-    Mamba::ForStatementSyntax::ForStatementSyntax(
+    ForStatementSyntax::ForStatementSyntax(
         const std::shared_ptr<const class SyntaxTree> SyntaxTree,
         const std::shared_ptr<const class SyntaxToken> Keyword,
         const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
@@ -15,7 +15,8 @@ namespace Mamba
         const std::shared_ptr<const class SyntaxToken> ConditionColonToken,
         const std::shared_ptr<const class ExpressionSyntax> Expression,
         const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
-        const std::shared_ptr<const class StatementSyntax> Body) noexcept :
+        const std::shared_ptr<const class StatementSyntax> Body
+    ) noexcept :
         Super(SyntaxTree),
         Keyword(Keyword),
         OpenParenthesisToken(OpenParenthesisToken),

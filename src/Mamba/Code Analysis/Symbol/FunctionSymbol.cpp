@@ -2,8 +2,8 @@
 
 namespace Mamba
 {
-    Mamba::FunctionSymbol::FunctionSymbol(
-        const StringView Name,
+    FunctionSymbol::FunctionSymbol(
+        const std::shared_ptr<const String> Name,
         const std::span<std::shared_ptr<const class ParameterSymbol>> Parameters,
         const std::shared_ptr<const class TypeSymbol> Type,
         const NullableSharedPtr<const class FunctionDeclarationSyntax> Declaration
@@ -15,17 +15,18 @@ namespace Mamba
         Parameters(Parameters.begin(), Parameters.end())
 #endif
         ,
-        Declaration(Declaration)
+        Declaration(Declaration),
+        Type(Type)
     {
     }
 
     FunctionSymbol::FunctionSymbol(
-        const StringView Name,
+        const std::shared_ptr<const String> Name,
         std::vector<std::shared_ptr<const class ParameterSymbol>>&& Parameters,
         const std::shared_ptr<const class TypeSymbol> Type,
         const NullableSharedPtr<const class FunctionDeclarationSyntax> Declaration
     ) noexcept :
-        Super(Name), Parameters(std::move(Parameters)), Declaration(Declaration)
+        Super(Name), Parameters(std::move(Parameters)), Declaration(Declaration), Type(Type)
     {
     }
 

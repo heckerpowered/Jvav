@@ -15,7 +15,8 @@ namespace Mamba
         const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const SyntaxNode>>> Parameters,
         const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
         const NullableSharedPtr<const class TypeClauseSyntax> Type,
-        const std::shared_ptr<const class BlockStatementSyntax> Body) noexcept :
+        const std::shared_ptr<const class BlockStatementSyntax> Body
+    ) noexcept :
         Super(SyntaxTree),
         FunctionKeyword(FunctionKeyword),
         Identifier(Identifier),
