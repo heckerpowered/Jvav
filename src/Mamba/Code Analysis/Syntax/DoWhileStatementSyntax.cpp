@@ -9,12 +9,13 @@ namespace Mamba
         const std::shared_ptr<const class SyntaxToken> DoKeyword,
         const std::shared_ptr<const class StatementSyntax> Body,
         const std::shared_ptr<const class SyntaxToken> WhileKeyword,
-        const std::shared_ptr<const class ExpressionSyntax> Condition) noexcept :
+        const std::shared_ptr<const class ExpressionSyntax> Condition
+    ) noexcept :
         Super(SyntaxTree), DoKeyword(DoKeyword), Body(Body), WhileKeyword(WhileKeyword), Condition(Condition)
     {
     }
 
-    SyntaxKind Mamba::DoWhileStatementSyntax::Kind() const noexcept
+    SyntaxKind DoWhileStatementSyntax::Kind() const noexcept
     {
         return SyntaxKind::DoWhileStatement;
     }
