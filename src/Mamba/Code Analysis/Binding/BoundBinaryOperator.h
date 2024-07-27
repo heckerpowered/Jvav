@@ -39,7 +39,7 @@ namespace Mamba
         BoundBinaryOperator& operator=(BoundBinaryOperator&&) = delete;
 
     public:
-        const SyntaxKind SyntaxKind;
+        const enum SyntaxKind SyntaxKind;
         const BoundBinaryOperatorKind Kind;
         const std::shared_ptr<const class TypeSymbol> LeftType;
         const std::shared_ptr<const class TypeSymbol> RightType;

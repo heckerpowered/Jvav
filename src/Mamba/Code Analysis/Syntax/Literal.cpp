@@ -193,6 +193,7 @@ NullableSharedPtr<const Literal> Literal::operator+(const Literal& Other) const 
         case LiteralType::Character:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }

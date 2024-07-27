@@ -1,8 +1,10 @@
 #include "BoundLiteralExpression.h"
 
+#include <memory>
+
+#include "BoundConstant.h"
 #include "Literal.h"
 #include "TypeSymbol.h"
-#include <memory>
 
 using namespace Mamba;
 
@@ -28,6 +30,7 @@ std::shared_ptr<const TypeSymbol> GetType(const std::shared_ptr<const Literal> V
         case LiteralType::Double:
         case LiteralType::Float:
         case LiteralType::Empty:
+        default:
             return TypeSymbol::Void;
     }
 }
@@ -36,7 +39,7 @@ BoundLiteralExpression::BoundLiteralExpression(
     const std::shared_ptr<const SyntaxNode> Syntax,
     const std::shared_ptr<const Literal> Value
 ) noexcept :
-    Super(Syntax), PrivateType(GetType(Value)), Value(Value),
+    Super(Syntax), PrivateType(GetType(Value)), Value(Value)
 {
 }
 

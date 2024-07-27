@@ -24,7 +24,7 @@ namespace Mamba
         ) noexcept;
 
     public:
-        const SyntaxKind SyntaxKind;
+        const enum SyntaxKind SyntaxKind;
         const BoundUnaryOperatorKind Kind;
         const std::shared_ptr<const class TypeSymbol> OperandType;
         const std::shared_ptr<const class TypeSymbol> ResultType;

@@ -93,8 +93,12 @@ namespace Mamba
     {
         // Unexpected token 'Kind', Expected: 'ExpectedKind'.
         const auto Message = std::make_shared<const String>(Concat(
-            TEXT("Unexpected token '"), SyntaxFacts::GetText(Kind), TEXT("'"), TEXT("Expected: '"),
-            SyntaxFacts::ToString(ExpectedKind), TEXT("'.")
+            TEXT("Unexpected token '"),
+            SyntaxFacts::GetText(Kind),
+            TEXT("'"),
+            TEXT("Expected: '"),
+            SyntaxFacts::ToString(ExpectedKind),
+            TEXT("'.")
         ));
         ReportError(Location, Message);
     }
