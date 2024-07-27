@@ -9,11 +9,15 @@ namespace Mamba
     class Symbol
     {
     protected:
-        [[nodiscard]] Symbol(const StringView Name) noexcept;
+        [[nodiscard]] Symbol(const std::shared_ptr<const String> Name) noexcept;
 
     public:
-        const String Name;
+        const std::shared_ptr<const String> Name;
 
         [[nodiscard]] virtual SymbolKind Kind() const noexcept = 0;
+        [[nodiscard]] bool IsFunction() const noexcept;
+        [[nodiscard]] bool IsVariable() const noexcept;
+        [[nodiscard]] bool IsParameter() const noexcept;
+        [[nodiscard]] bool IsType() const noexcept;
     };
 } // namespace Mamba

@@ -5,7 +5,7 @@
 namespace Mamba
 {
     VariableSymbol::VariableSymbol(
-        const StringView Name,
+        const std::shared_ptr<const String> Name,
         const bool IsConstant,
         const std::shared_ptr<const class TypeSymbol> Type,
         const NullableSharedPtr<const class BoundConstant> Constant
