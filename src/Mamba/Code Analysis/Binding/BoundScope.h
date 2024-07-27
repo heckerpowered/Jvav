@@ -3,7 +3,6 @@
 #include <memory>
 #include <unordered_map>
 
-#include "FunctionSymbol.h"
 #include "MambaCore.h"
 
 namespace Mamba
@@ -28,20 +27,11 @@ namespace Mamba
         std::vector<std::shared_ptr<const class Symbol>> Lookup(const std::shared_ptr<const String> Name
         ) const noexcept;
 
-        template<typename T>
-        std::vector<std::shared_ptr<const T>> Lookup(const std::shared_ptr<const String> Name) noexcept
-            requires std::is_base_of_v<Symbol, T>
-        {
-            return Lookup(Name)
-                 | std::views::transform([](auto Symbol) { return std::dynamic_pointer_cast<const T>(Symbol); })
-                 | std::views::filter([](auto Symbol) { return Symbol != nullptr; }) | std::ranges::to<std::vector>();
-        }
-
         std::vector<std::shared_ptr<const class VariableSymbol>> DeclaredVariables() const noexcept;
         std::vector<std::shared_ptr<const class FunctionSymbol>> DeclaredFunctions() const noexcept;
-        std::vector<std::shared_ptr<const class FunctionSymbol>> DeclaredTypes() const noexcept;
-        std::vector<std::shared_ptr<const class FunctionSymbol>> DeclaredParameters() const noexcept;
-        std::vector<std::shared_ptr<const class FunctionSymbol>> DeclaredSymbols() const noexcept;
+        std::vector<std::shared_ptr<const class TypeSymbol>> DeclaredTypes() const noexcept;
+        std::vector<std::shared_ptr<const class ParameterSymbol>> DeclaredParameters() const noexcept;
+        std::vector<std::shared_ptr<const class Symbol>> DeclaredSymbols() const noexcept;
 
         NullableSharedPtr<const BoundScope> Parent;
     };

@@ -1,21 +1,19 @@
 #include "BoundScope.h"
-#include "FunctionSymbol.h"
-#include "TypeSymbol.h"
+
 #include <memory>
 #include <ranges>
+
+#include "FunctionSymbol.h"
+#include "ParameterSymbol.h"
+#include "TypeSymbol.h"
 
 using namespace Mamba;
 
 BoundScope::BoundScope(const NullableSharedPtr<const BoundScope> Parent) noexcept : Parent(Parent) {}
 
-bool BoundScope::Declare(const std::shared_ptr<const Symbol> Symbol) noexcept
+void BoundScope::Declare(const std::shared_ptr<const Symbol> Symbol) noexcept
 {
-    if (Symbols.contains(Symbol->Name))
-    {
-        return false;
-    }
-
-    Symbols.emplace(Symbol->Name, Symbol);
+    Symbols[Symbol->Name].emplace_back(Symbol);
 }
 
 std::vector<std::shared_ptr<const VariableSymbol>> BoundScope::LookupVariable(const std::shared_ptr<const String> Name
@@ -61,12 +59,34 @@ std::vector<std::shared_ptr<const Symbol>> BoundScope::Lookup(const std::shared_
     return Parent ? Parent->Lookup(Name) : std::vector<std::shared_ptr<const Symbol>>{};
 }
 
-std::vector<std::shared_ptr<const class VariableSymbol>> Mamba::BoundScope::DeclaredVariables() const noexcept
+std::vector<std::shared_ptr<const VariableSymbol>> BoundScope::DeclaredVariables() const noexcept
 {
-    return std::vector<std::shared_ptr<const class VariableSymbol>>();
+    return Symbols | std::views::values | std::views::join
+         | std::views::filter([](auto Symbol) { return Symbol->IsVariable(); })
+         | std::views::transform([](auto Symbol) { return std::static_pointer_cast<const VariableSymbol>(Symbol); })
+         | std::ranges::to<std::vector>();
 }
 
-std::vector<std::shared_ptr<const class FunctionSymbol>> Mamba::BoundScope::DeclaredFunctions() const noexcept
+std::vector<std::shared_ptr<const FunctionSymbol>> BoundScope::DeclaredFunctions() const noexcept
 {
-    return std::vector<std::shared_ptr<const class FunctionSymbol>>();
+    return Symbols | std::views::values | std::views::join
+         | std::views::filter([](auto Symbol) { return Symbol->IsFunction(); })
+         | std::views::transform([](auto Symbol) { return std::static_pointer_cast<const FunctionSymbol>(Symbol); })
+         | std::ranges::to<std::vector>();
+}
+
+std::vector<std::shared_ptr<const TypeSymbol>> BoundScope::DeclaredTypes() const noexcept
+{
+    return Symbols | std::views::values | std::views::join
+         | std::views::filter([](auto Symbol) { return Symbol->IsType(); })
+         | std::views::transform([](auto Symbol) { return std::static_pointer_cast<const TypeSymbol>(Symbol); })
+         | std::ranges::to<std::vector>();
+}
+
+std::vector<std::shared_ptr<const ParameterSymbol>> BoundScope::DeclaredParameters() const noexcept
+{
+    return Symbols | std::views::values | std::views::join
+         | std::views::filter([](auto Symbol) { return Symbol->IsParameter(); })
+         | std::views::transform([](auto Symbol) { return std::static_pointer_cast<const ParameterSymbol>(Symbol); })
+         | std::ranges::to<std::vector>();
 }
