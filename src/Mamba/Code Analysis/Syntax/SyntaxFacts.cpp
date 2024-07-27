@@ -187,7 +187,7 @@ namespace Mamba
                 return TEXT("if");
             case SyntaxKind::LetKeyword:
                 return TEXT("let");
-            case Mamba::SyntaxKind::VarKeyword:
+            case SyntaxKind::VarKeyword:
                 return TEXT("var");
             case SyntaxKind::ReturnKeyword:
                 return TEXT("return");
