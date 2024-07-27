@@ -30,9 +30,16 @@ namespace Mamba
 
         LiteralValue() noexcept;
         LiteralValue(const StringView String) noexcept;
+        LiteralValue(const std::int8_t Integer) noexcept;
+        LiteralValue(const std::int16_t Integer) noexcept;
         LiteralValue(const std::int32_t Integer) noexcept;
         LiteralValue(const std::int64_t Integer) noexcept;
+        LiteralValue(const std::uint8_t Integer) noexcept;
+        LiteralValue(const std::uint16_t Integer) noexcept;
+        LiteralValue(const std::uint32_t Integer) noexcept;
         LiteralValue(const std::uint64_t Integer) noexcept;
+        LiteralValue(const float Value) noexcept;
+        LiteralValue(const double Value) noexcept;
         LiteralValue(const bool Value) noexcept;
 
     private:
@@ -79,10 +86,37 @@ namespace Mamba
         ::std::optional<std::shared_ptr<const String>> StringValue;
 
         [[nodiscard]] Literal() noexcept;
-        [[nodiscard]] Literal(const std::shared_ptr<String> String) noexcept;
+        [[nodiscard]] Literal(const std::shared_ptr<const String> String) noexcept;
+        [[nodiscard]] Literal(const std::int8_t Integer) noexcept;
         [[nodiscard]] Literal(const std::int32_t Integer) noexcept;
         [[nodiscard]] Literal(const std::int64_t Integer) noexcept;
+        [[nodiscard]] Literal(const std::uint8_t Integer) noexcept;
+        [[nodiscard]] Literal(const std::uint16_t Integer) noexcept;
+        [[nodiscard]] Literal(const std::uint32_t Integer) noexcept;
         [[nodiscard]] Literal(const std::uint64_t Integer) noexcept;
+        [[nodiscard]] Literal(const Char Character) noexcept;
+        [[nodiscard]] Literal(const float Value) noexcept;
+        [[nodiscard]] Literal(const double Value) noexcept;
         [[nodiscard]] Literal(const bool Value) noexcept;
+
+        static NullableSharedPtr<const Literal> Negative(const Literal& Literal) noexcept;
+        static NullableSharedPtr<const Literal> LogicalNegative(const Literal& Literal) noexcept;
+        static NullableSharedPtr<const Literal> OnesComplement(const Literal& Literal) noexcept;
+
+        NullableSharedPtr<const Literal> operator+(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator-(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator*(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator/(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator&(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator|(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator^(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator&&(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator||(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator==(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator!=(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator<(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator<=(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator>(const Literal& Other) const noexcept;
+        NullableSharedPtr<const Literal> operator>=(const Literal& Other) const noexcept;
     };
 } // namespace Mamba
