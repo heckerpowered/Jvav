@@ -20,7 +20,12 @@ BoundNodeKind BoundBinaryExpression::Kind() const noexcept
     return BoundNodeKind::BinaryExpression;
 }
 
-NullableSharedPtr<const class BoundConstant> BoundBinaryExpression::ConstantValue() const noexcept
+std::shared_ptr<const TypeSymbol> BoundBinaryExpression::Type() const noexcept
+{
+    return Operator.Type;
+}
+
+NullableSharedPtr<const BoundConstant> BoundBinaryExpression::ConstantValue() const noexcept
 {
     return ConstantFolding::Fold(Left, Operator, Right);
 }
