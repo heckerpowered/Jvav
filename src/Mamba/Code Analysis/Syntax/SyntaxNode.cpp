@@ -14,7 +14,8 @@
 
 namespace Mamba
 {
-    SyntaxNode::SyntaxNode(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept : SyntaxTree(SyntaxTree)
+    SyntaxNode::SyntaxNode(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept :
+        SyntaxTree(SyntaxTree)
     {
     }
 
@@ -109,6 +110,7 @@ namespace Mamba
                 }
                 case LiteralType::Character:
                     Stream.put(Token->Value->Value.CharacterValue);
+                    break;
                 case LiteralType::UnsignedByte:
                 {
                     const auto String = Concat(static_cast<std::uint32_t>(Token->Value->Value.UnsignedByteValue));

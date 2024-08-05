@@ -18,6 +18,8 @@ namespace Mamba
         ReturnStatement,
         ExpressionStatement,
 
+        FunctionDeclaration,
+
         // Expressions
         ErrorExpression,
         LiteralExpression,
@@ -28,5 +30,7 @@ namespace Mamba
         BinaryExpression,
         CallExpression,
         ConversionExpression,
+
+        CompilationUnit
     };
 } // namespace Mamba

@@ -8,7 +8,11 @@
 
 namespace Mamba
 {
-    class BoundScope
+    // The bound scope associates symbols with scopes. Symbols with the same name may be found during name lookup.
+    // Function symbols with the same name form an overload set. However, when the multi non-function symbols with the
+    // same name were found during name lookup, the name is ambiguous and the program is ill-formed, diagnostics are
+    // required.
+    class BoundScope : public std::enable_shared_from_this<BoundScope>
     {
         std::unordered_map<std::shared_ptr<const String>, std::vector<std::shared_ptr<const class Symbol>>> Symbols;
 
@@ -16,6 +20,7 @@ namespace Mamba
         [[nodiscard]] BoundScope(const NullableSharedPtr<const BoundScope> Parent) noexcept;
 
         void Declare(const std::shared_ptr<const class Symbol> Symbol) noexcept;
+        std::shared_ptr<BoundScope> DeclareScope() noexcept;
 
         std::vector<std::shared_ptr<const class VariableSymbol>> LookupVariable(const std::shared_ptr<const String> Name
         ) const noexcept;
@@ -35,5 +40,6 @@ namespace Mamba
         std::vector<std::shared_ptr<const class Symbol>> DeclaredSymbols() const noexcept;
 
         NullableSharedPtr<const BoundScope> Parent;
+        std::vector<std::shared_ptr<const BoundScope>> Children;
     };
 }; // namespace Mamba

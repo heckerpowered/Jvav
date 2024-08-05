@@ -21,7 +21,8 @@ namespace Mamba
             const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>> Parameters,
             const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
             const NullableSharedPtr<const class TypeClauseSyntax> Type,
-            const std::shared_ptr<const class BlockStatementSyntax> Body) noexcept;
+            const std::shared_ptr<const class BlockStatementSyntax> Body
+        ) noexcept;
 
         SyntaxKind Kind() const noexcept override;
         std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;

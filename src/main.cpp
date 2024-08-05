@@ -2,6 +2,7 @@
 #include <fast_io.h>
 #include <memory>
 #include <print>
+#include <ranges>
 
 #include "Diagnostic.h"
 #include "MambaCore.h"
@@ -9,15 +10,10 @@
 
 #include "CompilationUnitSyntax.h"
 
+using namespace Mamba;
+
 int main(int argc, char* argv[])
 {
-    auto vec = std::vector<char>();
-#if __cpp_lib_containers_ranges == 202202L
-    auto str = std::string(std::from_range, vec);
-#else
-    auto str = std::string(vec.begin(), vec.end());
-#endif
-
     try
     {
         for (auto i = 1; i < argc; ++i)

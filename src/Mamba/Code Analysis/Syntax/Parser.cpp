@@ -52,6 +52,7 @@ namespace Mamba
                 Tokens.emplace_back(Token);
             }
         } while (Token->Kind() != SyntaxKind::EndOfFileToken);
+        Diagnostics = std::move(Lexer.Diagnostics);
     }
 
     std::shared_ptr<const SyntaxToken> Parser::Peek(const std::size_t Offset) noexcept
@@ -165,17 +166,18 @@ namespace Mamba
         auto NodesAndSeperators = std::vector<std::shared_ptr<const SyntaxNode>>();
 
         auto ParseNextParameter = true;
-        while (ParseNextParameter && Current()->Kind() != SyntaxKind::CloseParenthesisToken
-               && Current()->Kind() != SyntaxKind::EndOfFileToken)
+        while (ParseNextParameter && Current()->Kind() != SyntaxKind::CloseParenthesisToken && Current()->Kind() != SyntaxKind::EndOfFileToken)
         {
             NodesAndSeperators.emplace_back(
-                Hatcher([&] { return std::dynamic_pointer_cast<const SyntaxNode>(ParseParameter()); })
+                Hatcher([&]
+                        { return std::dynamic_pointer_cast<const SyntaxNode>(ParseParameter()); })
             );
 
             if (Current()->Kind() == SyntaxKind::CommaToken)
             {
                 NodesAndSeperators.emplace_back(Hatcher(
-                    [&] { return std::dynamic_pointer_cast<const SyntaxNode>(MatchToken(SyntaxKind::CommaToken)); }
+                    [&]
+                    { return std::dynamic_pointer_cast<const SyntaxNode>(MatchToken(SyntaxKind::CommaToken)); }
                 ));
             }
             else
@@ -240,7 +242,8 @@ namespace Mamba
         {
             const auto StartToken = Current();
 
-            Statements.emplace_back(Hatcher([&] { return ParseStatement(); }));
+            Statements.emplace_back(Hatcher([&]
+                                            { return ParseStatement(); }));
 
             // If ParseStatement() did not consume any tokens,
             // we need to skip the current token and continue
@@ -305,8 +308,8 @@ namespace Mamba
         const auto Keyword = MatchToken(SyntaxKind::IfKeyword);
         const auto Condition = ParseExpression();
         const auto OpenParenthesisToken = Current()->Kind() == SyntaxKind::OpenParenthesisToken
-                                            ? MatchToken(SyntaxKind::OpenParenthesisToken)
-                                            : nullptr;
+                                              ? MatchToken(SyntaxKind::OpenParenthesisToken)
+                                              : nullptr;
         const auto Statement = ParseStatement();
         const auto CloseParenthesisToken =
             OpenParenthesisToken ? MatchToken(SyntaxKind::CloseParenthesisToken) : nullptr;
@@ -556,17 +559,18 @@ namespace Mamba
         auto NodesAndSeperators = std::vector<std::shared_ptr<const SyntaxNode>>();
 
         auto ParseNextArgument = true;
-        while (ParseNextArgument && Current()->Kind() != SyntaxKind::CloseParenthesisToken
-               && Current()->Kind() != SyntaxKind::EndOfFileToken)
+        while (ParseNextArgument && Current()->Kind() != SyntaxKind::CloseParenthesisToken && Current()->Kind() != SyntaxKind::EndOfFileToken)
         {
             NodesAndSeperators.emplace_back(
-                Hatcher([&] { return std::dynamic_pointer_cast<const SyntaxNode>(ParseExpression()); })
+                Hatcher([&]
+                        { return std::dynamic_pointer_cast<const SyntaxNode>(ParseExpression()); })
             );
 
             if (Current()->Kind() == SyntaxKind::CommaToken)
             {
                 NodesAndSeperators.emplace_back(Hatcher(
-                    [&] { return std::dynamic_pointer_cast<const SyntaxNode>(MatchToken(SyntaxKind::CommaToken)); }
+                    [&]
+                    { return std::dynamic_pointer_cast<const SyntaxNode>(MatchToken(SyntaxKind::CommaToken)); }
                 ));
             }
             else

@@ -17,6 +17,7 @@ namespace Mamba
         ) noexcept;
 
         BoundNodeKind Kind() const noexcept override;
+        virtual std::shared_ptr<const class TypeSymbol> Type() const noexcept override;
 
         const std::shared_ptr<const class VariableSymbol> Variable;
     };
