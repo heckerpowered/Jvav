@@ -50,8 +50,8 @@ namespace Mamba
 #endif
 
     static_assert(
-        std::is_same_v<Char, char> || std::is_same_v<Char, wchar_t> || std::is_same_v<Char, char8_t>
-            || std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>,
+        std::is_same_v<Char, char> || std::is_same_v<Char, wchar_t> || std::is_same_v<Char, char8_t> ||
+            std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>,
         "Unsupported character type"
     );
 
@@ -61,18 +61,21 @@ namespace Mamba
     // Always same as std::shared_ptr<T>, but semantically nullable (although shared_ptr is also nullable)
     // Use NullableSharedPtr when you want to represent a shared_ptr with a nullable value.
     // All shared_ptr are considered valid by default in this project.
-    template<typename T> using NullableSharedPtr = std::shared_ptr<T>;
+    template<typename T>
+    using NullableSharedPtr = std::shared_ptr<T>;
 
     // Always same as T*, but semantically nullable (although pointer is also nullable)
     // Use NullablePointer when you want to represent a pointer with a nullable value.
     // All pointers are considered valid by default in this project.
-    template<typename T> using NullablePointer = T*;
+    template<typename T>
+    using NullablePointer = T*;
 
     namespace Private
     {
     } // namespace Private
 
-    template<typename... T> constexpr String Concat(T&&... Args)
+    template<typename... T>
+    constexpr String Concat(T&&... Args)
     {
         if constexpr (std::is_same_v<Char, char>)
         {
@@ -98,7 +101,8 @@ namespace Mamba
         std::unreachable();
     }
 
-    template<typename TargetType, typename... ArgumentTypes> constexpr void To(ArgumentTypes&&... Arguments)
+    template<typename TargetType, typename... ArgumentTypes>
+    constexpr void To(ArgumentTypes&&... Arguments)
     {
         if constexpr (std::is_same_v<Char, char>)
         {
@@ -127,7 +131,8 @@ namespace Mamba
     // Hatcher stores a callable object, so that the result of the call can be emplace constructed into a container by
     // copy elision, the container must support adding new elements by forwarding arguments to the constructor
     // (emplace).
-    template<typename T> struct Hatcher
+    template<typename T>
+    struct Hatcher
     {
         T Expression;
 
@@ -158,7 +163,8 @@ namespace Mamba
 
 #ifdef __apple_build_version__
     // Potential compiler bug: Apple clang needs deduction guide to use Hatcher
-    template<typename T> Hatcher(T) -> Hatcher<T>;
+    template<typename T>
+    Hatcher(T) -> Hatcher<T>;
 #endif
 
 } // namespace Mamba

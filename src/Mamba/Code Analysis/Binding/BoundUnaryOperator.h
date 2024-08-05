@@ -32,6 +32,7 @@ namespace Mamba
     private:
         static BoundUnaryOperator Operators[];
 
+    public:
         // when the return value is not null, the life time of the object lasts to the end of the program
         static NullablePointer<const BoundUnaryOperator>
             Bind(const enum SyntaxKind SyntaxKind, const std::shared_ptr<const class TypeSymbol> OperandType) noexcept;

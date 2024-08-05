@@ -9,8 +9,12 @@ namespace Mamba
     template<typename T, template<typename...> typename Container = std::vector>
     class SeperatedSyntaxList : Container<T>
     {
-        [[nodiscard]] constexpr Container<T> SkipSeperators(Container<T>&& NodesAndSeparators) const noexcept
+        [[nodiscard]] constexpr Container<T> SkipSeperators(const Container<T>& NodesAndSeparators) const noexcept
         {
+#if __cpp_lib_ranges_enumerate == 202302L
+            NodesAndSeparators | std::views::enumerate;
+#endif
+
             auto Result = Container<T>(NodesAndSeparators.size() / 2);
 #if __cpp_size_t_suffix == 202011L
             for (auto Index = 0uz; Index < NodesAndSeparators.size() / 2; ++Index)
@@ -18,7 +22,7 @@ namespace Mamba
             for (auto Index = std::size_t(); Index < NodesAndSeparators.size() / 2; ++Index)
 #endif
             {
-                Result[Index] = std::move(NodesAndSeparators[Index * 2]);
+                Result[Index] = NodesAndSeparators[Index * 2];
             }
             return Result;
         }

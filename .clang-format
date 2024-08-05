@@ -42,7 +42,7 @@ AlignConsecutiveShortCaseStatements:
   AlignCaseColons: true
 
 AlignEscapedNewlines: Left
-AlignOperands: AlignAfterOperator
+AlignOperands: Align
 AlignTrailingComments:
   Kind: Always
   OverEmptyLines: 0
@@ -81,7 +81,7 @@ BracedInitializerIndentWidth: 4
 BreakAdjacentStringLiterals: true
 BreakAfterAttributes: Leave
 # BreakAfterReturnType: Automatic
-BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Allman
 BreakBeforeConceptDeclarations: Allowed
 BreakBeforeInlineASMColon: OnlyMultiline
@@ -89,7 +89,7 @@ BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: AfterColon
 BreakInheritanceList: AfterComma
 BreakStringLiterals: true
-ColumnLimit: 120
+ColumnLimit: 0
 CompactNamespaces: true
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4

@@ -6,7 +6,7 @@ namespace Mamba
         const std::shared_ptr<const String> Name,
         const std::span<std::shared_ptr<const class ParameterSymbol>> Parameters,
         const std::shared_ptr<const class TypeSymbol> Type,
-        const NullableSharedPtr<const class FunctionDeclarationSyntax> Declaration
+        const std::shared_ptr<const class BoundFunctionDeclaration> BoundDeclaration
     ) noexcept :
         Super(Name),
 #if __cpp_lib_containers_ranges == 202202L
@@ -15,7 +15,7 @@ namespace Mamba
         Parameters(Parameters.begin(), Parameters.end())
 #endif
         ,
-        Declaration(Declaration),
+        BoundDeclaration(BoundDeclaration),
         Type(Type)
     {
     }
@@ -24,9 +24,9 @@ namespace Mamba
         const std::shared_ptr<const String> Name,
         std::vector<std::shared_ptr<const class ParameterSymbol>>&& Parameters,
         const std::shared_ptr<const class TypeSymbol> Type,
-        const NullableSharedPtr<const class FunctionDeclarationSyntax> Declaration
+        const std::shared_ptr<const class BoundFunctionDeclaration> BoundDeclaration
     ) noexcept :
-        Super(Name), Parameters(std::move(Parameters)), Declaration(Declaration), Type(Type)
+        Super(Name), Parameters(std::move(Parameters)), BoundDeclaration(BoundDeclaration), Type(Type)
     {
     }
 

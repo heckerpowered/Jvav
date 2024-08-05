@@ -34,6 +34,11 @@ namespace Mamba
             const SyntaxKind Kind,
             const SyntaxKind ExpectedKind
         ) noexcept;
+
+        void ReportDiscardExpressionValue(const TextLocation Location) noexcept;
+        void ReportVariableAlreadyDeclared(const TextLocation Location, const StringView Name) noexcept;
+        void ReportUnreachableCode(const TextLocation Location) noexcept;
+        void ReportUnreachableCode(const std::shared_ptr<const class SyntaxNode> Node) noexcept;
     };
 
 } // namespace Mamba

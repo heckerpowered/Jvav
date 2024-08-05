@@ -119,4 +119,5 @@ NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
     }
 
     std::unreachable();
+    return {};
 }

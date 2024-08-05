@@ -10,6 +10,7 @@ namespace Mamba
     {
     protected:
         [[nodiscard]] Symbol(const std::shared_ptr<const String> Name) noexcept;
+        virtual ~Symbol() = default;
 
     public:
         const std::shared_ptr<const String> Name;
