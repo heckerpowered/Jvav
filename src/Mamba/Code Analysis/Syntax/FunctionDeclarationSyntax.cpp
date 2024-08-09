@@ -41,6 +41,10 @@ namespace Mamba
         Children.emplace_back(FunctionKeyword);
         Children.emplace_back(Identifier);
         Children.emplace_back(OpenParenthesisToken);
+        for (auto Parameter : Parameters->Nodes())
+        {
+            Children.emplace_back(Parameter);
+        }
         Children.emplace_back(CloseParenthesisToken);
         if (Type)
         {

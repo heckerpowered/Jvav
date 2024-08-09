@@ -1,4 +1,5 @@
 #include "FunctionSymbol.h"
+#include "fast_io.h"
 
 namespace Mamba
 {
@@ -18,6 +19,7 @@ namespace Mamba
         BoundDeclaration(BoundDeclaration),
         Type(Type)
     {
+        fast_io::io::perrln("parameter count: ", this->Parameters.size());
     }
 
     FunctionSymbol::FunctionSymbol(
@@ -28,6 +30,7 @@ namespace Mamba
     ) noexcept :
         Super(Name), Parameters(std::move(Parameters)), BoundDeclaration(BoundDeclaration), Type(Type)
     {
+        fast_io::io::perrln("parameter count: ", this->Parameters.size());
     }
 
     SymbolKind FunctionSymbol::Kind() const noexcept

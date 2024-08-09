@@ -40,6 +40,8 @@
 #include "ElseClauseSyntax.h"
 #include "ExpressionStatementSyntax.h"
 #include "ExpressionSyntax.h"
+#include "fast_io_core_impl/codecvt/general.h"
+#include "fast_io_core_impl/integers/impl.h"
 #include "ForStatementSyntax.h"
 #include "FunctionDeclarationSyntax.h"
 #include "FunctionSymbol.h"
@@ -64,7 +66,7 @@
 
 using namespace Mamba;
 
-std::shared_ptr<const BoundCompilationUnit> Binding::BindCompilationUnit() noexcept
+std::shared_ptr<const BoundCompilationUnit> Binder::BindCompilationUnit() noexcept
 {
     const auto Root = SyntaxTree->Root();
     for (auto&& Member : Root->Members)
@@ -72,10 +74,18 @@ std::shared_ptr<const BoundCompilationUnit> Binding::BindCompilationUnit() noexc
         BindMember(Member);
     }
 
+#ifdef DEBUG
+    if (Scope->Parent)
+    {
+        fast_io::io::perrln("warning: the scope of compilation unit is not the global scope");
+    }
+
+    fast_io::io::perrln("Binding compilation unit, ", Scope->DeclaredSymbols().size(), " symbols");
+#endif
     return std::make_shared<BoundCompilationUnit>(Root, Scope);
 }
 
-void Binding::BindMember(const std::shared_ptr<const class MemberSyntax> Member) noexcept
+void Binder::BindMember(const std::shared_ptr<const class MemberSyntax> Member) noexcept
 {
     if (const auto FunctionDeclaration = std::dynamic_pointer_cast<const FunctionDeclarationSyntax>(Member))
     {
@@ -83,23 +93,24 @@ void Binding::BindMember(const std::shared_ptr<const class MemberSyntax> Member)
     }
 }
 
-void Binding::BindFunctionDeclaration(const std::shared_ptr<const FunctionDeclarationSyntax> FunctionDeclaration) noexcept
+void Binder::BindFunctionDeclaration(const std::shared_ptr<const FunctionDeclarationSyntax> FunctionDeclaration) noexcept
 {
-    const auto Body = BindStatement(FunctionDeclaration->Body);
-    const auto FunctionScope = Scope->DeclareScope();
-    const auto BoundFunctionDeclaration = std::make_shared<class BoundFunctionDeclaration>(FunctionDeclaration, Body, FunctionScope);
+    auto FunctionScope = EnterScope();
 
-    DeclareFunction(FunctionDeclaration, FunctionScope, BoundFunctionDeclaration);
+    const auto Body = BindStatement(FunctionDeclaration->Body);
+    const auto BoundFunctionDeclaration = std::make_shared<class BoundFunctionDeclaration>(FunctionDeclaration, Body, Scope);
+
+    FunctionScope.PreLeave();
+    DeclareFunction(FunctionDeclaration, BoundFunctionDeclaration);
 }
 
-void Binding::DeclareFunction(
+void Binder::DeclareFunction(
     const std::shared_ptr<const FunctionDeclarationSyntax> FunctionDeclaration,
-    const std::shared_ptr<BoundScope> FunctionScope,
     const std::shared_ptr<const BoundFunctionDeclaration> BoundFunctionDeclaration
 ) noexcept
 {
     const auto Name = FunctionDeclaration->Identifier->Text;
-    auto Parameters = BindParameter(FunctionScope, FunctionDeclaration);
+    auto Parameters = BindParameter(FunctionDeclaration);
     const auto Type = BindTypeClause(FunctionDeclaration->Type);
     const auto FunctionSymbol = std::make_shared<class FunctionSymbol>(
         Name,
@@ -108,11 +119,12 @@ void Binding::DeclareFunction(
         BoundFunctionDeclaration
     );
 
-    Scope->Declare(std::dynamic_pointer_cast<const Symbol>(FunctionSymbol));
+    fast_io::io::perrln("Declaring function in scope ", fast_io::mnp::pointervw(&*Scope));
+    fast_io::io::perrln("Bound parameter count: ", Parameters.size());
+    Scope->Declare(FunctionSymbol);
 }
 
-std::vector<std::shared_ptr<const ParameterSymbol>> Binding::BindParameter(
-    const std::shared_ptr<class BoundScope> FunctionScope,
+std::vector<std::shared_ptr<const ParameterSymbol>> Binder::BindParameter(
     const std::shared_ptr<const FunctionDeclarationSyntax> FunctionDeclaration
 ) noexcept
 {
@@ -130,13 +142,13 @@ std::vector<std::shared_ptr<const ParameterSymbol>> Binding::BindParameter(
         const auto Name = Parameter->Identifier->Text;
         const auto Type = std::make_shared<TypeSymbol>(Parameter->Type->Identifier->Text);
         const auto ParameterSymbol = std::make_shared<class ParameterSymbol>(Name, Type, Index);
-        FunctionScope->Declare(ParameterSymbol);
+        Scope->Declare(ParameterSymbol);
     }
 
     return ParameterSymbols;
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindStatement(const std::shared_ptr<const class StatementSyntax> Statement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindStatement(const std::shared_ptr<const class StatementSyntax> Statement) noexcept
 {
     const auto BoundStatement = BindStatementInternal(Statement);
     if (const auto BoundExpressionStatement = std::dynamic_pointer_cast<const class BoundExpressionStatement>(BoundStatement))
@@ -156,7 +168,7 @@ std::shared_ptr<const BoundStatement> Binding::BindStatement(const std::shared_p
     return BoundStatement;
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindStatementInternal(const std::shared_ptr<const class StatementSyntax> Statement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindStatementInternal(const std::shared_ptr<const class StatementSyntax> Statement) noexcept
 {
     switch (Statement->Kind())
     {
@@ -186,7 +198,7 @@ std::shared_ptr<const BoundStatement> Binding::BindStatementInternal(const std::
     }
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindBlockStatement(const std::shared_ptr<const BlockStatementSyntax> BlockStatement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindBlockStatement(const std::shared_ptr<const BlockStatementSyntax> BlockStatement) noexcept
 {
     auto BoundStatements = std::vector<std::shared_ptr<const BoundStatement>>();
     BoundStatements.reserve(BlockStatement->Statements.size());
@@ -202,13 +214,13 @@ std::shared_ptr<const BoundStatement> Binding::BindBlockStatement(const std::sha
     return std::make_shared<BoundBlockStatement>(BlockStatement, BoundStatements);
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindExpressionStatement(const std::shared_ptr<const ExpressionStatementSyntax> ExpressionStatement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindExpressionStatement(const std::shared_ptr<const ExpressionStatementSyntax> ExpressionStatement) noexcept
 {
     const auto Expression = BindExpression(ExpressionStatement->Expression);
     return std::make_shared<BoundExpressionStatement>(ExpressionStatement, Expression);
 }
 
-std::shared_ptr<const BoundExpression> Binding::BindExpression(const std::shared_ptr<const ExpressionSyntax> Expression) noexcept
+std::shared_ptr<const BoundExpression> Binder::BindExpression(const std::shared_ptr<const ExpressionSyntax> Expression) noexcept
 {
     switch (Expression->Kind())
     {
@@ -232,7 +244,7 @@ std::shared_ptr<const BoundExpression> Binding::BindExpression(const std::shared
     }
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindVariableDeclaration(const std::shared_ptr<const VariableDeclarationSyntax> VariableDeclaration) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindVariableDeclaration(const std::shared_ptr<const VariableDeclarationSyntax> VariableDeclaration) noexcept
 {
     const auto IsReadOnly = VariableDeclaration->Keyword->Kind() == SyntaxKind::LetKeyword;
     const auto Type = BindTypeClause(VariableDeclaration->TypeClause);
@@ -248,7 +260,7 @@ std::shared_ptr<const BoundStatement> Binding::BindVariableDeclaration(const std
     return std::make_shared<BoundVariableDeclaration>(VariableDeclaration, Variable, Initializer);
 }
 
-std::shared_ptr<const VariableSymbol> Binding::BindVariableDeclaration(
+std::shared_ptr<const VariableSymbol> Binder::BindVariableDeclaration(
     const std::shared_ptr<const SyntaxToken> Identifier,
     const bool IsReadOnly,
     const std::shared_ptr<const TypeSymbol> Type,
@@ -271,7 +283,7 @@ std::shared_ptr<const VariableSymbol> Binding::BindVariableDeclaration(
     return Variable;
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindIfStatement(const std::shared_ptr<const IfStatementSyntax> IfStatement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindIfStatement(const std::shared_ptr<const IfStatementSyntax> IfStatement) noexcept
 {
     const auto Condition = BindExpression(IfStatement->Condition);
 
@@ -293,7 +305,7 @@ std::shared_ptr<const BoundStatement> Binding::BindIfStatement(const std::shared
     return std::make_shared<BoundIfStatement>(IfStatement, Condition, ThenStatement, ElseStatement);
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindWhileStatement(const std::shared_ptr<const WhileStatementSyntax> WhileStatement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindWhileStatement(const std::shared_ptr<const WhileStatementSyntax> WhileStatement) noexcept
 {
     const auto WhileScope = EnterScope();
 
@@ -308,14 +320,14 @@ std::shared_ptr<const BoundStatement> Binding::BindWhileStatement(const std::sha
     return std::make_shared<BoundWhileStatement>(WhileStatement, Condition, Body);
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindDoWhileStatement(const std::shared_ptr<const DoWhileStatementSyntax> DoWhileStatement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindDoWhileStatement(const std::shared_ptr<const DoWhileStatementSyntax> DoWhileStatement) noexcept
 {
     const auto Body = BindStatement(DoWhileStatement->Body);
     const auto Condition = BindExpression(DoWhileStatement->Condition);
     return std::make_shared<BoundDoWhileStatement>(DoWhileStatement, Body, Condition);
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindForStatement(const std::shared_ptr<const ForStatementSyntax> ForStatement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindForStatement(const std::shared_ptr<const ForStatementSyntax> ForStatement) noexcept
 {
     const auto ForScope = EnterScope();
 
@@ -327,31 +339,31 @@ std::shared_ptr<const BoundStatement> Binding::BindForStatement(const std::share
     return std::make_shared<BoundForStatement>(ForStatement, InitStatement, Condition, Expression, Body);
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindBreakStatement(const std::shared_ptr<const BreakStatementSyntax> BreakStatement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindBreakStatement(const std::shared_ptr<const BreakStatementSyntax> BreakStatement) noexcept
 {
     fast_io::io::perrln("Failed to bind break statement: not implemented yet.");
     return {};
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindContinueStatement(const std::shared_ptr<const ContinueStatementSyntax> ContinueStatement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindContinueStatement(const std::shared_ptr<const ContinueStatementSyntax> ContinueStatement) noexcept
 {
     fast_io::io::perrln("Failed to bind continue statement: not implemented yet.");
     return {};
 }
 
-std::shared_ptr<const BoundStatement> Binding::BindReturnStatement(const std::shared_ptr<const ReturnStatementSyntax> ReturnStatement) noexcept
+std::shared_ptr<const BoundStatement> Binder::BindReturnStatement(const std::shared_ptr<const ReturnStatementSyntax> ReturnStatement) noexcept
 {
     // TODO: Diagnostics
     const auto Expression = BindExpression(ReturnStatement->Expression);
     return std::make_shared<BoundReturnStatement>(ReturnStatement, Expression);
 }
 
-std::shared_ptr<const BoundExpression> Binding::BindLiteralExpression(const std::shared_ptr<const LiteralExpressionSyntax> LiteralExpression) noexcept
+std::shared_ptr<const BoundExpression> Binder::BindLiteralExpression(const std::shared_ptr<const LiteralExpressionSyntax> LiteralExpression) noexcept
 {
     return std::make_shared<BoundLiteralExpression>(LiteralExpression, LiteralExpression->Value);
 }
 
-std::shared_ptr<const BoundExpression> Binding::BindNameExpression(const std::shared_ptr<const NameExpressionSyntax> NameExpression) noexcept
+std::shared_ptr<const BoundExpression> Binder::BindNameExpression(const std::shared_ptr<const NameExpressionSyntax> NameExpression) noexcept
 {
     const auto Name = NameExpression->IdentifierToken->Text;
     const auto Variables = Scope->LookupVariable(Name);
@@ -369,12 +381,12 @@ std::shared_ptr<const BoundExpression> Binding::BindNameExpression(const std::sh
     return std::make_shared<BoundVariableExpression>(NameExpression, Variables.front());
 }
 
-std::shared_ptr<const BoundExpression> Binding::BindParenthesizedExpression(const std::shared_ptr<const ParenthesizedExpressionSyntax> ParenthesizedExpression) noexcept
+std::shared_ptr<const BoundExpression> Binder::BindParenthesizedExpression(const std::shared_ptr<const ParenthesizedExpressionSyntax> ParenthesizedExpression) noexcept
 {
     return BindExpression(ParenthesizedExpression->Expression);
 }
 
-std::shared_ptr<const BoundExpression> Binding::BindUnaryExpression(const std::shared_ptr<const UnaryExpressionSyntax> UnaryExpression) noexcept
+std::shared_ptr<const BoundExpression> Binder::BindUnaryExpression(const std::shared_ptr<const UnaryExpressionSyntax> UnaryExpression) noexcept
 {
     const auto BoundOperand = BindExpression(UnaryExpression->Operand);
 
@@ -393,7 +405,7 @@ std::shared_ptr<const BoundExpression> Binding::BindUnaryExpression(const std::s
     return std::make_shared<BoundUnaryExpression>(UnaryExpression, *BoundOperator, BoundOperand);
 }
 
-std::shared_ptr<const BoundExpression> Binding::BindBinaryExpression(const std::shared_ptr<const BinaryExpressionSyntax> BinaryExpression) noexcept
+std::shared_ptr<const BoundExpression> Binder::BindBinaryExpression(const std::shared_ptr<const BinaryExpressionSyntax> BinaryExpression) noexcept
 {
     const auto BoundLeft = BindExpression(BinaryExpression->Left);
     const auto BoundRight = BindExpression(BinaryExpression->Right);
@@ -414,7 +426,7 @@ std::shared_ptr<const BoundExpression> Binding::BindBinaryExpression(const std::
     return std::make_shared<BoundBinaryExpression>(BinaryExpression, BoundLeft, *BoundOperator, BoundRight);
 }
 
-std::shared_ptr<const BoundExpression> Binding::BindAssignmentExpression(const std::shared_ptr<const AssignmentExpressionSyntax> AssignmentExpression) noexcept
+std::shared_ptr<const BoundExpression> Binder::BindAssignmentExpression(const std::shared_ptr<const AssignmentExpressionSyntax> AssignmentExpression) noexcept
 {
     const auto Name = AssignmentExpression->IdentifierToken->Text;
     const auto BoundExpression = BindExpression(AssignmentExpression->Expression);
@@ -464,7 +476,7 @@ std::shared_ptr<const BoundExpression> Binding::BindAssignmentExpression(const s
     return std::make_shared<BoundAssignmentExpression>(AssignmentExpression, Variable, BoundExpression);
 }
 
-std::shared_ptr<const BoundExpression> Binding::BindCallExpression(const std::shared_ptr<const CallExpressionSyntax> CallExpression) noexcept
+std::shared_ptr<const BoundExpression> Binder::BindCallExpression(const std::shared_ptr<const CallExpressionSyntax> CallExpression) noexcept
 {
     auto BoundArguments = std::vector<std::shared_ptr<const BoundExpression>>();
     BoundArguments.reserve(CallExpression->Arguments->Count());
@@ -485,6 +497,7 @@ std::shared_ptr<const BoundExpression> Binding::BindCallExpression(const std::sh
     if (FunctionSet.empty())
     {
         // TODO: Diagnostics - undeclaraed function
+        fast_io::io::perrln("Undeclaraed function '", fast_io::mnp::code_cvt(*CallExpression->Identifier->Text), "'");
         return {};
     }
 
@@ -494,6 +507,7 @@ std::shared_ptr<const BoundExpression> Binding::BindCallExpression(const std::sh
     if (CallExpression->Arguments->Count() != Function->Parameters.size())
     {
         // TODO: Report argument count mismatch
+        fast_io::io::perrln("Failed to bind call expression: argument count mismatch.");
         return {};
     }
 
@@ -502,7 +516,7 @@ std::shared_ptr<const BoundExpression> Binding::BindCallExpression(const std::sh
     return std::make_shared<BoundCallExpression>(CallExpression, Function, std::move(BoundArguments));
 }
 
-NullableSharedPtr<const TypeSymbol> Binding::BindTypeClause(const NullableSharedPtr<const TypeClauseSyntax> TypeClause) noexcept
+NullableSharedPtr<const TypeSymbol> Binder::BindTypeClause(const NullableSharedPtr<const TypeClauseSyntax> TypeClause) noexcept
 {
     if (!TypeClause)
     {
@@ -519,12 +533,17 @@ NullableSharedPtr<const TypeSymbol> Binding::BindTypeClause(const NullableShared
     return Types.front();
 }
 
-ScopeGuard Binding::EnterScope() noexcept
+ScopeGuard Binder::EnterScope() noexcept
 {
     return ScopeGuard(Scope);
 }
 
-Binding::Binding(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept :
-    SyntaxTree(SyntaxTree)
+void Binder::DeclareBuiltinFunctions() noexcept
 {
+}
+
+Binder::Binder(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept :
+    Scope(std::make_shared<BoundScope>(nullptr)), SyntaxTree(SyntaxTree)
+{
+    fast_io::io::perrln("Global scope: ", fast_io::mnp::pointervw(&*Scope));
 }

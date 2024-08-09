@@ -13,7 +13,7 @@ namespace Mamba
 
         [[nodiscard]] BoundBlockStatement(
             const std::shared_ptr<const class SyntaxNode> Syntax,
-            const std::span<std::shared_ptr<const class BoundStatement>> Statements
+            const std::span<const std::shared_ptr<const class BoundStatement>> Statements
         ) noexcept;
 
         [[nodiscard]] BoundBlockStatement(

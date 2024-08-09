@@ -12,5 +12,5 @@ BoundExpressionStatement::BoundExpressionStatement(
 
 BoundNodeKind BoundExpressionStatement::Kind() const noexcept
 {
-    return BoundNodeKind::AssignmentExpression;
+    return BoundNodeKind::ExpressionStatement;
 }

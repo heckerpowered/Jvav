@@ -13,6 +13,7 @@
 #include "ElseClauseSyntax.h"
 #include "ExpressionStatementSyntax.h"
 #include "ExpressionSyntax.h"
+#include "fast_io.h"
 #include "ForStatementSyntax.h"
 #include "FunctionDeclarationSyntax.h"
 #include "GlobalStatementSyntax.h"

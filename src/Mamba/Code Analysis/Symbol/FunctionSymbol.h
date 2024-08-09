@@ -27,9 +27,9 @@ namespace Mamba
             const std::shared_ptr<const class BoundFunctionDeclaration> BoundDeclaration
         ) noexcept;
 
-        const std::vector<std::shared_ptr<const class ParameterSymbol>> Parameters;
+        std::vector<std::shared_ptr<const class ParameterSymbol>> Parameters;
         std::shared_ptr<const class BoundFunctionDeclaration> BoundDeclaration;
-        const std::shared_ptr<const class TypeSymbol> Type;
+        std::shared_ptr<const class TypeSymbol> Type;
 
         SymbolKind Kind() const noexcept override;
     };

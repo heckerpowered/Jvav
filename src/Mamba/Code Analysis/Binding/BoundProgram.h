@@ -9,9 +9,9 @@ namespace Mamba
     class BoundProgram
     {
     public:
-        [[nodiscard]] BoundProgram(const std::span<std::shared_ptr<const class BoundCompilationUnit>> CompilationUnits;
+        [[nodiscard]] BoundProgram(const std::span<const std::shared_ptr<const class BoundCompilationUnit>> CompilationUnits
         ) noexcept;
-        [[nodiscard]] BoundProgram(std::vector<std::shared_ptr<const class BoundCompilationUnit>>&& CompilationUnits;
+        [[nodiscard]] BoundProgram(std::vector<std::shared_ptr<const class BoundCompilationUnit>>&& CompilationUnits
         ) noexcept;
 
         std::vector<std::shared_ptr<const class BoundCompilationUnit>> CompilationUnits;

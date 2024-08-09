@@ -1,5 +1,6 @@
 add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate")
+add_rules("mode.ubsan")
 
 add_requires("fast_io")
 
@@ -11,7 +12,7 @@ target("Jvav")
     add_packages("fast_io")
     set_toolchains("llvm")
     set_warnings("all", "extra")
-    add_includedirs("src/Mamba", "src/Mamba/Code Analysis", "src/Mamba/Code Analysis/Syntax", "src/Mamba/Code Analysis/Text", "src/Mamba/Code Analysis/Binding", "src/Mamba/Code Analysis/Symbol")
+    add_includedirs("src/Mamba", "src/Mamba/Code Analysis", "src/Mamba/Code Analysis/Syntax", "src/Mamba/Code Analysis/Text", "src/Mamba/Code Analysis/Binding", "src/Mamba/Code Analysis/Symbol", "src/Mamba/Code Analysis/Emit", "src/Mamba/Code Analysis/Linking")
     if is_os("macosx") then
         add_linkdirs("/opt/homebrew/opt/llvm/lib/c++") -- macOS compability
     end
@@ -20,10 +21,11 @@ target("Jvav")
     end
     if is_mode("debug") then
         add_cflags("-fsanitize=address")
-        add_ldflags("-fsanitize=address")
+        add_ldflags("-fsanitize=address", "-fsanitize=undefined")
         add_cxxflags("-fsanitize=address", "-fno-omit-frame-pointer", "-fno-optimize-sibling-calls")
         add_defines("DEBUG")
     end
+    add_cxxflags("-fms-extensions")
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io

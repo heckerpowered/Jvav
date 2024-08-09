@@ -8,9 +8,12 @@ namespace Mamba
     class ScopeGuard
     {
         std::shared_ptr<class BoundScope>& Scope;
+        bool Leaved : 1;
 
     public:
         [[nodiscard]] ScopeGuard(std::shared_ptr<class BoundScope>& Scope) noexcept;
         ~ScopeGuard() noexcept;
+
+        void PreLeave() noexcept;
     };
 }; // namespace Mamba

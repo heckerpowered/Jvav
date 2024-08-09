@@ -14,6 +14,7 @@ namespace Mamba
 #endif
         Emitter
     {
+    public:
         virtual std::vector<Diagnostic> Emit(const BoundProgram& Program, const StringView ModuleName) noexcept = 0;
     };
 } // namespace Mamba

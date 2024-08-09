@@ -16,7 +16,7 @@ namespace Mamba
         [[nodiscard]] BoundCallExpression(
             const std::shared_ptr<const class SyntaxNode> Syntax,
             const std::shared_ptr<const class FunctionSymbol> Function,
-            const std::span<std::shared_ptr<const class BoundExpression>> Arguments
+            const std::span<const std::shared_ptr<const class BoundExpression>> Arguments
         ) noexcept;
 
         [[nodiscard]] BoundCallExpression(
