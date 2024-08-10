@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
         auto Argument = fast_io::mnp::os_c_str(argv[i]);
         fast_io::native_file_loader Loader(Argument);
         const auto Text = String(Loader.begin(), Loader.end());
-        fast_io::io::perrln("Compiling: ", Argument);
+        fast_io::io::println("Compiling: ", Argument);
 
         const auto Source = std::make_shared<const SourceText>(
             SourceText::From(

@@ -27,7 +27,7 @@ namespace Mamba
         void EmitCompilationUnit(const BoundCompilationUnit& CompilationUnit) noexcept;
         void EmitScope(const BoundScope& Scope) noexcept;
         void EmitVariable(const VariableSymbol& VariableSymbol) noexcept;
-        void EmitFunction(const FunctionSymbol& Function) noexcept;
+        void EmitFunction(const std::shared_ptr<const FunctionSymbol> Function) noexcept;
         void EmitStatement(const BoundStatement& Statement) noexcept;
         void EmitNopStatement(const BoundNopStatement& Statement) noexcept;
         void EmitCallExpression(const BoundCallExpression& Expression) noexcept;

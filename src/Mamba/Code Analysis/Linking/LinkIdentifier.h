@@ -6,11 +6,10 @@ namespace Mamba
 {
     enum class LinkIdentifier : std::uint8_t
     {
-        Version,
         Function,
         Variable,
         Type,
-        ModuleName,
-        Instruction
+        Instruction,
+        String
     };
 } // namespace Mamba

@@ -74,14 +74,6 @@ std::shared_ptr<const BoundCompilationUnit> Binder::BindCompilationUnit() noexce
         BindMember(Member);
     }
 
-#ifdef DEBUG
-    if (Scope->Parent)
-    {
-        fast_io::io::perrln("warning: the scope of compilation unit is not the global scope");
-    }
-
-    fast_io::io::perrln("Binding compilation unit, ", Scope->DeclaredSymbols().size(), " symbols");
-#endif
     return std::make_shared<BoundCompilationUnit>(Root, Scope);
 }
 
@@ -119,8 +111,6 @@ void Binder::DeclareFunction(
         BoundFunctionDeclaration
     );
 
-    fast_io::io::perrln("Declaring function in scope ", fast_io::mnp::pointervw(&*Scope));
-    fast_io::io::perrln("Bound parameter count: ", Parameters.size());
     Scope->Declare(FunctionSymbol);
 }
 
@@ -545,5 +535,4 @@ void Binder::DeclareBuiltinFunctions() noexcept
 Binder::Binder(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept :
     Scope(std::make_shared<BoundScope>(nullptr)), SyntaxTree(SyntaxTree)
 {
-    fast_io::io::perrln("Global scope: ", fast_io::mnp::pointervw(&*Scope));
 }
