@@ -9,7 +9,7 @@ target("Jvav")
     add_headerfiles("src/**.h")
     set_languages("clatest", "c++latest")
     add_packages("fast_io")
-    set_toolchains("gcc-14")
+    set_toolchains("llvm")
     set_warnings("all", "extra")
     add_includedirs("src/Mamba", "src/Mamba/Code Analysis", "src/Mamba/Code Analysis/Syntax", "src/Mamba/Code Analysis/Text", "src/Mamba/Code Analysis/Binding", "src/Mamba/Code Analysis/Symbol", "src/Mamba/Code Analysis/Emit", "src/Mamba/Code Analysis/Linking")
     if is_os("macosx") then
