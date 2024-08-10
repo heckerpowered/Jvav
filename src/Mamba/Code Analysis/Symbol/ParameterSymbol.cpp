@@ -15,6 +15,6 @@ namespace Mamba
 
     SymbolKind ParameterSymbol::Kind() const noexcept
     {
-        return SymbolKind();
+        return SymbolKind::Parameter;
     }
 } // namespace Mamba

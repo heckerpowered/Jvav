@@ -1,4 +1,5 @@
 #include "FunctionSymbol.h"
+#include "fast_io.h"
 
 namespace Mamba
 {

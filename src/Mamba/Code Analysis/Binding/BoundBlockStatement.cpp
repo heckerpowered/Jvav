@@ -4,7 +4,7 @@ using namespace Mamba;
 
 BoundBlockStatement::BoundBlockStatement(
     const std::shared_ptr<const class SyntaxNode> Syntax,
-    const std::span<std::shared_ptr<const class BoundStatement>> Statements
+    const std::span<const std::shared_ptr<const class BoundStatement>> Statements
 ) noexcept :
     Super(Syntax),
 #if __cpp_lib_containers_ranges == 202202L

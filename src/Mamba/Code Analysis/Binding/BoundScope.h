@@ -14,7 +14,7 @@ namespace Mamba
     // required.
     class BoundScope : public std::enable_shared_from_this<BoundScope>
     {
-        std::unordered_map<std::shared_ptr<const String>, std::vector<std::shared_ptr<const class Symbol>>> Symbols;
+        std::unordered_map<String, std::vector<std::shared_ptr<const class Symbol>>> Symbols;
 
     public:
         [[nodiscard]] BoundScope(const NullableSharedPtr<const BoundScope> Parent) noexcept;
@@ -22,8 +22,7 @@ namespace Mamba
         void Declare(const std::shared_ptr<const class Symbol> Symbol) noexcept;
         std::shared_ptr<BoundScope> DeclareScope() noexcept;
 
-        std::vector<std::shared_ptr<const class VariableSymbol>> LookupVariable(const std::shared_ptr<const String> Name
-        ) const noexcept;
+        std::vector<std::shared_ptr<const class VariableSymbol>> LookupVariable(const std::shared_ptr<const String> Name) const noexcept;
         std::vector<std::shared_ptr<const class FunctionSymbol>> LookupFunction(const std::shared_ptr<const String> Name
         ) const noexcept;
         std::vector<std::shared_ptr<const class TypeSymbol>> LookupType(const std::shared_ptr<const String> Name

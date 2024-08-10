@@ -32,7 +32,8 @@ namespace Mamba
         const auto TokenLength = Position - Start;
 
         auto TokenText =
-            std::make_shared<const String>(Hatcher([&] { return String(SyntaxFacts::GetText(TokenKind)); }));
+            std::make_shared<const String>(Hatcher([&]
+                                                   { return String(SyntaxFacts::GetText(TokenKind)); }));
         if (TokenText->empty())
         {
             TokenText = Text->ToString(TokenStart, TokenLength);
@@ -259,6 +260,7 @@ namespace Mamba
                 ReadNumber();
                 break;
             case TEXT(' '):
+            case TEXT('\n'):
             case TEXT('\t'):
             case TEXT('\r'):
                 ReadWhitespace();
@@ -340,7 +342,7 @@ namespace Mamba
 
     void Lexer::ReadWhitespace() noexcept
     {
-        while (Current() == TEXT(' ') || Current() == TEXT('\t') || Current() == TEXT('\r'))
+        while (Current() == TEXT(' ') || Current() == TEXT('\n') || Current() == TEXT('\t') || Current() == TEXT('\r'))
         {
             ++Position;
         }
@@ -447,8 +449,7 @@ namespace Mamba
 
     bool Lexer::IsHexadecimalDigit(const Char Character) noexcept
     {
-        return (Character >= TEXT('0') && Character <= TEXT('9')) || (Character >= TEXT('a') && Character <= TEXT('f'))
-            || (Character >= TEXT('A') && Character <= TEXT('F'));
+        return (Character >= TEXT('0') && Character <= TEXT('9')) || (Character >= TEXT('a') && Character <= TEXT('f')) || (Character >= TEXT('A') && Character <= TEXT('F'));
     }
 
     bool Lexer::IsBinaryDigit(const Char Character) noexcept

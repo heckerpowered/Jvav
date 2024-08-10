@@ -12,9 +12,13 @@ namespace Mamba
         [[nodiscard]] constexpr Container<T> SkipSeperators(const Container<T>& NodesAndSeparators) const noexcept
         {
 #if __cpp_lib_ranges_enumerate == 202302L
-            NodesAndSeparators | std::views::enumerate;
+            // NodesAndSeparators | std::views::enumerate;
 #endif
 
+            if (NodesAndSeparators.size() == 1)
+            {
+                return Container<T>{ NodesAndSeparators.front() };
+            }
             auto Result = Container<T>(NodesAndSeparators.size() / 2);
 #if __cpp_size_t_suffix == 202011L
             for (auto Index = 0uz; Index < NodesAndSeparators.size() / 2; ++Index)

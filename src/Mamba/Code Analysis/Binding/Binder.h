@@ -8,25 +8,21 @@
 
 namespace Mamba
 {
-    class Binding
+    class Binder
     {
         std::shared_ptr<class BoundScope> Scope;
         std::shared_ptr<const class SyntaxTree> SyntaxTree;
         DiagnosticBag Diagnostics;
 
-        std::shared_ptr<const class BoundCompilationUnit>
-            BindCompilationUnit() noexcept;
         void BindMember(const std::shared_ptr<const class MemberSyntax> Member) noexcept;
         void BindFunctionDeclaration(const std::shared_ptr<const class FunctionDeclarationSyntax> FunctionDeclaration) noexcept;
 
         void DeclareFunction(
             const std::shared_ptr<const class FunctionDeclarationSyntax> FunctionDeclaration,
-            const std::shared_ptr<class BoundScope> FunctionScope,
             const std::shared_ptr<const class BoundFunctionDeclaration> BoundFunctionDeclaration
         ) noexcept;
 
         std::vector<std::shared_ptr<const class ParameterSymbol>> BindParameter(
-            const std::shared_ptr<class BoundScope> FunctionScope,
             const std::shared_ptr<const class FunctionDeclarationSyntax> FunctionDeclaration
         ) noexcept;
 
@@ -60,7 +56,12 @@ namespace Mamba
 
         ScopeGuard EnterScope() noexcept;
 
+        void DeclareBuiltinFunctions() noexcept;
+        void DeclareBuiltinFunction();
+
     public:
-        [[nodiscard]] Binding(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
+        [[nodiscard]] Binder(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
+
+        std::shared_ptr<const class BoundCompilationUnit> BindCompilationUnit() noexcept;
     };
 } // namespace Mamba

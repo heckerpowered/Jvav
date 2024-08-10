@@ -8,29 +8,41 @@ using namespace Mamba;
 
 LiteralValue::LiteralValue() noexcept {}
 
-LiteralValue::LiteralValue(const StringView String) noexcept : StringValue(String) {}
+LiteralValue::LiteralValue(const StringView String) noexcept :
+    StringValue(String) {}
 
-LiteralValue::LiteralValue(const std::int8_t Integer) noexcept : SignedByteValue(Integer) {}
+LiteralValue::LiteralValue(const std::int8_t Integer) noexcept :
+    SignedByteValue(Integer) {}
 
-LiteralValue::LiteralValue(const std::int16_t Integer) noexcept : SignedShortValue(Integer) {}
+LiteralValue::LiteralValue(const std::int16_t Integer) noexcept :
+    SignedShortValue(Integer) {}
 
-LiteralValue::LiteralValue(const std::int32_t Integer) noexcept : SignedIntValue(Integer) {}
+LiteralValue::LiteralValue(const std::int32_t Integer) noexcept :
+    SignedIntValue(Integer) {}
 
-LiteralValue::LiteralValue(const std::int64_t Integer) noexcept : SignedLongValue(Integer) {}
+LiteralValue::LiteralValue(const std::int64_t Integer) noexcept :
+    SignedLongValue(Integer) {}
 
-LiteralValue::LiteralValue(const std::uint8_t Integer) noexcept : UnsignedShortValue(Integer) {}
+LiteralValue::LiteralValue(const std::uint8_t Integer) noexcept :
+    UnsignedShortValue(Integer) {}
 
-LiteralValue::LiteralValue(const std::uint16_t Integer) noexcept : UnsignedShortValue(Integer) {}
+LiteralValue::LiteralValue(const std::uint16_t Integer) noexcept :
+    UnsignedShortValue(Integer) {}
 
-LiteralValue::LiteralValue(const std::uint32_t Integer) noexcept : UnsignedIntValue(Integer) {}
+LiteralValue::LiteralValue(const std::uint32_t Integer) noexcept :
+    UnsignedIntValue(Integer) {}
 
-LiteralValue::LiteralValue(const std::uint64_t Integer) noexcept : UnsignedLongValue(Integer) {}
+LiteralValue::LiteralValue(const std::uint64_t Integer) noexcept :
+    UnsignedLongValue(Integer) {}
 
-LiteralValue::LiteralValue(const float Value) noexcept : FloatValue(Value) {}
+LiteralValue::LiteralValue(const float Value) noexcept :
+    FloatValue(Value) {}
 
-LiteralValue::LiteralValue(const double Value) noexcept : DoubleValue(Value) {}
+LiteralValue::LiteralValue(const double Value) noexcept :
+    DoubleValue(Value) {}
 
-LiteralValue::LiteralValue(const bool Value) noexcept : BooleanValue(Value) {}
+LiteralValue::LiteralValue(const bool Value) noexcept :
+    BooleanValue(Value) {}
 
 Literal::Literal() noexcept {}
 
@@ -39,27 +51,38 @@ Literal::Literal(const std::shared_ptr<const String> String) noexcept :
 {
 }
 
-Literal::Literal(const std::int8_t Integer) noexcept : Value(Integer), Type(LiteralType::SignedByte) {}
+Literal::Literal(const std::int8_t Integer) noexcept :
+    Value(Integer), Type(LiteralType::SignedByte) {}
 
-Literal::Literal(const std::int32_t Integer) noexcept : Value(Integer), Type(LiteralType::SignedInt) {}
+Literal::Literal(const std::int32_t Integer) noexcept :
+    Value(Integer), Type(LiteralType::SignedInt) {}
 
-Literal::Literal(const std::int64_t Integer) noexcept : Value(Integer), Type(LiteralType::SignedLong) {}
+Literal::Literal(const std::int64_t Integer) noexcept :
+    Value(Integer), Type(LiteralType::SignedLong) {}
 
-Literal::Literal(const std::uint8_t Integer) noexcept : Value(Integer), Type(LiteralType::UnsignedByte) {}
+Literal::Literal(const std::uint8_t Integer) noexcept :
+    Value(Integer), Type(LiteralType::UnsignedByte) {}
 
-Literal::Literal(const std::uint16_t Integer) noexcept : Value(Integer), Type(LiteralType::UnsignedShort) {}
+Literal::Literal(const std::uint16_t Integer) noexcept :
+    Value(Integer), Type(LiteralType::UnsignedShort) {}
 
-Literal::Literal(const std::uint32_t Integer) noexcept : Value(Integer), Type(LiteralType::UnsignedInt) {}
+Literal::Literal(const std::uint32_t Integer) noexcept :
+    Value(Integer), Type(LiteralType::UnsignedInt) {}
 
-Literal::Literal(const std::uint64_t Integer) noexcept : Value(Integer), Type(LiteralType::UnsignedLong) {}
+Literal::Literal(const std::uint64_t Integer) noexcept :
+    Value(Integer), Type(LiteralType::UnsignedLong) {}
 
-Literal::Literal(const Char Character) noexcept : Value(Character), Type(LiteralType::Character) {}
+Literal::Literal(const Char Character) noexcept :
+    Value(Character), Type(LiteralType::Character) {}
 
-Literal::Literal(const float Value) noexcept : Value(Value), Type(LiteralType::Float) {}
+Literal::Literal(const float Value) noexcept :
+    Value(Value), Type(LiteralType::Float) {}
 
-Literal::Literal(const double Value) noexcept : Value(Value), Type(LiteralType::Double) {}
+Literal::Literal(const double Value) noexcept :
+    Value(Value), Type(LiteralType::Double) {}
 
-Literal::Literal(const bool Value) noexcept : Value(Value), Type(LiteralType::Boolean) {}
+Literal::Literal(const bool Value) noexcept :
+    Value(Value), Type(LiteralType::Boolean) {}
 
 NullableSharedPtr<const Literal> Literal::Negative(const Literal& Literal) noexcept
 {
@@ -86,6 +109,7 @@ NullableSharedPtr<const Literal> Literal::Negative(const Literal& Literal) noexc
         case LiteralType::UnsignedLong:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -110,6 +134,7 @@ NullableSharedPtr<const Literal> Literal::LogicalNegative(const Literal& Literal
         case LiteralType::UnsignedInt:
         case LiteralType::UnsignedLong:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -141,6 +166,7 @@ NullableSharedPtr<const Literal> Literal::OnesComplement(const Literal& Literal)
         case LiteralType::Character:
         case LiteralType::Empty:
         case LiteralType::Boolean:
+        default:
             return {};
     }
 }
@@ -168,7 +194,8 @@ NullableSharedPtr<const Literal> Literal::operator+(const Literal& Other) const 
     {
         case LiteralType::String:
             return std::make_shared<const struct Literal>(Hatcher(
-                [&] { return std::make_shared<const String>(Concat(Value.StringValue, Other.Value.StringValue)); }
+                [&]
+                { return std::make_shared<const String>(Concat(Value.StringValue, Other.Value.StringValue)); }
             ));
         case LiteralType::UnsignedByte:
             return std::make_shared<const struct Literal>(Value.UnsignedByteValue + Other.Value.UnsignedByteValue);
@@ -228,6 +255,7 @@ NullableSharedPtr<const Literal> Literal::operator-(const Literal& Other) const 
         case LiteralType::Character:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -262,6 +290,7 @@ NullableSharedPtr<const Literal> Literal::operator*(const Literal& Other) const 
         case LiteralType::Character:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -296,6 +325,7 @@ NullableSharedPtr<const Literal> Literal::operator/(const Literal& Other) const 
         case LiteralType::Empty:
         case LiteralType::String:
         case LiteralType::Character:
+        default:
             return {};
     }
 }
@@ -328,6 +358,7 @@ NullableSharedPtr<const Literal> Literal::operator&(const Literal& Other) const 
         case LiteralType::Float:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -361,6 +392,7 @@ NullableSharedPtr<const Literal> Literal::operator|(const Literal& Other) const 
         case LiteralType::Double:
         case LiteralType::Float:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -394,6 +426,7 @@ NullableSharedPtr<const Literal> Literal::operator^(const Literal& Other) const 
         case LiteralType::Float:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -419,6 +452,7 @@ NullableSharedPtr<const Literal> Literal::operator&&(const Literal& Other) const
         case LiteralType::Double:
         case LiteralType::Float:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -444,6 +478,7 @@ NullableSharedPtr<const Literal> Literal::operator||(const Literal& Other) const
         case LiteralType::Double:
         case LiteralType::Float:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -480,6 +515,7 @@ NullableSharedPtr<const Literal> Literal::operator==(const Literal& Other) const
         case LiteralType::Character:
             return std::make_shared<const struct Literal>(Value.CharacterValue == Other.Value.CharacterValue);
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -516,6 +552,7 @@ NullableSharedPtr<const Literal> Literal::operator!=(const Literal& Other) const
         case LiteralType::Boolean:
             return std::make_shared<const struct Literal>(Value.BooleanValue != Other.Value.BooleanValue);
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -550,6 +587,7 @@ NullableSharedPtr<const Literal> Literal::operator<(const Literal& Other) const 
         case LiteralType::Character:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -584,6 +622,7 @@ NullableSharedPtr<const Literal> Literal::operator<=(const Literal& Other) const
         case LiteralType::Character:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -616,6 +655,7 @@ NullableSharedPtr<const Literal> Literal::operator>(const Literal& Other) const 
         case LiteralType::Character:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }
@@ -650,6 +690,7 @@ NullableSharedPtr<const Literal> Literal::operator>=(const Literal& Other) const
         case LiteralType::Character:
         case LiteralType::Boolean:
         case LiteralType::Empty:
+        default:
             return {};
     }
 }

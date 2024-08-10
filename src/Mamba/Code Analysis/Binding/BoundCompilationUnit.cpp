@@ -1,4 +1,5 @@
 #include "BoundCompilationUnit.h"
+#include "BoundScope.h"
 
 using namespace Mamba;
 
