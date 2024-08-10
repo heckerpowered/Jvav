@@ -1,6 +1,8 @@
 #include "Serializer.h"
+
+#include <cstring>
+
 #include "fast_io.h"
-#include "fast_io_core_impl/integers/impl.h"
 
 using namespace Mamba;
 

@@ -1,6 +1,5 @@
 add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate")
-add_rules("mode.ubsan")
 
 add_requires("fast_io")
 
@@ -20,9 +19,9 @@ target("Jvav")
         set_optimize("fastest")
     end
     if is_mode("debug") then
-        add_cflags("-fsanitize=address")
-        add_ldflags("-fsanitize=address", "-fsanitize=undefined")
-        add_cxxflags("-fsanitize=address", "-fno-omit-frame-pointer", "-fno-optimize-sibling-calls")
+        -- add_cflags("-fsanitize=address")
+        -- add_ldflags("-fsanitize=address", "-fsanitize=undefined")
+        -- add_cxxflags("-fsanitize=address", "-fno-omit-frame-pointer", "-fno-optimize-sibling-calls")
         add_defines("DEBUG")
     end
     add_cxxflags("-fms-extensions")

@@ -14,7 +14,7 @@ NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
 {
     if (!Operand->ConstantValue())
     {
-        return nullptr;
+        return {};
     }
 
     switch (Operator.Kind)
@@ -27,6 +27,8 @@ NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
             return std::make_shared<const BoundConstant>(Literal::LogicalNegative(*Operand->ConstantValue()->Value));
         case BoundUnaryOperatorKind::OnesComplement:
             return std::make_shared<const BoundConstant>(Literal::OnesComplement(*Operand->ConstantValue()->Value));
+        default:
+            return {};
     }
 }
 
