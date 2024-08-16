@@ -136,6 +136,13 @@ namespace Mamba
     {
         T Expression;
 
+#if __cpp_deduction_guides == 201703L || __cpp_deduction_guides == 201907L
+        template<typename SelfType>
+        constexpr operator decltype(std::forward_like<SelfType>(std::declval<T>())())(this SelfType&& Self) noexcept(noexcept(std::forward_like<SelfType>(std::declval<T>())()))
+        {
+            return std::forward_like<SelfType>(Self.Expression)();
+        }
+#else
         constexpr operator decltype(std::declval<T&>()())() noexcept(noexcept(std::declval<T&>()()))
             requires std::same_as<Hatcher<T>&, decltype(*this)>
         {
@@ -159,6 +166,7 @@ namespace Mamba
         {
             return std::move(Expression)();
         }
+#endif
     };
 
 #ifdef __apple_build_version__
