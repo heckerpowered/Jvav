@@ -3,22 +3,37 @@
 #include <memory>
 #include <vector>
 
+#include "Diagnostic.h"
 #include "SyntaxKind.h"
 #include "TextLocation.h"
 
 namespace Mamba
 {
-    class DiagnosticBag : public std::vector<std::shared_ptr<const class Diagnostic>>
+    class DiagnosticBag : public std::vector<struct Diagnostic>
     {
     public:
-        using Super = std::vector<class Diagnostic>;
+        using Super = std::vector<struct Diagnostic>;
 
-        void AddRange(const std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept;
+        void AddRange(const std::vector<struct Diagnostic>& Diagnostics) noexcept;
 
     private:
-        void ReportError(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept;
-        void ReportWarning(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept;
-        void ReportInformation(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept;
+        template<typename... T>
+        void ReportError(const TextLocation Location, T&&... Args) noexcept
+        {
+            emplace_back(DiagnosticSeverity::Error, Location, Concat(std::forward<T>(Args)...));
+        }
+
+        template<typename... T>
+        void ReportWarning(const TextLocation Location, T&&... Args) noexcept
+        {
+            emplace_back(DiagnosticSeverity::Warning, Location, Concat(std::forward<T>(Args)...));
+        }
+
+        template<typename... T>
+        void ReportInformation(const TextLocation Location, T&&... Args) noexcept
+        {
+            emplace_back(DiagnosticSeverity::Warning, Location, Concat(std::forward<T>(Args)...));
+        }
 
     public:
         void ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept;

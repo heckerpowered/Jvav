@@ -136,7 +136,7 @@ namespace Mamba
     {
         T Expression;
 
-#if __cpp_deduction_guides == 201703L || __cpp_deduction_guides == 201907L
+#if _cpp_deduction_guides >= 201703L
         template<typename SelfType>
         constexpr operator decltype(std::forward_like<SelfType>(std::declval<T>())())(this SelfType&& Self) noexcept(noexcept(std::forward_like<SelfType>(std::declval<T>())()))
         {
