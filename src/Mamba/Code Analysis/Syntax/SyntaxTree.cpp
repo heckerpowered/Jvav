@@ -147,8 +147,6 @@ namespace Mamba
             using t1 = decltype(*Diagnostics);
             using t2 = decltype(SyntaxTree.Diagnostics());
 
-            static_assert(std::is_same_v<std::remove_cvref_t<t1>, std::remove_cvref_t<t1>>);
-
             *Diagnostics = SyntaxTree.Diagnostics();
         }
 
