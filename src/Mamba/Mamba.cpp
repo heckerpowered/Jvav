@@ -104,7 +104,7 @@ catch (fast_io::error error)
         Color("error reading '", Colors::BrightForegroundWhite),
         Color(FileName, Colors::BrightForegroundWhite),
         Color("': ", Colors::BrightForegroundWhite),
-        error
+        Color(error, Colors::BrightForegroundWhite)
     );
     std::exit(-1);
 }
