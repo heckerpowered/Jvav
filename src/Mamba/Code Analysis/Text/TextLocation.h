@@ -8,10 +8,8 @@ namespace Mamba
 {
     struct TextLocation
     {
-        [[nodiscard]] TextLocation(const std::shared_ptr<const class SourceText> Text, const TextSpan Span) noexcept;
-
-        const std::shared_ptr<const class SourceText> Text;
-        const TextSpan Span;
+        std::shared_ptr<const class SourceText> Text;
+        TextSpan Span;
 
         std::shared_ptr<const String> FileName() const noexcept;
 

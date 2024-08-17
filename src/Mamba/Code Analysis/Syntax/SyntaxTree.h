@@ -23,22 +23,24 @@ namespace Mamba
         [[nodiscard]] SyntaxTree(const std::shared_ptr<const class SourceText> Text, auto&& Handler) noexcept
             requires requires {
                 Handler(
-                    shared_from_this(), std::declval<std::shared_ptr<const class CompilationUnitSyntax>&>(),
-                    std::declval<std::vector<std::shared_ptr<const class Diagnostic>>&>()
+                    shared_from_this(),
+                    std::declval<std::shared_ptr<const class CompilationUnitSyntax>&>(),
+                    std::declval<std::vector<struct Diagnostic>&>()
                 );
             }
-            : Text(Text)
+            :
+            Text(Text)
         {
             Handler(std::make_shared<SyntaxTree>(*this), PrivateRoot, PrivateDiagnostics);
         }
 
         std::shared_ptr<const class CompilationUnitSyntax> PrivateRoot;
-        std::vector<std::shared_ptr<const class Diagnostic>> PrivateDiagnostics;
+        std::vector<struct Diagnostic> PrivateDiagnostics;
 
         static void Parse(
             const std::shared_ptr<const SyntaxTree> SyntaxTree,
             std::shared_ptr<const class CompilationUnitSyntax>& Root,
-            std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics
+            std::vector<struct Diagnostic>& Diagnostics
         ) noexcept;
 
     public:
@@ -46,7 +48,7 @@ namespace Mamba
 
         const std::shared_ptr<const class SourceText> Text;
         [[nodiscard]] const std::shared_ptr<const class CompilationUnitSyntax> Root() const noexcept;
-        [[nodiscard]] const std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics() const noexcept;
+        [[nodiscard]] const std::vector<struct Diagnostic>& Diagnostics() const noexcept;
 
         [[deprecated("No longer support contructing SyntaxTree from file directly.")]] [[nodiscard]] static SyntaxTree
             Load(const std::shared_ptr<const String> FileName) noexcept;
@@ -54,11 +56,14 @@ namespace Mamba
         [[nodiscard]] static SyntaxTree Parse(const std::shared_ptr<const String> Text) noexcept;
         [[nodiscard]] static SyntaxTree Parse(const std::shared_ptr<const class SourceText> Text) noexcept;
 
-        [[nodiscard]] static std::vector<std::shared_ptr<const class SyntaxToken>>
-            ParseTokens(const std::shared_ptr<const String> Text, const bool IncludeEndOfFile = false) noexcept;
         [[nodiscard]] static std::vector<std::shared_ptr<const class SyntaxToken>> ParseTokens(
             const std::shared_ptr<const String> Text,
-            NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+            const bool IncludeEndOfFile = false
+        ) noexcept;
+
+        [[nodiscard]] static std::vector<std::shared_ptr<const class SyntaxToken>> ParseTokens(
+            const std::shared_ptr<const String> Text,
+            NullablePointer<std::vector<struct Diagnostic>> Diagnostics,
             const bool IncludeEndOfFile = false
         ) noexcept;
 
@@ -68,7 +73,7 @@ namespace Mamba
         ) noexcept;
         [[nodiscard]] static std::vector<std::shared_ptr<const class SyntaxToken>> ParseTokens(
             const std::shared_ptr<const class SourceText> Text,
-            NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+            NullablePointer<std::vector<struct Diagnostic>> Diagnostics,
             const bool IncludeEndOfFile = false
         ) noexcept;
 

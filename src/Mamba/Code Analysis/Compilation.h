@@ -21,6 +21,6 @@ namespace Mamba
     public:
         void Compile(const StringView ModuleName) noexcept;
 
-        std::vector<std::shared_ptr<const class Diagnostic>> Diagnostics() const noexcept;
+        std::vector<struct Diagnostic> Diagnostics() const noexcept;
     };
 } // namespace Mamba

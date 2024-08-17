@@ -7,8 +7,8 @@ namespace Mamba
 {
     struct TextSpan
     {
-        const std::size_t Start;
-        const std::size_t Length;
+        std::size_t Start;
+        std::size_t Length;
 
         [[nodiscard]] std::size_t End() const noexcept;
 

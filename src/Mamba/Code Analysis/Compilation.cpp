@@ -54,10 +54,11 @@ namespace Mamba
         Emitter.Emit(BoundProgram, ModuleName);
     }
 
-    std::vector<std::shared_ptr<const class Diagnostic>> Compilation::Diagnostics() const noexcept
+    std::vector<Diagnostic> Compilation::Diagnostics() const noexcept
     {
-        return SyntaxTrees | std::views::transform([](auto&& SyntaxTree)
-                                                   { return SyntaxTree->PrivateDiagnostics; }) |
+        return SyntaxTrees |
+               std::views::transform([](auto&& SyntaxTree)
+                                     { return SyntaxTree->PrivateDiagnostics; }) |
                std::views::join | std::ranges::to<std::vector>();
     }
 

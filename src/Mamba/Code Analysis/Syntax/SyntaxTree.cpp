@@ -1,6 +1,7 @@
 #include "SyntaxTree.h"
 
 #include "CompilationUnitSyntax.h"
+#include "Diagnostic.h"
 #include "Lexer.h"
 #include "MambaCore.h"
 #include "Parser.h"
@@ -12,6 +13,7 @@
 #include <fast_io.h>
 #include <memory>
 #include <mutex>
+#include <vector>
 
 namespace Mamba
 {
@@ -21,12 +23,13 @@ namespace Mamba
         return String(NativeFileLoader.begin(), NativeFileLoader.end());
     }
 
-    SyntaxTree::SyntaxTree(const std::shared_ptr<const class SourceText> Text) noexcept : Text(Text) {}
+    SyntaxTree::SyntaxTree(const std::shared_ptr<const class SourceText> Text) noexcept :
+        Text(Text) {}
 
     void SyntaxTree::Parse(
         const std::shared_ptr<const SyntaxTree> SyntaxTree,
         std::shared_ptr<const class CompilationUnitSyntax>& Root,
-        std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics
+        std::vector<struct Diagnostic>& Diagnostics
     ) noexcept
     {
         Parser Parser(SyntaxTree);
@@ -39,23 +42,26 @@ namespace Mamba
         return PrivateRoot;
     }
 
-    const std::vector<std::shared_ptr<const class Diagnostic>>& SyntaxTree::Diagnostics() const noexcept
+    const std::vector<Diagnostic>& SyntaxTree::Diagnostics() const noexcept
     {
         return PrivateDiagnostics;
     }
 
     SyntaxTree SyntaxTree::Load(const std::shared_ptr<const String> FileName) noexcept
     {
-        const auto Text = std::make_shared<const String>(Hatcher([&] { return ReadFile(*FileName); }));
+        const auto Text = std::make_shared<const String>(Hatcher([&]
+                                                                 { return ReadFile(*FileName); }));
         const auto SourceText =
-            std::make_shared<const class SourceText>(Hatcher([=] { return SourceText::From(Text, FileName); }));
+            std::make_shared<const class SourceText>(Hatcher([=]
+                                                             { return SourceText::From(Text, FileName); }));
         return Parse(SourceText);
     }
 
     SyntaxTree SyntaxTree::Parse(const std::shared_ptr<const String> Text) noexcept
     {
         const auto SourceText =
-            std::make_shared<const class SourceText>(Hatcher([&] { return SourceText::From(Text); }));
+            std::make_shared<const class SourceText>(Hatcher([&]
+                                                             { return SourceText::From(Text); }));
         return Parse(SourceText);
     }
 
@@ -63,7 +69,7 @@ namespace Mamba
     {
         using SyntaxTreeType = const std::shared_ptr<const SyntaxTree>;
         using RootType = std::shared_ptr<const class CompilationUnitSyntax>&;
-        using DiagnosticsType = std::vector<std::shared_ptr<const class Diagnostic>>&;
+        using DiagnosticsType = std::vector<struct Diagnostic>&;
 
         using ParseFunctionType = void (&)(SyntaxTreeType, RootType, DiagnosticsType) noexcept;
 
@@ -74,7 +80,8 @@ namespace Mamba
         SyntaxTree::ParseTokens(const std::shared_ptr<const String> Text, const bool IncludeEndOfFile) noexcept
     {
         const auto SourceText =
-            std::make_shared<const class SourceText>(Hatcher([&] { return SourceText::From(Text); }));
+            std::make_shared<const class SourceText>(Hatcher([&]
+                                                             { return SourceText::From(Text); }));
         return ParseTokens(SourceText, IncludeEndOfFile);
     }
 
@@ -88,18 +95,19 @@ namespace Mamba
 
     std::vector<std::shared_ptr<const class SyntaxToken>> SyntaxTree::ParseTokens(
         const std::shared_ptr<const String> Text,
-        NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+        NullablePointer<std::vector<struct Diagnostic>> Diagnostics,
         const bool IncludeEndOfFile
     ) noexcept
     {
         const auto SourceText =
-            std::make_shared<const class SourceText>(Hatcher([&] { return SourceText::From(Text); }));
+            std::make_shared<const class SourceText>(Hatcher([&]
+                                                             { return SourceText::From(Text); }));
         return ParseTokens(SourceText, Diagnostics, IncludeEndOfFile);
     }
 
-    std::vector<std::shared_ptr<const class SyntaxToken>> SyntaxTree::ParseTokens(
-        const std::shared_ptr<const class SourceText> Text,
-        NullablePointer<std::vector<std::shared_ptr<const class Diagnostic>>> Diagnostics,
+    std::vector<std::shared_ptr<const SyntaxToken>> SyntaxTree::ParseTokens(
+        const std::shared_ptr<const SourceText> Text,
+        NullablePointer<std::vector<Diagnostic>> Diagnostics,
         const bool IncludeEndOfFile
     ) noexcept
     {
@@ -107,7 +115,7 @@ namespace Mamba
 
         const auto ParseTokens = [&](const std::shared_ptr<const SyntaxTree> SyntaxTree,
                                      std::shared_ptr<const CompilationUnitSyntax>& Root,
-                                     std::vector<std::shared_ptr<const class Diagnostic>>& Diagnostics) noexcept
+                                     std::vector<struct Diagnostic>& Diagnostics) noexcept
         {
             Lexer Lexer(SyntaxTree);
             while (true)
@@ -122,7 +130,9 @@ namespace Mamba
                 if (Token->Kind() == SyntaxKind::EndOfFileToken)
                 {
                     Root = std::make_shared<const CompilationUnitSyntax>(
-                        SyntaxTree, std::vector<std::shared_ptr<const class MemberSyntax>>{}, Token
+                        SyntaxTree,
+                        std::vector<std::shared_ptr<const class MemberSyntax>>{},
+                        Token
                     );
                     break;
                 }
@@ -134,6 +144,9 @@ namespace Mamba
         ::Mamba::SyntaxTree SyntaxTree(Text, ParseTokens);
         if (Diagnostics)
         {
+            using t1 = decltype(*Diagnostics);
+            using t2 = decltype(SyntaxTree.Diagnostics());
+
             *Diagnostics = SyntaxTree.Diagnostics();
         }
 

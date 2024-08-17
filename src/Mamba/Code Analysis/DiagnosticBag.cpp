@@ -22,7 +22,7 @@
 
 namespace Mamba
 {
-    void DiagnosticBag::AddRange(const std::vector<std::shared_ptr<const Diagnostic>>& Diagnostics) noexcept
+    void DiagnosticBag::AddRange(const std::vector<Diagnostic>& Diagnostics) noexcept
     {
 #if __cpp_lib_containers_ranges == 202202L
         append_range(Diagnostics);
@@ -34,74 +34,34 @@ namespace Mamba
 #endif
     }
 
-    void DiagnosticBag::ReportError(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept
-    {
-        emplace_back(
-            Hatcher([&]
-                    { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Error, Location, Message); })
-        );
-    }
-
-    void DiagnosticBag::ReportWarning(const TextLocation Location, const std::shared_ptr<const String> Message) noexcept
-    {
-        emplace_back(
-            Hatcher([&]
-                    { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Warning, Location, Message); })
-        );
-    }
-
-    void DiagnosticBag::ReportInformation(
-        const TextLocation Location,
-        const std::shared_ptr<const String> Message
-    ) noexcept
-    {
-        emplace_back(Hatcher(
-            [&]
-            { return std::make_shared<const Diagnostic>(DiagnosticSeverity::Information, Location, Message); }
-        ));
-    }
-
     void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept
     {
-        const auto Message = std::make_shared<const String>(
-            Hatcher([&]
-                    { return Concat(TEXT("Invalid character '"), Character, TEXT("'.")); })
-        );
-        ReportError(Location, Message);
+        ReportError(Location, TEXT("Invalid character '"), Character, TEXT("'."));
     }
 
     void DiagnosticBag::ReportUnterminatedString(const TextLocation Location) noexcept
     {
-        const auto Message = std::make_shared<const String>(TEXT("Unterminated string literal."));
-        ReportError(Location, Message);
+        ReportError(Location, TEXT("Unterminated string literal."));
     }
 
     void DiagnosticBag::ReportInvalidDecimal(const TextLocation Location, const StringView Literal) noexcept
     {
-        const auto Message =
-            std::make_shared<const String>(Concat(TEXT("Invalid decimal number '"), Literal, TEXT("'.")));
-        ReportError(Location, Message);
+        ReportError(Location, Concat(TEXT("Invalid decimal number '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportInvalidHexadecimal(const TextLocation Location, const StringView Literal) noexcept
     {
-        const auto Message =
-            std::make_shared<const String>(Concat(TEXT("Invalid hexadecimal number '"), Literal, TEXT("'.")));
-        ReportError(Location, Message);
+        ReportError(Location, Concat(TEXT("Invalid hexadecimal number '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportInvalidBinary(const TextLocation Location, const StringView Literal) noexcept
     {
-        const auto Message =
-            std::make_shared<const String>(Concat(TEXT("Invalid binary number '"), Literal, TEXT("'.")));
-        ReportError(Location, Message);
+        ReportError(Location, Concat(TEXT("Invalid binary number '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportInvalidOctal(const TextLocation Location, const StringView Literal) noexcept
     {
-        const auto Message =
-            std::make_shared<const String>(Concat(TEXT("Invalid octal number '"), Literal, TEXT("'.")));
-        ReportError(Location, Message);
+        ReportError(Location, Concat(TEXT("Invalid octal number '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportUnexpectedToken(
@@ -111,27 +71,27 @@ namespace Mamba
     ) noexcept
     {
         // Unexpected token 'Kind', Expected: 'ExpectedKind'.
-        const auto Message = std::make_shared<const String>(Concat(
+        ReportError(
+            Location,
             TEXT("Unexpected token '"),
             SyntaxFacts::GetText(Kind),
             TEXT("'"),
             TEXT("Expected: '"),
             SyntaxFacts::ToString(ExpectedKind),
             TEXT("'.")
-        ));
-        ReportError(Location, Message);
+        );
     }
 
     void DiagnosticBag::ReportDiscardExpressionValue(const TextLocation Location) noexcept
     {
-        const auto Message = std::make_shared<const String>(TEXT("The result of the expression is discarded."));
-        ReportWarning(Location, Message);
+        ReportWarning(Location, TEXT("The result of the expression is discarded."));
     }
 
     void DiagnosticBag::ReportVariableAlreadyDeclared(const TextLocation Location, const StringView Name) noexcept
     {
         // Variable 'Name' is already declared, previous declaration at FileName:StartLine:StartCharacter.
-        const auto Message = std::make_shared<const String>(Concat(
+        ReportError(
+            Location,
             TEXT("Variable '"),
             Name,
             TEXT("' is already declared, previous declaration at "),
@@ -140,13 +100,12 @@ namespace Mamba
             Location.StartLine(),
             TEXT(":"),
             Location.StartCharacter()
-        ));
+        );
     }
 
     void DiagnosticBag::ReportUnreachableCode(const TextLocation Location) noexcept
     {
-        const auto Message = std::make_shared<const String>(TEXT("Unreachable code."));
-        ReportWarning(Location, Message);
+        ReportWarning(Location, TEXT("Unreachable code."));
     }
 
     void DiagnosticBag::ReportUnreachableCode(const std::shared_ptr<const SyntaxNode> Node) noexcept

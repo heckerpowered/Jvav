@@ -4,5 +4,6 @@ using namespace Mamba;
 
 int main(int argc, char* argv[])
 {
-    return InitMamba(argc, argv);
+    // no input files
+    return InitMamba(argc, argv) == -1;
 }
