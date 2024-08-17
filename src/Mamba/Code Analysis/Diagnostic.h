@@ -20,6 +20,4 @@ namespace Mamba
         TextLocation Location;
         String Message;
     };
-
-    static_assert(std::is_copy_constructible_v<Diagnostic>);
 } // namespace Mamba
