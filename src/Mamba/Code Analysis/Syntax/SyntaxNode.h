@@ -10,15 +10,12 @@
 
 namespace Mamba
 {
-    class SyntaxNode : public std::enable_shared_from_this<SyntaxNode>
+    class SyntaxNode
     {
-    protected:
-        [[nodiscard]] SyntaxNode(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
-
     public:
-        virtual ~SyntaxNode() noexcept;
+        std::shared_ptr<const class SyntaxTree> SyntaxTree;
 
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree;
+        virtual ~SyntaxNode() noexcept;
 
         [[nodiscard]] const NullableSharedPtr<const class SyntaxNode> Parent() const noexcept;
 

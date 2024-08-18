@@ -15,42 +15,42 @@ using namespace fast_io::io;
 void PrintError(const Diagnostic& Diagnostic) noexcept
 {
     println(
-        Color(fast_io::mnp::code_cvt(*Diagnostic.Location.FileName()), Colors::BrightBackgroundWhite),
-        Color(":", Colors::BrightBackgroundWhite),
-        Color(Diagnostic.Location.StartLine(), Colors::BrightBackgroundWhite),
-        Color(":", Colors::BrightBackgroundWhite),
-        Color(Diagnostic.Location.StartCharacter(), Colors::BrightBackgroundWhite),
+        Color(fast_io::mnp::code_cvt(*Diagnostic.Location.FileName()), Colors::BrightForegroundWhite),
+        Color(":", Colors::BrightForegroundWhite),
+        Color(Diagnostic.Location.StartLine(), Colors::BrightForegroundWhite),
+        Color(":", Colors::BrightForegroundWhite),
+        Color(Diagnostic.Location.StartCharacter(), Colors::BrightForegroundWhite),
         " ",
         Color("error: ", Colors::BrightForegroundRed),
-        Color(fast_io::mnp::code_cvt(Diagnostic.Message), Colors::BrightBackgroundWhite)
+        Color(fast_io::mnp::code_cvt(Diagnostic.Message), Colors::BrightForegroundWhite)
     );
 }
 
 void PrintWarning(const Diagnostic& Diagnostic) noexcept
 {
     println(
-        Color(fast_io::mnp::code_cvt(*Diagnostic.Location.FileName()), Colors::BrightBackgroundWhite),
-        Color(":", Colors::BrightBackgroundWhite),
-        Color(Diagnostic.Location.StartLine(), Colors::BrightBackgroundWhite),
-        Color(":", Colors::BrightBackgroundWhite),
-        Color(Diagnostic.Location.StartCharacter(), Colors::BrightBackgroundWhite),
+        Color(fast_io::mnp::code_cvt(*Diagnostic.Location.FileName()), Colors::BrightForegroundWhite),
+        Color(":", Colors::BrightForegroundWhite),
+        Color(Diagnostic.Location.StartLine(), Colors::BrightForegroundWhite),
+        Color(":", Colors::BrightForegroundWhite),
+        Color(Diagnostic.Location.StartCharacter(), Colors::BrightForegroundWhite),
         " ",
-        Color("warning: ", Colors::BrightForegroundYellow),
-        Color(fast_io::mnp::code_cvt(Diagnostic.Message), Colors::BrightBackgroundWhite)
+        Color("warning: ", Colors::BrightForegroundWhite),
+        Color(fast_io::mnp::code_cvt(Diagnostic.Message), Colors::BrightForegroundWhite)
     );
 }
 
 void PrintInformation(const Diagnostic& Diagnostic) noexcept
 {
     println(
-        Color(fast_io::mnp::code_cvt(*Diagnostic.Location.FileName()), Colors::BrightBackgroundWhite),
-        Color(":", Colors::BrightBackgroundWhite),
-        Color(Diagnostic.Location.StartLine(), Colors::BrightBackgroundWhite),
-        Color(":", Colors::BrightBackgroundWhite),
-        Color(Diagnostic.Location.StartCharacter(), Colors::BrightBackgroundWhite),
+        Color(fast_io::mnp::code_cvt(*Diagnostic.Location.FileName()), Colors::BrightForegroundWhite),
+        Color(":", Colors::BrightForegroundWhite),
+        Color(Diagnostic.Location.StartLine(), Colors::BrightForegroundWhite),
+        Color(":", Colors::BrightForegroundWhite),
+        Color(Diagnostic.Location.StartCharacter(), Colors::BrightForegroundWhite),
         " ",
         Color("note: ", Colors::BrightForegroundCyan),
-        Color(fast_io::mnp::code_cvt(Diagnostic.Message), Colors::BrightBackgroundWhite)
+        Color(fast_io::mnp::code_cvt(Diagnostic.Message), Colors::BrightForegroundWhite)
     );
 }
 
@@ -93,7 +93,6 @@ try
 
     const auto Text = std::make_shared<String>(FileLoader.begin(), FileLoader.end());
     auto SharedFileName = std::make_shared<const String>(FileName.begin(), FileName.end());
-
     return std::make_shared<const SourceText>(SourceText::From(Text, SharedFileName));
 }
 catch (fast_io::error error)
@@ -133,11 +132,9 @@ std::int32_t Mamba::InitMamba(int ArgumentCount, [[maybe_unused]] char* Argument
         return -1;
     }
 
-    auto InputFiles = std::vector<std::string_view>(ArgumentCount);
-    for (auto Index : std::views::iota(0, ArgumentCount))
-    {
-        InputFiles[Index] = Arguments[Index];
-    }
+    const auto Begin = Arguments + 1; // skip program name
+    const auto End = Arguments + ArgumentCount + 1;
+    auto InputFiles = std::vector<std::string_view>(Begin, End);
     ProcessInputFiles(InputFiles);
 
     return 0;

@@ -4,10 +4,13 @@
 #include "BoundExpressionStatement.h"
 #include "BoundNodeKind.h"
 #include "BoundScope.h"
+#include "Diagnostic.h"
 #include "DotNet/OpCodes.h"
 #include "fast_io_core_impl/integers/impl.h"
 #include "LinkIdentifier.h"
 #include "ParameterSymbol.h"
+#include "SourceText.h"
+#include "TextLocation.h"
 #include "TypeSymbol.h"
 
 #include <fast_io.h>
@@ -21,7 +24,8 @@ constexpr auto LinkerVersion = 1uz;
 
 std::vector<Diagnostic> DotNetEmitter::Emit(const BoundProgram& Program, const StringView ModuleName) noexcept
 {
-    fast_io::io::println("Linking ", fast_io::mnp::code_cvt(ModuleName));
+    auto Diagnostics = std::vector<Diagnostic>();
+
     if (Program.CompilationUnits.empty())
     {
         fast_io::io::perrln("error: no compilation units found");
@@ -37,7 +41,6 @@ std::vector<Diagnostic> DotNetEmitter::Emit(const BoundProgram& Program, const S
     ::fast_io::obuf_file file(::fast_io::concat(::fast_io::mnp::code_cvt(ModuleName)));
     ::fast_io::write(file, Serializer.Data.begin(), Serializer.Data.end());
 
-    fast_io::io::perrln("Serialized data size: ", Serializer.Data.size());
     return {};
 }
 

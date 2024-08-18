@@ -1,38 +1,32 @@
 #pragma once
 
-#include "MambaCore.h"
-#include "TextSpan.h"
-
 #include <vector>
+
+#include "SourceTextInfo.h"
+#include "TextLine.h"
 
 namespace Mamba
 {
     class SourceText
     {
-    public:
-        const String Text;
-        const String FileName;
-
-    private:
-        std::vector<class TextLine> PrivateLines;
+        SourceTextInfo PrivateInfo;
+        std::vector<TextLine> PrivateLines = SplitLines(PrivateInfo);
 
     public:
-        template<typename SelfT>
-        [[nodiscard]] auto&& Lines(this SelfT&& Self) noexcept
-        {
-            return std::forward_like<SelfT>(Self.PrivateLines);
-        }
+        [[nodiscard]] SourceText(const SourceTextInfo& Info) noexcept;
+
+        const SourceTextInfo& Info() const noexcept;
 
 #if defined(__cpp_explicit_this_parameter) && __cpp_explicit_this_parameter >= 202110L
         template<typename SelfT>
         [[nodiscard]] auto&& operator[](this SelfT&& Self, const std::size_t Position) noexcept
         {
-            return std::forward_like<SelfT>(Self.Text[Position]);
+            return std::forward_like<SelfT>(Self.PrivateInfo.Text[Position]);
         }
 #else
         [[nodiscard]] Char operator[](const std::size_t Position) const noexcept
         {
-            return Text[Position];
+            return PrivateInfo.Text[Position];
         }
 #endif
 
@@ -42,7 +36,7 @@ namespace Mamba
         template<typename SelfT>
         [[nodiscard]] auto&& ToString(this SelfT&& Self) noexcept
         {
-            return std::forward<SelfT>(Self.Text);
+            return std::forward_like<SelfT>(Self.PrivateInfo.Text);
         }
 
         [[nodiscard]] String ToString(const std::size_t Start, const std::size_t Length) const noexcept;
@@ -52,7 +46,6 @@ namespace Mamba
         [[nodiscard]] StringView ToView(const TextSpan Span) const noexcept;
 
     private:
-        void ParseLines() noexcept;
-        void AddLine(const std::size_t Position, const std::size_t LineStart, const std::size_t LineBreakWidth) noexcept;
+        static std::vector<TextLine> SplitLines(const SourceTextInfo& Info);
     };
 } // namespace Mamba

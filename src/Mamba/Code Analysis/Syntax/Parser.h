@@ -19,6 +19,7 @@ namespace Mamba
         DiagnosticBag Diagnostics;
 
         [[nodiscard]] Parser(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
+        [[nodiscard]] Parser(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
 
     private:
         [[nodiscard]] std::shared_ptr<const class SyntaxToken> Peek(const std::size_t Offset) noexcept;
