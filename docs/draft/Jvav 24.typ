@@ -1,31 +1,112 @@
+#set text(font: "PT Sans")
 #set heading(numbering: "1.")
+#set page(footer: context [
+  #h(1fr)
+  #counter(page).display(
+    "1"
+  )
+])
 
 #let keyword-color = eastern
 #let since-color = green
 #let user-color = blue
 #let bracket-color = orange
 
-#align(center, text(17pt)[
-  Jvav 24 Release
+#align(center, text(24pt)[
+  Working Draft, Standard for Programming Language Jvav
 ])
 
-#align(center, [
-  _Released July 2024 _
-])
+#table(
+  columns: 2,
+  stroke: none
+)[#text(12pt)[Date:]][#text(12pt)[2024-8-20]
+][#text(12pt)[Reply-to:]][#text(12pt)[heckerpowered (#text(12pt, user-color)[heckerpowered\@icloud.com])]]
 
-Jvav 24 is the first major Jvav Release, supports a few syntaxes and features. The versions of Jvav are named by year, e.g. a Jvav version released in 2024 should be called Jvav 24.
+#align(bottom)[
+  This is an early release of Jvav, many if the details are have yet to be finalized, so this is just an introduction to the syntax
+]
 
-This is an early release of Jvav, many if the details are have yet to be finalized, so this is just an introduction to the syntax
+#pagebreak()
 
-= Compilation unit <compilation-unit>
+#show outline.entry.where(
+  level: 1
+): it => {
+  v(12pt, weak: true)
+  strong(it)
+}
+#outline(
+  indent: auto
+)
 
-In general, a Jvav source file corresponds to a _compilation unit_, and a _compilation unit_ contains several members.
+#pagebreak()
 
-Members are:
-- Function declaration #emph(text(since-color)[(since Jvav 24)])
-- Global statement #emph(text(since-color)[(since Jvav 24)])
+= Basics <basics>
+== Preamble <basics.preamble>
 
-_Global statement_ are any valid statement #emph(text(since-color)[(since Jvav 24)])
+An _#text(user-color)[entity]_ is a _#text(user-color)[value]_, _#text(user-color)[object]_, _#text(user-color)[function]_, _#text(user-color)[class member]_.
+
+A name is a _#text(user-color)[identifier]_.
+
+Every name is introduced by a *declaration*, which is a
+- _#text(user-color)[function-declaration]_ (#text(user-color)[@declaration.function])
+- _#text(user-color)[parameter-declaration]_ (#text(user-color)[@declaration.function.parameter])
+- _#text(user-color)[variable-declaration]_ (#text(user-color)[@declaration.variable])
+
+== Compilation unit <basics.compilation-unit>
+
+A compilation unit is the smallest unit of code that can be compiled individually.
+
+Each compilation unit has a _#text(user-color)[global scope]_, which contains the entire compilation unit.
+
+== Phases of compilation
+
+Jvav source files are processed by the compiler to produce Jvav programs.
+
+=== Lexical analysis
+
+Parsing a Jvav source file into a collection of tokens using a lexical analyzer (a.k.a. lexer).
+
+==== Tokens
+
+Token is the smallest meaningful element in a compilation unit
+
+Tokens are:
+- _#text(user-color)[identifiers]_
+- _#text(user-color)[keywords]_
+- _#text(user-color)[literals]_
+- _#text(user-color)[operators and punctuators]_
+
+If any part of the source code cannot be parsed into any of the above tokens, then the part is considered to be an invalid character and the program is ill-formed.
+
+=== Syntactic Analysis
+
+Syntactic analysis is also known as parser. The collection of tokens is not yet semantic.Parser parses the collection of tokens into meaningful combinations. They are usually expressions or statements.
+
+#table(
+  columns: 4,
+  stroke: none,
+  align: (right, center, left, right)
+)[Assignment expression syntax][-][_#text(user-color)[identifier]_ _#text(user-color)[equal]_ _#text(user-color)[expression]_
+][(1)][Binary expression syntax][-][_#text(user-color)[expression]_ _#text(user-color)[operator-token]_][(2)
+][Block statement syntax][-][_#text(user-color)[open-brace-token]_ _#text(user-color)[statements]_ _#text(user-color)[close-brace-token]_][(3)
+][Break statement syntax][-][_#text(user-color)[break-keyword]_][(4)
+][Continue statement syntax][-][_#text(user-color)[continue-keyword]_][(5)
+][Call expression syntax][-][_#text(user-color)[identifier]_ _#text(user-color)[open-parenthesis-token]_ _#text(user-color)[argument-list]_ _#text(user-color)[close-parenthesis-token]_][(6)
+][Do-while statement syntax][-][_#text(user-color)[do-keyword]_ _#text(user-color)[statements]_ _#text(user-color)[while-keyword]_ _#text(user-color)[expression]_][(7)
+][Else clause syntax][-][_#text(user-color)[else-keyword]_ _#text(user-color)[else-statements]_][(8)
+][Expression statement syntax][-][_#text(user-color)[expression]_][(9)
+][For statement syntax][-][_#text(user-color)[for-keyword]_ _#text(user-color)[open-parenthesis-token]_ _#text(user-color)[init-statement]_ _#text(user-color)[colon-token]_ _#text(user-color)[condition-expression]_ _#text(user-color)[colon-token]_ _#text(user-color)[expression]_ _#text(user-color)[close-parenthesis-token]_][(10)
+][Function declaration syntax][-][_#text(user-color)[function-keyword]_ _#text(user-color)[identifier]_ _#text(user-color)[open-parenthesis-token]_ _#text(user-color)[parameter-list]_ _#text(user-color)[close-parenthesis-token]_ _#text(user-color)[type-clause]_ _#text(user-color)[statements]_][(11)
+][Name expression][-][_#text(user-color)[identifier]_][(12)
+][Parameter syntax][-][_#text(user-color)[identifier]_ _#text(user-color)[type-clause]_][(13)
+][Parenthesized expression syntax][-][_#text(user-color)[open-parenthesis-token]_ _#text(user-color)[expression]_ _#text(user-color)[close-parenthesis-token]_][(14)
+][Return statement syntax][-][_#text(user-color)[return-keyword]_][(15)
+][Type clause syntax][-][_#text(user-color)[colon-token]_ _#text(user-color)[identifier]_][(16)
+][Unary expression syntax][-][_#text(user-color)[operator-token]_ _#text(user-color)[expression]_][(17)
+][Variable declaration syntax][-][_#text(user-color)[keyword]_ _#text(user-color)[identifier]_ _#text(user-color)[type-clause]#sub[optional]_ _#text(user-color)[condition-expression]_ _#text(user-color)[equals-token]_ _#text(user-color)[initializer]_][(18)
+][While statement syntax][-][_#text(user-color)[while-keyword]_ _#text(user-color)[expression]_ _#text(user-color)[statements]_][(19)]
+
+#pagebreak()
 
 = Scope <scope>
 
@@ -33,19 +114,6 @@ _Global statement_ are any valid statement #emph(text(since-color)[(since Jvav 2
 In a Jvav source file, the outermost scope are called _global scope_. When we declare a function, the scope within the function is called _local scope_.
 
 A _local scope_ can be created by surrounding statements with curly bracket syntax.
-
-[Example 
-` 
-Complation unit #1:
-
-...
-
-// global scope
-{ // local scope
-  ...
-}
-`
--- _end example_]
 
 == Block scope <scope.block>
 
@@ -150,7 +218,7 @@ A name expression holds an identifier that refers to function, variable or a con
 
 Postfix expressions group left-to-right.
 
-==== Call expression <expression.call_expression>
+==== Call expression
 
 A call expression is a postfix expression followed by parentheses containing a possibly empty, comma-separated list of expressions which constitute the arguments to the function.
 
@@ -295,7 +363,7 @@ A variable declaration is a statement that introduces and optionally initialize 
 
 If the _#text(user-color)[type-clause]_ is empty, then the type of the variable is deduced from the initializer.
 
-== Function declaration
+== Function declaration <declaration.function>
 
 A function declaration declares a function in current scope and associates the function's name, parameters and return type.
 
@@ -319,7 +387,7 @@ A function declaration declares a function in current scope and associates the f
 
 The parameters of the function are in the same scope of the _#text(user-color)[statement]_  
 
-=== Parameter syntax
+=== Parameter syntax <declaration.function.parameter>
 
 Parameter syntax declares a parameter of a function.
 
