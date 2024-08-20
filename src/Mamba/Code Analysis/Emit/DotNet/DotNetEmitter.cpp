@@ -21,12 +21,6 @@ constexpr auto LinkerVersion = 1uz;
 
 std::vector<Diagnostic> DotNetEmitter::Emit(const BoundProgram& Program, const StringView ModuleName) noexcept
 {
-    fast_io::io::println("Linking ", fast_io::mnp::code_cvt(ModuleName));
-    if (Program.CompilationUnits.empty())
-    {
-        fast_io::io::perrln("error: no compilation units found");
-    }
-
     Serializer.Write(LinkerVersion);
     Serializer.Write(ModuleName);
     for (auto&& CompilationUnit : Program.CompilationUnits)
@@ -37,7 +31,6 @@ std::vector<Diagnostic> DotNetEmitter::Emit(const BoundProgram& Program, const S
     ::fast_io::obuf_file file(::fast_io::concat(::fast_io::mnp::code_cvt(ModuleName)));
     ::fast_io::write(file, Serializer.Data.begin(), Serializer.Data.end());
 
-    fast_io::io::perrln("Serialized data size: ", Serializer.Data.size());
     return {};
 }
 
@@ -59,7 +52,9 @@ void DotNetEmitter::EmitScope(const BoundScope& Scope) noexcept
                 EmitVariable(*std::static_pointer_cast<const VariableSymbol>(Symbol));
                 break;
             case SymbolKind::Parameter:
+                break;
             case SymbolKind::Type:
+                break;
             default:
 #ifdef DEBUG
                 fast_io::io::println("Unsupported symbol.");
