@@ -100,86 +100,33 @@ namespace Mamba
         if (Token && Token->Value)
         {
             Stream.put(TEXT(' '));
-            switch (Token->Value->Type)
+            std::visit([&]<typename T>(const T& Value)
             {
-                case LiteralType::String:
+                if constexpr(std::same_as<T, LiteralType::String>)
                 {
                     const auto String = *Token->Value->StringValue;
-                    Stream.write(String->data(), String->size());
-                    break;
+                    Stream.write(Value.data(), Value.size());
                 }
-                case LiteralType::Character:
-                    Stream.put(Token->Value->Value.CharacterValue);
-                    break;
-                case LiteralType::UnsignedByte:
+                else if constexpr(std::same_as<T, LiteralType::Character>)
                 {
-                    const auto String = Concat(static_cast<std::uint32_t>(Token->Value->Value.UnsignedByteValue));
-                    Stream.write(String.data(), String.size());
-                    break;
+                    Stream.put(Value);
                 }
-                case LiteralType::UnsignedShort:
+                else if constexpr(std::same_as<T, LiteralType::UnsignedByte>)
                 {
-                    const auto String = Concat(Token->Value->Value.UnsignedShortValue);
+                    const auto String = Concat(static_cast<std::uint32_t>(Value));
                     Stream.write(String.data(), String.size());
-                    break;
                 }
-                case LiteralType::UnsignedInt:
+                else if constexpr(std::same_as<T, LiteralType::SignedByte>)
                 {
-                    const auto String = Concat(Token->Value->Value.UnsignedIntValue);
+                    const auto String = Concat(static_cast<std::int32_t>(Value));
                     Stream.write(String.data(), String.size());
-                    break;
                 }
-                case LiteralType::UnsignedLong:
+                else if constexpr(std::is_scalar_v<T>)
                 {
-                    const auto String = Concat(Token->Value->Value.UnsignedLongValue);
+                    const auto String = Concat(Value);
                     Stream.write(String.data(), String.size());
-                    break;
                 }
-                case LiteralType::SignedByte:
-                {
-                    const auto String = Concat(static_cast<std::int32_t>(Token->Value->Value.SignedByteValue));
-                    Stream.write(String.data(), String.size());
-                    break;
-                }
-                case LiteralType::SignedShort:
-                {
-                    const auto String = Concat(Token->Value->Value.SignedShortValue);
-                    Stream.write(String.data(), String.size());
-                    break;
-                }
-                case LiteralType::SignedInt:
-                {
-                    const auto String = Concat(Token->Value->Value.SignedIntValue);
-                    Stream.write(String.data(), String.size());
-                    break;
-                }
-                case LiteralType::SignedLong:
-                {
-                    const auto String = Concat(Token->Value->Value.SignedLongValue);
-                    Stream.write(String.data(), String.size());
-                    break;
-                }
-                case LiteralType::Double:
-                {
-                    const auto String = Concat(Token->Value->Value.DoubleValue);
-                    Stream.write(String.data(), String.size());
-                    break;
-                }
-                case LiteralType::Float:
-                {
-                    const auto String = Concat(Token->Value->Value.FloatValue);
-                    Stream.write(String.data(), String.size());
-                    break;
-                }
-                case LiteralType::Boolean:
-                {
-                    const auto String = Concat(Token->Value->Value.BooleanValue);
-                    Stream.write(String.data(), String.size());
-                    break;
-                }
-                case LiteralType::Empty:
-                    break;
-            }
+            }, Token->Value->Value);
         }
 
         if (Node->Kind() == SyntaxKind::IdentifierToken)

@@ -277,7 +277,7 @@ std::shared_ptr<const BoundStatement> Binder::BindIfStatement(const std::shared_
 
     if (Condition->ConstantValue())
     {
-        if (!Condition->ConstantValue()->Value->Value.BooleanValue)
+        if (!Condition->ConstantValue()->Value->GetValue<LiteralType::Boolean>())
         {
             Diagnostics.ReportUnreachableCode(IfStatement->ElseClause->ElseStatement);
         }
@@ -299,7 +299,7 @@ std::shared_ptr<const BoundStatement> Binder::BindWhileStatement(const std::shar
 
     const auto Condition = BindExpression(WhileStatement->Condition);
 
-    if (Condition->ConstantValue() && !Condition->ConstantValue()->Value->Value.BooleanValue)
+    if (Condition->ConstantValue() && !Condition->ConstantValue()->Value->GetValue<LiteralType::Boolean>())
     {
         Diagnostics.ReportUnreachableCode(WhileStatement->Body);
     }
