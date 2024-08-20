@@ -46,8 +46,8 @@ NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
 
     if (Operator.Kind == BoundBinaryOperatorKind::LogicalAnd)
     {
-        if ((LeftConstant && !(*LeftConstant)->BooleanValue) // Wrap
-            || (RightConstant && !(*RightConstant)->BooleanValue))
+        if ((LeftConstant && !(*LeftConstant)->GetValue<LiteralType::Boolean>()) // Wrap
+            || (RightConstant && !(*RightConstant)->GetValue<LiteralType::Boolean>()))
         {
             return std::make_shared<const BoundConstant>(std::make_shared<const Literal>(false));
         }
@@ -55,8 +55,8 @@ NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
 
     if (Operator.Kind == BoundBinaryOperatorKind::LogicalOr)
     {
-        if ((LeftConstant && (*LeftConstant)->BooleanValue) // Wrap
-            || (RightConstant && (*RightConstant)->BooleanValue))
+        if ((LeftConstant && (*LeftConstant)->GetValue<LiteralType::Boolean>()) // Wrap
+            || (RightConstant && (*RightConstant)->GetValue<LiteralType::Boolean>()))
         {
             return std::make_shared<const BoundConstant>(std::make_shared<const Literal>(true));
         }

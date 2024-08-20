@@ -10,29 +10,33 @@ using namespace Mamba;
 
 std::shared_ptr<const TypeSymbol> GetType(const std::shared_ptr<const Literal> Value) noexcept
 {
-    switch (Value->Type)
+    static constexpr auto TableElem = []<size_t I>()
     {
-        case LiteralType::String:
-            return TypeSymbol::String;
-        case LiteralType::SignedInt:
-            return TypeSymbol::Int;
-        case LiteralType::Boolean:
-            return TypeSymbol::Bool;
+        using Type = std::variant_alternative_t<I, decltype(Value->Value)>;
+        if constexpr(std::same_as<Type, String>)
+        {
+            return &TypeSymbol::String;
+        }
+        else if constexpr(std::same_as<Type, std::int32_t>)
+        {
+            return &TypeSymbol::Int;
+        }
+        else if constexpr(std::same_as<Type, bool>)
+        {
+            return &TypeSymbol::Bool;
+        }
+        else
+        {
+            return &TypeSymbol::Void;
+        }
+    };
 
-        case LiteralType::Character:
-        case LiteralType::UnsignedByte:
-        case LiteralType::UnsignedShort:
-        case LiteralType::UnsignedInt:
-        case LiteralType::UnsignedLong:
-        case LiteralType::SignedByte:
-        case LiteralType::SignedShort:
-        case LiteralType::SignedLong:
-        case LiteralType::Double:
-        case LiteralType::Float:
-        case LiteralType::Empty:
-        default:
-            return TypeSymbol::Void;
-    }
+    static constexpr auto Table = []<size_t...I>(std::index_sequence<I...>)
+    {
+        return std::array{ TableElem.operator()<I>()... };
+    }(std::make_index_sequence<std::variant_size_v<decltype(Value->Value)>>{});
+
+    return *Table[Value->Value.index()];
 }
 
 BoundLiteralExpression::BoundLiteralExpression(

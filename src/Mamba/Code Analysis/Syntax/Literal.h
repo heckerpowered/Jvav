@@ -4,100 +4,73 @@
 
 #include <cstdint>
 #include <memory>
+#include <variant>
 #include <optional>
 
 namespace Mamba
 {
-    union LiteralValue
+    struct LiteralType
     {
-        StringView StringValue;
-        Char CharacterValue;
+        using String = StringView;
+        using Character = Char;
 
-        std::uint8_t UnsignedByteValue;
-        std::uint16_t UnsignedShortValue;
-        std::uint32_t UnsignedIntValue;
-        std::uint64_t UnsignedLongValue;
-
-        std::int8_t SignedByteValue;
-        std::int16_t SignedShortValue;
-        std::int32_t SignedIntValue;
-        std::int64_t SignedLongValue;
-
-        double DoubleValue;
-        float FloatValue;
-
-        bool BooleanValue;
-
-        LiteralValue() noexcept;
-        LiteralValue(const StringView String) noexcept;
-        LiteralValue(const std::int8_t Integer) noexcept;
-        LiteralValue(const std::int16_t Integer) noexcept;
-        LiteralValue(const std::int32_t Integer) noexcept;
-        LiteralValue(const std::int64_t Integer) noexcept;
-        LiteralValue(const std::uint8_t Integer) noexcept;
-        LiteralValue(const std::uint16_t Integer) noexcept;
-        LiteralValue(const std::uint32_t Integer) noexcept;
-        LiteralValue(const std::uint64_t Integer) noexcept;
-        LiteralValue(const float Value) noexcept;
-        LiteralValue(const double Value) noexcept;
-        LiteralValue(const bool Value) noexcept;
-
-    private:
-        // In general, for some types of literal such as strings, this type only stores a view of the value, and the
-        // value is generally stored in the objects that holds this object. To ensure the validity of the view, this
-        // object can only be copied when the object that holds this object is copied.
-        //
-        // For example, Literal has a StringValue member variable, then the StringValue of this type is its view. This
-        // object can be only copied if the Literal object is copied.
-        LiteralValue(const LiteralValue&) = default;
-        LiteralValue(LiteralValue&&) = default;
-
-        friend struct Literal;
-    };
-
-    enum class LiteralType
-    {
-        String,
-        Character,
-
-        UnsignedByte,
-        UnsignedShort,
-        UnsignedInt,
-        UnsignedLong,
-
-        SignedByte,
-        SignedShort,
-        SignedInt,
-        SignedLong,
-
-        Double,
-        Float,
-
-        Boolean,
-
-        Empty
+        using UnsignedByte = std::uint8_t;
+        using UnsignedShort = std::uint16_t;
+        using UnsignedInt = std::uint32_t;
+        using UnsignedLong = std::uint64_t;
+ 
+        using SignedByte = std::int8_t;
+        using SignedShort = std::int16_t;
+        using SignedInt = std::int32_t;
+        using SignedLong = std::int64_t;
+ 
+        using Double = double;
+        using Float = float;
+ 
+        using Boolean = bool;
+ 
+        using Empty = std::monostate;
     };
 
     struct Literal
     {
-        LiteralValue Value;
-        LiteralType Type;
+        using ValueVariantType = std::variant<
+           LiteralType::Empty,
 
-        ::std::optional<std::shared_ptr<const String>> StringValue;
+           LiteralType::String, 
+           LiteralType::Character, 
 
-        [[nodiscard]] Literal() noexcept;
-        [[nodiscard]] Literal(const std::shared_ptr<const String> String) noexcept;
-        [[nodiscard]] Literal(const std::int8_t Integer) noexcept;
-        [[nodiscard]] Literal(const std::int32_t Integer) noexcept;
-        [[nodiscard]] Literal(const std::int64_t Integer) noexcept;
-        [[nodiscard]] Literal(const std::uint8_t Integer) noexcept;
-        [[nodiscard]] Literal(const std::uint16_t Integer) noexcept;
-        [[nodiscard]] Literal(const std::uint32_t Integer) noexcept;
-        [[nodiscard]] Literal(const std::uint64_t Integer) noexcept;
-        [[nodiscard]] Literal(const Char Character) noexcept;
-        [[nodiscard]] Literal(const float Value) noexcept;
-        [[nodiscard]] Literal(const double Value) noexcept;
-        [[nodiscard]] Literal(const bool Value) noexcept;
+           LiteralType::UnsignedByte,
+           LiteralType::UnsignedShort,
+           LiteralType::UnsignedInt,
+           LiteralType::UnsignedLong,
+
+           LiteralType::SignedByte,
+           LiteralType::SignedShort,
+           LiteralType::SignedInt,
+           LiteralType::SignedLong,
+
+           LiteralType::Double,
+           LiteralType::Float,
+
+           LiteralType::Boolean
+        >;
+        ValueVariantType Value;
+
+        std::optional<std::shared_ptr<const String>> StringValue;
+        
+        [[nodiscard]] Literal()noexcept = default;
+        
+        template<typename T> requires std::constructible_from<ValueVariantType, const T&>
+        [[nodiscard]] Literal(const T Value)noexcept : Value(Value) {}
+
+        [[nodiscard]] Literal(const std::shared_ptr<const String> Value)noexcept : Value(*Value), StringValue(Value) {}
+
+        template<typename T>
+        constexpr const T GetValue()const
+        {
+            return std::get<T>(Value);
+        }
 
         static NullableSharedPtr<const Literal> Negative(const Literal& Literal) noexcept;
         static NullableSharedPtr<const Literal> LogicalNegative(const Literal& Literal) noexcept;
