@@ -1,27 +1,24 @@
 #include "TextLocation.h"
-
 #include "SourceText.h"
-#include "TextLine.h"
-#include "TextSpan.h"
 
 using namespace Mamba;
 
 std::size_t TextLocation::StartLine() const noexcept
 {
-    return Text.LineIndex(Span.Start);
+    return Text.LineIndex(Text.RelativeBegin(View));
 }
 
 std::size_t TextLocation::StartCharacter() const noexcept
 {
-    return Span.Start - Text.Lines()[StartLine()].Start;
+    return Text.RelativeBegin(View) - Text.Lines()[StartLine()].Start;
 }
 
 std::size_t TextLocation::EndLine() const noexcept
 {
-    return Text.LineIndex(Span.End());
+    return Text.LineIndex(Text.RelativeEnd(View));
 }
 
 std::size_t TextLocation::EndCharacter() const noexcept
 {
-    return Span.End() - Text.Lines()[EndLine()].Start;
+    return Text.RelativeEnd(View) - Text.Lines()[EndLine()].Start;
 }

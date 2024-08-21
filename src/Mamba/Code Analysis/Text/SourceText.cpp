@@ -62,17 +62,12 @@ std::size_t SourceText::LineIndex(const std::size_t Position) const noexcept
     return Lower - 1;
 }
 
-String SourceText::ToString(const std::size_t Start, const std::size_t Length) const noexcept
+const std::vector<TextLine>& SourceText::Lines() const noexcept
 {
-    return PrivateInfo.Text.substr(Start, Length);
+    return PrivateLines;
 }
 
-String SourceText::ToString(const TextSpan Span) const noexcept
-{
-    return ToString(Span.Start, Span.Length);
-}
-
-StringView SourceText::ToView(const std::size_t Start, const std::size_t Length) const noexcept
+StringView SourceText::SubView(const std::size_t Start, const std::size_t Length) const noexcept
 {
     const auto End = Start + Length;
     const auto ViewBegin = PrivateInfo.Text.data() + Start;
@@ -81,9 +76,19 @@ StringView SourceText::ToView(const std::size_t Start, const std::size_t Length)
     return StringView(ViewBegin, ViewEnd);
 }
 
-StringView SourceText::ToView(const TextSpan Span) const noexcept
+StringView SourceText::SubView(const TextSpan Span) const noexcept
 {
-    return ToView(Span.Start, Span.Length);
+    return SubView(Span.Start, Span.Length);
+}
+
+std::size_t SourceText::RelativeBegin(const StringView View) const noexcept
+{
+    return View.data() - PrivateInfo.Text.data();
+}
+
+std::size_t SourceText::RelativeEnd(const StringView View) const noexcept
+{
+    return RelativeBegin(View) + View.length();
 }
 
 SourceText::SourceText(const SourceTextInfo& Info) noexcept :

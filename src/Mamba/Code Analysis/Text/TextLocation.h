@@ -8,7 +8,7 @@ namespace Mamba
     struct TextLocation
     {
         SourceText Text;
-        TextSpan Span;
+        StringView View;
 
         template<typename SelfT>
         [[nodiscard]] decltype(auto) FileName(this SelfT&& Self) noexcept

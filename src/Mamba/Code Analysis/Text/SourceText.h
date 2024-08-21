@@ -32,6 +32,7 @@ namespace Mamba
 
         [[nodiscard]] std::size_t Length() const noexcept;
         [[nodiscard]] std::size_t LineIndex(const std::size_t Position) const noexcept;
+        [[nodiscard]] const std::vector<TextLine>& Lines() const noexcept;
 
         template<typename SelfT>
         [[nodiscard]] auto&& ToString(this SelfT&& Self) noexcept
@@ -39,11 +40,11 @@ namespace Mamba
             return std::forward_like<SelfT>(Self.PrivateInfo.Text);
         }
 
-        [[nodiscard]] String ToString(const std::size_t Start, const std::size_t Length) const noexcept;
-        [[nodiscard]] String ToString(const TextSpan Span) const noexcept;
+        [[nodiscard]] StringView SubView(const std::size_t Start, const std::size_t Length) const noexcept;
+        [[nodiscard]] StringView SubView(const TextSpan Span) const noexcept;
 
-        [[nodiscard]] StringView ToView(const std::size_t Start, const std::size_t Length) const noexcept;
-        [[nodiscard]] StringView ToView(const TextSpan Span) const noexcept;
+        [[nodiscard]] std::size_t RelativeBegin(const StringView View) const noexcept;
+        [[nodiscard]] std::size_t RelativeEnd(const StringView View) const noexcept;
 
     private:
         static std::vector<TextLine> SplitLines(const SourceTextInfo& Info);
