@@ -4,15 +4,38 @@
 
 #include "CompilationUnitSyntax.h"
 #include "MambaCore.h"
+#include "SourceText.h"
 
 namespace Mamba
 {
+    class SourceText;
+
     class SyntaxTree
     {
+        std::optional<CompilationUnitSyntax> PrivateRoot;
+        const SourceText& PrivateSourceText;
+
+        friend class Compiler;
+
     public:
-        CompilationUnitSyntax Root;
+        [[nodiscard]] SyntaxTree(const class SourceText& SourceText) noexcept;
+
+        template<typename SelfT>
+        [[nodiscard]] auto&& Root(this SelfT&& Self) noexcept
+        {
+            return std::forward<SelfT>(Self).PrivateRoot.value();
+        }
+
+        template<typename SelfT>
+        [[nodiscard]] const SourceText& Text(this SelfT&& Self) noexcept
+        {
+            return std::forward<SelfT>(Self).PrivateSourceText;
+        }
+
+        NullablePointer<const SyntaxNode> Parent(const SyntaxNode& Node) const noexcept;
 
     private:
-        std::unordered_map<SyntaxNode*, NullablePointer<SyntaxNode>> ParentsMap;
+        void BuildParentsMap(const SyntaxNode& Root) noexcept;
+        std::unordered_map<const SyntaxNode*, NullablePointer<const SyntaxNode>> ParentsMap;
     };
 } // namespace Mamba
