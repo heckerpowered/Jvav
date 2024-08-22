@@ -3,7 +3,7 @@
 #include "SyntaxNode.h"
 #include "SyntaxToken.h"
 #include "SyntaxTree.h"
-#include <memory>
+#include "TypeClauseSyntax.h"
 
 namespace Mamba
 {
@@ -13,15 +13,17 @@ namespace Mamba
         using Super = SyntaxNode;
 
         [[nodiscard]] ParameterSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> Identifier,
-            const std::shared_ptr<const class TypeClauseSyntax> Type
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* Identifier,
+            const TypeClauseSyntax* Type
         ) noexcept;
 
-        SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        ~ParameterSyntax() noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> Identifier;
-        const std::shared_ptr<const class TypeClauseSyntax> Type;
+        SyntaxKind Kind() const noexcept override;
+        std::vector<const SyntaxNode*> Children() const noexcept override;
+
+        const SyntaxToken* Identifier;
+        const class TypeClauseSyntax* Type;
     };
 } // namespace Mamba

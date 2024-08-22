@@ -4,7 +4,7 @@
 
 namespace Mamba
 {
-    ExpressionSyntax::ExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept :
+    ExpressionSyntax::ExpressionSyntax(const class SyntaxTree* SyntaxTree) noexcept :
         Super(SyntaxTree)
     {
     }

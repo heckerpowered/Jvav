@@ -2,7 +2,7 @@
 
 namespace Mamba
 {
-    StatementSyntax::StatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept :
+    StatementSyntax::StatementSyntax(const class SyntaxTree* SyntaxTree) noexcept :
         Super(SyntaxTree)
     {
     }

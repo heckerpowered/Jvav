@@ -33,7 +33,7 @@ namespace Mamba
         std::shared_ptr<const class BoundExpression> BindExpression(const std::shared_ptr<const class ExpressionSyntax> Expression) noexcept;
         std::shared_ptr<const class BoundStatement> BindVariableDeclaration(const std::shared_ptr<const class VariableDeclarationSyntax> VariableDeclaration) noexcept;
         std::shared_ptr<const class VariableSymbol> BindVariableDeclaration(
-            const std::shared_ptr<const class SyntaxToken> Identifier,
+            const SyntaxToken* Identifier,
             const bool IsReadOnly,
             const std::shared_ptr<const class TypeSymbol> Type,
             const NullableSharedPtr<const class BoundConstant> Constant
@@ -60,7 +60,7 @@ namespace Mamba
         void DeclareBuiltinFunction();
 
     public:
-        [[nodiscard]] Binder(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
+        [[nodiscard]] Binder(const class SyntaxTree* SyntaxTree) noexcept;
 
         std::shared_ptr<const class BoundCompilationUnit> BindCompilationUnit() noexcept;
     };

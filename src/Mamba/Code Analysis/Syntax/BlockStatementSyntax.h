@@ -2,8 +2,8 @@
 
 #include "StatementSyntax.h"
 #include "SyntaxKind.h"
+#include "SyntaxToken.h"
 
-#include <memory>
 #include <vector>
 
 namespace Mamba
@@ -13,21 +13,20 @@ namespace Mamba
     public:
         using Super = StatementSyntax;
 
-        [[nodiscard]] BlockStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                           const std::shared_ptr<const class SyntaxToken> OpenBraceToken,
-                                           const std::vector<std::shared_ptr<const class StatementSyntax>>& Statements,
-                                           const std::shared_ptr<const class SyntaxToken> CloseBraceToken) noexcept;
+        [[nodiscard]] BlockStatementSyntax(
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* OpenBraceToken,
+            std::vector<StatementSyntax*>&& Statements,
+            const SyntaxToken* CloseBraceToken
+        ) noexcept;
 
-        [[nodiscard]] BlockStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                           const std::shared_ptr<const class SyntaxToken> OpenBraceToken,
-                                           std::vector<std::shared_ptr<const class StatementSyntax>>&& Statements,
-                                           const std::shared_ptr<const class SyntaxToken> CloseBraceToken) noexcept;
+        ~BlockStatementSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        std::vector<const SyntaxNode*> Children() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> OpenBraceToken;
-        const std::vector<std::shared_ptr<const class StatementSyntax>> Statements;
-        const std::shared_ptr<const class SyntaxToken> CloseBraceToken;
+        const SyntaxToken* OpenBraceToken;
+        std::vector<StatementSyntax*> Statements;
+        const SyntaxToken* CloseBraceToken;
     };
 } // namespace Mamba

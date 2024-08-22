@@ -1,8 +1,8 @@
 #pragma once
 
 #include "MemberSyntax.h"
+#include "StatementSyntax.h"
 #include "SyntaxTree.h"
-#include <memory>
 
 namespace Mamba
 {
@@ -11,12 +11,16 @@ namespace Mamba
     public:
         using Super = MemberSyntax;
 
-        [[nodiscard]] GlobalStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                            const std::shared_ptr<const class StatementSyntax> Statement) noexcept;
+        [[nodiscard]] GlobalStatementSyntax(
+            const class SyntaxTree* SyntaxTree,
+            const StatementSyntax* Statement
+        ) noexcept;
+
+        ~GlobalStatementSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        std::vector<const SyntaxNode*> Children() const noexcept override;
 
-        const std::shared_ptr<const class StatementSyntax> Statement;
+        const StatementSyntax* Statement;
     };
 } // namespace Mamba

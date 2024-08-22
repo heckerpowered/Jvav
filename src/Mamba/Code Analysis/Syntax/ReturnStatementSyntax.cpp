@@ -1,26 +1,27 @@
 #include "ReturnStatementSyntax.h"
 
-#include "ExpressionSyntax.h"
-#include "SyntaxToken.h"
+using namespace Mamba;
 
-namespace Mamba
+ReturnStatementSyntax::ReturnStatementSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* ReturnKeyword,
+    NullablePointer<const ExpressionSyntax> Expression
+) noexcept :
+    Super(SyntaxTree), ReturnKeyword(ReturnKeyword), Expression(Expression)
 {
-    ReturnStatementSyntax::ReturnStatementSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> ReturnKeyword,
-        const NullableSharedPtr<const class ExpressionSyntax> Expression
-    ) noexcept :
-        Super(SyntaxTree), ReturnKeyword(ReturnKeyword), Expression(Expression)
-    {
-    }
+}
 
-    SyntaxKind ReturnStatementSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::ReturnStatement;
-    }
+ReturnStatementSyntax::~ReturnStatementSyntax() noexcept
+{
+    delete Expression;
+}
 
-    std::vector<std::shared_ptr<const class SyntaxNode>> ReturnStatementSyntax::Children() const noexcept
-    {
-        return { ReturnKeyword, Expression };
-    }
-} // namespace Mamba
+SyntaxKind ReturnStatementSyntax::Kind() const noexcept
+{
+    return SyntaxKind::ReturnStatement;
+}
+
+std::vector<const SyntaxNode*> ReturnStatementSyntax::Children() const noexcept
+{
+    return { ReturnKeyword, Expression };
+}

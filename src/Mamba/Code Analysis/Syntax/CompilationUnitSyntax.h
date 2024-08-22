@@ -1,8 +1,8 @@
 #pragma once
 
+#include "MemberSyntax.h"
 #include "SyntaxNode.h"
-
-#include <memory>
+#include "SyntaxToken.h"
 
 namespace Mamba
 {
@@ -12,19 +12,19 @@ namespace Mamba
     public:
         using Super = SyntaxNode;
 
-        [[nodiscard]] CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                            const std::vector<std::shared_ptr<const class MemberSyntax>>& Members,
-                                            std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept;
+        [[nodiscard]] CompilationUnitSyntax(
+            const class SyntaxTree* SyntaxTree,
+            std::vector<MemberSyntax*>&& Members,
+            const SyntaxToken* EndOfFileToken
+        ) noexcept;
 
-        [[nodiscard]] CompilationUnitSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                            std::vector<std::shared_ptr<const class MemberSyntax>>&& Members,
-                                            std::shared_ptr<const class SyntaxToken> EndOfFileToken) noexcept;
+        ~CompilationUnitSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
+        std::vector<const SyntaxNode*> Children() const noexcept override;
 
-        const std::vector<std::shared_ptr<const class MemberSyntax>> Members;
-        std::shared_ptr<const class SyntaxToken> EndOfFileToken;
+        std::vector<MemberSyntax*> Members;
+        const SyntaxToken* EndOfFileToken;
     };
 
 } // namespace Mamba

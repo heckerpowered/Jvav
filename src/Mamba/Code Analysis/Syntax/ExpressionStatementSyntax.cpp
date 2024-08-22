@@ -2,22 +2,27 @@
 
 #include "ExpressionSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+ExpressionStatementSyntax::ExpressionStatementSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const ExpressionSyntax* Expression
+) noexcept :
+    Super(SyntaxTree), Expression(Expression)
 {
-    ExpressionStatementSyntax::ExpressionStatementSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class ExpressionSyntax> Expression) noexcept :
-        Super(SyntaxTree), Expression(Expression)
-    {
-    }
+}
 
-    SyntaxKind ExpressionStatementSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::ExpressionStatement;
-    }
+ExpressionStatementSyntax::~ExpressionStatementSyntax() noexcept
+{
+    delete Expression;
+}
 
-    std::vector<std::shared_ptr<const class SyntaxNode>> ExpressionStatementSyntax::Children() const noexcept
-    {
-        return { Expression };
-    }
-} // namespace Mamba
+SyntaxKind ExpressionStatementSyntax::Kind() const noexcept
+{
+    return SyntaxKind::ExpressionStatement;
+}
+
+std::vector<const SyntaxNode*> ExpressionStatementSyntax::Children() const noexcept
+{
+    return { Expression };
+}

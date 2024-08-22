@@ -1,28 +1,30 @@
 #include "DoWhileStatementSyntax.h"
 
-#include "SyntaxToken.h"
+using namespace Mamba;
 
-namespace Mamba
+DoWhileStatementSyntax::DoWhileStatementSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* DoKeyword,
+    const StatementSyntax* Body,
+    const SyntaxToken* WhileKeyword,
+    const ExpressionSyntax* Condition
+) noexcept :
+    Super(SyntaxTree), DoKeyword(DoKeyword), Body(Body), WhileKeyword(WhileKeyword), Condition(Condition)
 {
-    DoWhileStatementSyntax::DoWhileStatementSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> DoKeyword,
-        const std::shared_ptr<const class StatementSyntax> Body,
-        const std::shared_ptr<const class SyntaxToken> WhileKeyword,
-        const std::shared_ptr<const class ExpressionSyntax> Condition
-    ) noexcept :
-        Super(SyntaxTree), DoKeyword(DoKeyword), Body(Body), WhileKeyword(WhileKeyword), Condition(Condition)
-    {
-    }
+}
 
-    SyntaxKind DoWhileStatementSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::DoWhileStatement;
-    }
+DoWhileStatementSyntax::~DoWhileStatementSyntax() noexcept
+{
+    delete Body;
+    delete Condition;
+}
 
-    std::vector<std::shared_ptr<const class SyntaxNode>> DoWhileStatementSyntax::Children() const noexcept
-    {
-        return { DoKeyword, Body, WhileKeyword, Condition };
-    }
+SyntaxKind DoWhileStatementSyntax::Kind() const noexcept
+{
+    return SyntaxKind::DoWhileStatement;
+}
 
-} // namespace Mamba
+std::vector<const SyntaxNode*> DoWhileStatementSyntax::Children() const noexcept
+{
+    return { DoKeyword, Body, WhileKeyword, Condition };
+}

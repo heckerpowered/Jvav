@@ -1,39 +1,35 @@
 #include "SyntaxToken.h"
 #include "MambaCore.h"
-#include "TextSpan.h"
+#include "SyntaxTree.h"
 
-namespace Mamba
+using namespace Mamba;
+
+SyntaxToken::SyntaxToken(const SyntaxTree* SyntaxTree, SyntaxKind Kind, StringView Text, Literal Value) noexcept :
+    Super(SyntaxTree), PrivateKind(Kind), PrivateText(Text), PrivateValue(Value)
 {
-    SyntaxToken::SyntaxToken(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const SyntaxKind Kind,
-        const std::size_t Position,
-        const std::shared_ptr<const String> Text,
-        const NullableSharedPtr<Literal> Value
-    ) noexcept :
-        Super(SyntaxTree), Position(Position), Text(Text), Value(Value), KindValue(Kind)
-    {
-    }
+}
 
-    SyntaxKind SyntaxToken::Kind() const noexcept
-    {
-        return KindValue;
-    }
+SyntaxKind SyntaxToken::Kind() const noexcept
+{
+    return PrivateKind;
+}
 
-    TextSpan SyntaxToken::Span() const noexcept
-    {
-        return TextSpan(Position, Text->length());
-    }
+StringView SyntaxToken::Text() const noexcept
+{
+    return PrivateText;
+}
 
-    TextSpan SyntaxToken::FullSpan() const noexcept
-    {
-        const auto Start = Span().Start;
-        const auto End = Span().End();
-        return TextSpan::FromBounds(Start, End);
-    }
+std::vector<const SyntaxNode*> SyntaxToken::Children() const noexcept
+{
+    return {};
+}
 
-    std::vector<std::shared_ptr<const SyntaxNode>> SyntaxToken::Children() const noexcept
-    {
-        return {};
-    }
-} // namespace Mamba
+std::size_t SyntaxToken::Position() const noexcept
+{
+    return Tree()->Text().RelativeBegin(Text());
+}
+
+Literal SyntaxToken::Value() const noexcept
+{
+    return PrivateValue;
+}

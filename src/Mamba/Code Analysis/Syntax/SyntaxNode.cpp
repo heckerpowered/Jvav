@@ -52,14 +52,3 @@ std::vector<const SyntaxNode*> SyntaxNode::Ancestors() const noexcept
 {
     return AncestorsAndSelf() | std::views::drop(1) | std::ranges::to<std::vector>();
 }
-
-const SyntaxToken* SyntaxNode::LastToken() const noexcept
-{
-    if (auto Token = dynamic_cast<const SyntaxToken*>(this))
-    {
-        return Token;
-    }
-
-    // A syntax node should always contain at least 1 token.
-    return Children().back()->LastToken();
-}

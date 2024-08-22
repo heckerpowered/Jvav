@@ -12,7 +12,7 @@ namespace Mamba
 {
     class Lexer
     {
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree;
+        const class SyntaxTree* SyntaxTree;
         const std::shared_ptr<const class SourceText> Text;
 
         std::size_t Position;
@@ -24,7 +24,7 @@ namespace Mamba
     public:
         DiagnosticBag Diagnostics;
 
-        [[nodiscard]] Lexer(const std::shared_ptr<const class SyntaxTree> SyntaxTree);
+        [[nodiscard]] Lexer(const class SyntaxTree* SyntaxTree);
 
         [[nodiscard]] std::shared_ptr<const class SyntaxToken> Lex() noexcept;
 

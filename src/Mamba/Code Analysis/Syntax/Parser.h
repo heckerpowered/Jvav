@@ -1,71 +1,87 @@
 #pragma once
 
-#include <memory>
 #include <vector>
 
+#include "AssignmentExpressionSyntax.h"
+#include "BinaryExpressionSyntax.h"
+#include "BreakStatementSyntax.h"
+#include "CallExpressionSyntax.h"
+#include "CompilationUnitSyntax.h"
+#include "ContinueStatementSyntax.h"
 #include "DiagnosticBag.h"
+#include "DoWhileStatementSyntax.h"
+#include "ElseClauseSyntax.h"
+#include "ExpressionStatementSyntax.h"
+#include "ForStatementSyntax.h"
+#include "FunctionDeclarationSyntax.h"
+#include "GlobalStatementSyntax.h"
+#include "IfStatementSyntax.h"
+#include "LiteralExpressionSyntax.h"
+#include "NameExpressionSyntax.h"
+#include "ParameterSyntax.h"
+#include "ParenthesizedExpressionSyntax.h"
+#include "ReturnStatementSyntax.h"
 #include "SeperatedSyntaxList.h"
+#include "SyntaxToken.h"
+#include "VariableDeclarationSyntax.h"
+#include "WhileStatementSyntax.h"
 
 namespace Mamba
 {
     class Parser
     {
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree;
-        const std::shared_ptr<const class SourceText> Text;
-        std::vector<std::shared_ptr<const class SyntaxToken>> Tokens;
+        const class SyntaxTree* SyntaxTree;
+        std::span<const SyntaxToken> Tokens;
         std::size_t Position;
 
     public:
         DiagnosticBag Diagnostics;
 
-        [[nodiscard]] Parser(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
-        [[nodiscard]] Parser(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
+        [[nodiscard]] Parser(const class SyntaxTree* SyntaxTree, std::span<const SyntaxToken> Tokens) noexcept;
 
     private:
-        [[nodiscard]] std::shared_ptr<const class SyntaxToken> Peek(const std::size_t Offset) noexcept;
-        [[nodiscard]] std::shared_ptr<const class SyntaxToken> Current() noexcept;
-        std::shared_ptr<const class SyntaxToken> NextToken() noexcept;
-        [[nodiscard]] std::shared_ptr<const class SyntaxToken> MatchToken(const SyntaxKind Kind) noexcept;
+        [[nodiscard]] const SyntaxToken* Peek(std::size_t Offset) noexcept;
+        [[nodiscard]] const SyntaxToken* Current() noexcept;
+        const SyntaxToken* NextToken() noexcept;
+        [[nodiscard]] const SyntaxToken* MatchToken(SyntaxKind Kind) noexcept;
 
     public:
-        [[nodiscard]] std::shared_ptr<const class CompilationUnitSyntax> ParseCompilationUnit() noexcept;
+        [[nodiscard]] CompilationUnitSyntax* ParseCompilationUnit() noexcept;
 
     private:
-        [[nodiscard]] std::vector<std::shared_ptr<const class MemberSyntax>> ParseMembers() noexcept;
-        [[nodiscard]] std::shared_ptr<const class MemberSyntax> ParseMember() noexcept;
-        [[nodiscard]] std::shared_ptr<const class FunctionDeclarationSyntax> ParseFunctionDeclaration() noexcept;
-        [[nodiscard]] std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>>
-            ParseParameterList() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ParameterSyntax> ParseParameter() noexcept;
-        [[nodiscard]] std::shared_ptr<const class MemberSyntax> ParseGlobalStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class StatementSyntax> ParseStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class BlockStatementSyntax> ParseBlockStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class StatementSyntax> ParseVariableDeclaration() noexcept;
-        [[nodiscard]] NullableSharedPtr<const class TypeClauseSyntax> ParseOptionalTypeClause() noexcept;
-        [[nodiscard]] std::shared_ptr<const class TypeClauseSyntax> ParseTypeClause() noexcept;
-        [[nodiscard]] std::shared_ptr<const class StatementSyntax> ParseIfStatement() noexcept;
-        [[nodiscard]] NullableSharedPtr<const class ElseClauseSyntax> ParseOptionalElseClause() noexcept;
-        [[nodiscard]] std::shared_ptr<const class StatementSyntax> ParseWhileStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class StatementSyntax> ParseDoWhileStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class StatementSyntax> ParseForStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class StatementSyntax> ParseBreakStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class StatementSyntax> ParseContinueStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class StatementSyntax> ParseReturnStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionStatementSyntax> ParseExpressionStatement() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseExpression() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseAssignmentExpression() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax>
-            ParseBinaryExpression(const std::size_t ParentPrecedence = 0) noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParsePrimaryExpression() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseParenthesizedExpression() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseBooleanLiteral() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseNumericLiteral() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseStringLiteral() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseNameOrCallExpression() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseCallExpression() noexcept;
-        [[nodiscard]] std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>>
-            ParseArguments() noexcept;
-        [[nodiscard]] std::shared_ptr<const class ExpressionSyntax> ParseNameExpression() noexcept;
+        [[nodiscard]] ExpressionSyntax* ParseUnaryOrPrimaryExpression(std::size_t ParentPrecedence = 0) noexcept;
+        [[nodiscard]] ExpressionSyntax* ParseBinaryExpression(std::size_t ParentPrecedence = 0) noexcept;
+        [[nodiscard]] ParenthesizedExpressionSyntax* ParseParenthesizedExpression() noexcept;
+        [[nodiscard]] SeperatedSyntaxList<ParameterSyntax*> ParseParameterList() noexcept;
+        [[nodiscard]] NullablePointer<TypeClauseSyntax> ParseOptionalTypeClause() noexcept;
+        [[nodiscard]] NullablePointer<ElseClauseSyntax> ParseOptionalElseClause() noexcept;
+        [[nodiscard]] SeperatedSyntaxList<ExpressionSyntax*> ParseArguments() noexcept;
+        [[nodiscard]] FunctionDeclarationSyntax* ParseFunctionDeclaration() noexcept;
+        [[nodiscard]] VariableDeclarationSyntax* ParseVariableDeclaration() noexcept;
+        [[nodiscard]] ExpressionStatementSyntax* ParseExpressionStatement() noexcept;
+        [[nodiscard]] ContinueStatementSyntax* ParseContinueStatement() noexcept;
+        [[nodiscard]] DoWhileStatementSyntax* ParseDoWhileStatement() noexcept;
+        [[nodiscard]] LiteralExpressionSyntax* ParseNumericLiteral() noexcept;
+        [[nodiscard]] LiteralExpressionSyntax* ParseBooleanLiteral() noexcept;
+        [[nodiscard]] ExpressionSyntax* ParseAssignmentExpression() noexcept;
+        [[nodiscard]] ExpressionSyntax* ParseNameOrCallExpression() noexcept;
+        [[nodiscard]] LiteralExpressionSyntax* ParseStringLiteral() noexcept;
+        [[nodiscard]] ReturnStatementSyntax* ParseReturnStatement() noexcept;
+        [[nodiscard]] CallExpressionSyntax* ParseCallExpression() noexcept;
+        [[nodiscard]] BlockStatementSyntax* ParseBlockStatement() noexcept;
+        [[nodiscard]] WhileStatementSyntax* ParseWhileStatement() noexcept;
+        [[nodiscard]] BreakStatementSyntax* ParseBreakStatement() noexcept;
+        [[nodiscard]] NameExpressionSyntax* ParseNameExpression() noexcept;
+        [[nodiscard]] ExpressionSyntax* ParsePrimaryExpression() noexcept;
+        [[nodiscard]] std::vector<MemberSyntax*> ParseMembers() noexcept;
+        [[nodiscard]] ForStatementSyntax* ParseForStatement() noexcept;
+        [[nodiscard]] IfStatementSyntax* ParseIfStatement() noexcept;
+        [[nodiscard]] MemberSyntax* ParseGlobalStatement() noexcept;
+        [[nodiscard]] ExpressionSyntax* ParseExpression() noexcept;
+        [[nodiscard]] TypeClauseSyntax* ParseTypeClause() noexcept;
+        [[nodiscard]] ParameterSyntax* ParseParameter() noexcept;
+        [[nodiscard]] StatementSyntax* ParseStatement() noexcept;
+        [[nodiscard]] MemberSyntax* ParseMember() noexcept;
     };
 
 } // namespace Mamba

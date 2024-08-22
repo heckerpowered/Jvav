@@ -1,7 +1,7 @@
 #pragma once
 
 #include "StatementSyntax.h"
-#include <memory>
+#include "SyntaxToken.h"
 
 namespace Mamba
 {
@@ -10,12 +10,11 @@ namespace Mamba
     public:
         using Super = StatementSyntax;
 
-        [[nodiscard]] BreakStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                           const std::shared_ptr<const class SyntaxToken> Keyword) noexcept;
+        [[nodiscard]] BreakStatementSyntax(const class SyntaxTree* SyntaxTree, const SyntaxToken* Keyword) noexcept;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        std::vector<const SyntaxNode*> Children() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> Keyword;
+        const SyntaxToken* Keyword;
     };
 } // namespace Mamba

@@ -3,7 +3,6 @@
 #include "ExpressionSyntax.h"
 #include "SyntaxKind.h"
 #include "SyntaxToken.h"
-#include <memory>
 #include <vector>
 
 namespace Mamba
@@ -14,17 +13,19 @@ namespace Mamba
         using Super = ExpressionSyntax;
 
         [[nodiscard]] AssignmentExpressionSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> IdentifierToken,
-            const std::shared_ptr<const class SyntaxToken> AssignmentToken,
-            const std::shared_ptr<const ExpressionSyntax> Expression
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* IdentifierToken,
+            const SyntaxToken* AssignmentToken,
+            const ExpressionSyntax* Expression
         ) noexcept;
 
-        std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
+        ~AssignmentExpressionSyntax() noexcept override;
+
+        std::vector<const SyntaxNode*> Children() const noexcept override;
         SyntaxKind Kind() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> IdentifierToken;
-        const std::shared_ptr<const class SyntaxToken> AssignmentToken;
-        const std::shared_ptr<const ExpressionSyntax> Expression;
+        const SyntaxToken* IdentifierToken;
+        const SyntaxToken* AssignmentToken;
+        const ExpressionSyntax* Expression;
     };
 } // namespace Mamba

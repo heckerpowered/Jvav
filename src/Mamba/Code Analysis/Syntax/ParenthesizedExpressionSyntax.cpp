@@ -1,27 +1,31 @@
 #include "ParenthesizedExpressionSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+ParenthesizedExpressionSyntax::ParenthesizedExpressionSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* OpenParenthesisToken,
+    const ExpressionSyntax* Expression,
+    const SyntaxToken* CloseParenthesisToken
+) noexcept :
+    Super(SyntaxTree),
+    OpenParenthesisToken(OpenParenthesisToken),
+    Expression(Expression),
+    CloseParenthesisToken(CloseParenthesisToken)
 {
-    ParenthesizedExpressionSyntax::ParenthesizedExpressionSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-        const std::shared_ptr<const class ExpressionSyntax> Expression,
-        const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken
-    ) noexcept :
-        Super(SyntaxTree),
-        OpenParenthesisToken(OpenParenthesisToken),
-        Expression(Expression),
-        CloseParenthesisToken(CloseParenthesisToken)
-    {
-    }
+}
 
-    SyntaxKind ParenthesizedExpressionSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::ParenthesizedExpression;
-    }
+ParenthesizedExpressionSyntax::~ParenthesizedExpressionSyntax() noexcept
+{
+    delete Expression;
+}
 
-    std::vector<std::shared_ptr<const class SyntaxNode>> ParenthesizedExpressionSyntax::Children() const noexcept
-    {
-        return { OpenParenthesisToken, Expression, CloseParenthesisToken };
-    }
-} // namespace Mamba
+SyntaxKind ParenthesizedExpressionSyntax::Kind() const noexcept
+{
+    return SyntaxKind::ParenthesizedExpression;
+}
+
+std::vector<const SyntaxNode*> ParenthesizedExpressionSyntax::Children() const noexcept
+{
+    return { OpenParenthesisToken, Expression, CloseParenthesisToken };
+}

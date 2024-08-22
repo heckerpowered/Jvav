@@ -530,7 +530,7 @@ void Binder::DeclareBuiltinFunctions() noexcept
 {
 }
 
-Binder::Binder(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept :
+Binder::Binder(const class SyntaxTree* SyntaxTree) noexcept :
     Scope(std::make_shared<BoundScope>(nullptr)), SyntaxTree(SyntaxTree)
 {
 }

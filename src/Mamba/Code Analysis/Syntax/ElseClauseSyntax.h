@@ -1,9 +1,8 @@
 #pragma once
 
+#include "StatementSyntax.h"
 #include "SyntaxNode.h"
 #include "SyntaxToken.h"
-
-#include <memory>
 
 namespace Mamba
 {
@@ -12,14 +11,18 @@ namespace Mamba
     public:
         using Super = SyntaxNode;
 
-        [[nodiscard]] ElseClauseSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                       const std::shared_ptr<const class SyntaxToken> ElseKeyword,
-                                       const std::shared_ptr<const class StatementSyntax> ElseStatement) noexcept;
+        [[nodiscard]] ElseClauseSyntax(
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* ElseKeyword,
+            const StatementSyntax* ElseStatement
+        ) noexcept;
+
+        ~ElseClauseSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
+        std::vector<const SyntaxNode*> Children() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> ElseKeyword;
-        const std::shared_ptr<const class StatementSyntax> ElseStatement;
+        const SyntaxToken* ElseKeyword;
+        const StatementSyntax* ElseStatement;
     };
 } // namespace Mamba

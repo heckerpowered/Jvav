@@ -1,57 +1,61 @@
 #include "FunctionDeclarationSyntax.h"
 
-#include "BlockStatementSyntax.h"
-#include "ParameterSyntax.h"
-#include "SyntaxToken.h"
-#include "TypeClauseSyntax.h"
+using namespace Mamba;
 
-namespace Mamba
+FunctionDeclarationSyntax::FunctionDeclarationSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* FunctionKeyword,
+    const SyntaxToken* Identifier,
+    const SyntaxToken* OpenParenthesisToken,
+    SeperatedSyntaxList<const ParameterSyntax*>&& Parameters,
+    const SyntaxToken* CloseParenthesisToken,
+    NullablePointer<const TypeClauseSyntax> Type,
+    const BlockStatementSyntax* Body
+) noexcept :
+    Super(SyntaxTree),
+    FunctionKeyword(FunctionKeyword),
+    Identifier(Identifier),
+    OpenParenthesisToken(OpenParenthesisToken),
+    Parameters(std::move(Parameters)),
+    CloseParenthesisToken(CloseParenthesisToken),
+    Type(Type),
+    Body(Body)
 {
-    FunctionDeclarationSyntax::FunctionDeclarationSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> FunctionKeyword,
-        const std::shared_ptr<const class SyntaxToken> Identifier,
-        const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-        const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const SyntaxNode>>> Parameters,
-        const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
-        const NullableSharedPtr<const class TypeClauseSyntax> Type,
-        const std::shared_ptr<const class BlockStatementSyntax> Body
-    ) noexcept :
-        Super(SyntaxTree),
-        FunctionKeyword(FunctionKeyword),
-        Identifier(Identifier),
-        OpenParenthesisToken(OpenParenthesisToken),
-        Parameters(Parameters),
-        CloseParenthesisToken(CloseParenthesisToken),
-        Type(Type),
-        Body(Body)
+}
+
+FunctionDeclarationSyntax::~FunctionDeclarationSyntax() noexcept
+{
+    for (auto&& Parameter : Parameters.Nodes())
     {
+        delete Parameter;
     }
+    delete Type;
+    delete Body;
+}
 
-    SyntaxKind FunctionDeclarationSyntax::Kind() const noexcept
+SyntaxKind FunctionDeclarationSyntax::Kind() const noexcept
+{
+    return SyntaxKind::FunctionDeclaration;
+}
+
+std::vector<const SyntaxNode*> FunctionDeclarationSyntax::Children() const noexcept
+{
+    auto Children = std::vector<const SyntaxNode*>();
+    Children.reserve(6 + Parameters.Count() * 2);
+
+    Children.emplace_back(FunctionKeyword);
+    Children.emplace_back(Identifier);
+    Children.emplace_back(OpenParenthesisToken);
+    for (auto Parameter : Parameters.Nodes())
     {
-        return SyntaxKind::FunctionDeclaration;
+        Children.emplace_back(Parameter);
     }
-
-    std::vector<std::shared_ptr<const class SyntaxNode>> FunctionDeclarationSyntax::Children() const noexcept
+    Children.emplace_back(CloseParenthesisToken);
+    if (Type)
     {
-        auto Children = std::vector<std::shared_ptr<const class SyntaxNode>>();
-        Children.reserve(6 + Parameters->Count() * 2);
-
-        Children.emplace_back(FunctionKeyword);
-        Children.emplace_back(Identifier);
-        Children.emplace_back(OpenParenthesisToken);
-        for (auto Parameter : Parameters->Nodes())
-        {
-            Children.emplace_back(Parameter);
-        }
-        Children.emplace_back(CloseParenthesisToken);
-        if (Type)
-        {
-            Children.emplace_back(Type);
-        }
-        Children.emplace_back(Body);
-
-        return Children;
+        Children.emplace_back(Type);
     }
-} // namespace Mamba
+    Children.emplace_back(Body);
+
+    return Children;
+}

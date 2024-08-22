@@ -1,8 +1,7 @@
 #pragma once
 
 #include "SyntaxNode.h"
-
-#include <memory>
+#include "SyntaxToken.h"
 
 namespace Mamba
 {
@@ -12,15 +11,15 @@ namespace Mamba
         using Super = SyntaxNode;
 
         [[nodiscard]] TypeClauseSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> ColonToken,
-            const std::shared_ptr<const class SyntaxToken> Identifier
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* ColonToken,
+            const SyntaxToken* Identifier
         ) noexcept;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        std::vector<const SyntaxNode*> Children() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> ColonToken;
-        const std::shared_ptr<const class SyntaxToken> Identifier;
+        const SyntaxToken* ColonToken;
+        const SyntaxToken* Identifier;
     };
 } // namespace Mamba

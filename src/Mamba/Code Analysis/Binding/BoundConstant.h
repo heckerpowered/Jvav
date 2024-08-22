@@ -12,6 +12,6 @@ namespace Mamba
 
         const std::shared_ptr<const struct Literal> Value;
 
-        const LiteralValue* operator->() const noexcept;
+        const Literal* operator->() const noexcept;
     };
 }; // namespace Mamba

@@ -1,24 +1,29 @@
 #include "BinaryExpressionSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+BinaryExpressionSyntax::BinaryExpressionSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const ExpressionSyntax* Left,
+    const SyntaxToken* OperatorToken,
+    const ExpressionSyntax* Right
+) noexcept :
+    Super(SyntaxTree), Left(Left), OperatorToken(OperatorToken), Right(Right)
 {
-    BinaryExpressionSyntax::BinaryExpressionSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class ExpressionSyntax> Left,
-        const std::shared_ptr<const class SyntaxToken> OperatorToken,
-        const std::shared_ptr<const class ExpressionSyntax> Right
-    ) noexcept :
-        Super(SyntaxTree), Left(Left), OperatorToken(OperatorToken), Right(Right)
-    {
-    }
+}
 
-    SyntaxKind BinaryExpressionSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::BinaryExpression;
-    }
+BinaryExpressionSyntax::~BinaryExpressionSyntax() noexcept
+{
+    delete Left;
+    delete Right;
+}
 
-    std::vector<std::shared_ptr<const class SyntaxNode>> BinaryExpressionSyntax::Children() const noexcept
-    {
-        return { Left, OperatorToken, Right };
-    }
-} // namespace Mamba
+SyntaxKind BinaryExpressionSyntax::Kind() const noexcept
+{
+    return SyntaxKind::BinaryExpression;
+}
+
+std::vector<const SyntaxNode*> BinaryExpressionSyntax::Children() const noexcept
+{
+    return { Left, OperatorToken, Right };
+}

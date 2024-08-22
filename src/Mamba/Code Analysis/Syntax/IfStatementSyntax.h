@@ -1,8 +1,9 @@
 #pragma once
 
+#include "ElseClauseSyntax.h"
+#include "ExpressionSyntax.h"
 #include "StatementSyntax.h"
-
-#include <memory>
+#include "SyntaxToken.h"
 
 namespace Mamba
 {
@@ -11,22 +12,22 @@ namespace Mamba
     public:
         using Super = StatementSyntax;
 
-        [[nodiscard]] IfStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                        const std::shared_ptr<const class SyntaxToken> IfKeyword,
-                                        const NullableSharedPtr<const class SyntaxToken> OpenParenthesisToken,
-                                        const std::shared_ptr<const class ExpressionSyntax> Condition,
-                                        const NullableSharedPtr<const class SyntaxToken> CloseParenthesisToken,
-                                        const std::shared_ptr<const class StatementSyntax> ThenStatement,
-                                        const NullableSharedPtr<const class ElseClauseSyntax> ElseClause) noexcept;
+        [[nodiscard]] IfStatementSyntax(
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* IfKeyword,
+            const ExpressionSyntax* Condition,
+            const StatementSyntax* ThenStatement,
+            NullablePointer<const ElseClauseSyntax> ElseClause
+        ) noexcept;
+
+        ~IfStatementSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        std::vector<const SyntaxNode*> Children() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> IfKeyword;
-        const NullableSharedPtr<const class SyntaxToken> OpenParenthesisToken;
-        const std::shared_ptr<const class ExpressionSyntax> Condition;
-        const NullableSharedPtr<const class SyntaxToken> CloseParenthesisToken;
-        const std::shared_ptr<const class StatementSyntax> ThenStatement;
-        const NullableSharedPtr<const class ElseClauseSyntax> ElseClause;
+        const SyntaxToken* IfKeyword;
+        const ExpressionSyntax* Condition;
+        const StatementSyntax* ThenStatement;
+        NullablePointer<const ElseClauseSyntax> ElseClause;
     };
 } // namespace Mamba

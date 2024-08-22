@@ -1,23 +1,27 @@
 #include "UnaryExpressionSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+UnaryExpressionSyntax::UnaryExpressionSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* OperatorToken,
+    const ExpressionSyntax* Operand
+) noexcept :
+    Super(SyntaxTree), OperatorToken(OperatorToken), Operand(Operand)
 {
-    UnaryExpressionSyntax::UnaryExpressionSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> OperatorToken,
-        const std::shared_ptr<const class ExpressionSyntax> Operand
-    ) noexcept :
-        Super(SyntaxTree), OperatorToken(OperatorToken), Operand(Operand)
-    {
-    }
+}
 
-    SyntaxKind UnaryExpressionSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::UnaryExpression;
-    }
+UnaryExpressionSyntax::~UnaryExpressionSyntax() noexcept
+{
+    delete Operand;
+}
 
-    std::vector<std::shared_ptr<const class SyntaxNode>> UnaryExpressionSyntax::Children() const noexcept
-    {
-        return { OperatorToken, Operand };
-    }
-} // namespace Mamba
+SyntaxKind UnaryExpressionSyntax::Kind() const noexcept
+{
+    return SyntaxKind::UnaryExpression;
+}
+
+std::vector<const SyntaxNode*> UnaryExpressionSyntax::Children() const noexcept
+{
+    return { OperatorToken, Operand };
+}
