@@ -10,9 +10,9 @@ CompilationUnitSyntax::CompilationUnitSyntax(const SyntaxTree* SyntaxTree, std::
 CompilationUnitSyntax::~CompilationUnitSyntax() noexcept
 {
     for (auto&& Member : Members)
-    {
-        delete Member;
-    }
+        {
+            delete Member;
+        }
 }
 
 SyntaxKind CompilationUnitSyntax::Kind() const noexcept
@@ -25,13 +25,13 @@ std::vector<const SyntaxNode*> CompilationUnitSyntax::Children() const noexcept
     auto Children = std::vector<const SyntaxNode*>();
     Children.reserve(Members.size() + 1);
 
-#if defined(__cpp_lib_containers_ranges) && __cpp_lib_containers_ranges >= 202202L
+#if __cpp_lib_containers_ranges >= 202202L
     Children.append_range(Members);
 #else
     for (auto&& Member : Members)
-    {
-        Children.emplace_back(Member);
-    }
+        {
+            Children.emplace_back(Member);
+        }
 #endif
 
     Children.emplace_back(EndOfFileToken);

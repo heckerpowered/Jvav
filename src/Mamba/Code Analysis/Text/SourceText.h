@@ -17,7 +17,7 @@ namespace Mamba
 
         const SourceTextInfo& Info() const noexcept;
 
-#if defined(__cpp_explicit_this_parameter) && __cpp_explicit_this_parameter >= 202110L
+#if __cpp_explicit_this_parameter >= 202110L
         template<typename SelfT>
         [[nodiscard]] auto&& operator[](this SelfT&& Self, const std::size_t Position) noexcept
         {

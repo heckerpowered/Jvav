@@ -1,17 +1,16 @@
 #pragma once
 
-#include "Literal.h"
-#include <memory>
+#include "Constant.h"
 
 namespace Mamba
 {
     class BoundConstant
     {
+        Constant PrivateConstant;
+
     public:
-        [[nodiscard]] BoundConstant(const std::shared_ptr<const struct Literal> Value) noexcept;
+        [[nodiscard]] BoundConstant(struct Constant Constant) noexcept;
 
-        const std::shared_ptr<const struct Literal> Value;
-
-        const Literal* operator->() const noexcept;
+        Constant Constant() noexcept;
     };
 }; // namespace Mamba

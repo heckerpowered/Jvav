@@ -32,12 +32,11 @@ namespace Mamba
         const auto TokenLength = Position - Start;
 
         auto TokenText =
-            std::make_shared<const String>(Hatcher([&]
-                                                   { return String(SyntaxFacts::GetText(TokenKind)); }));
+            std::make_shared<const String>(Hatcher([&] { return String(SyntaxFacts::GetText(TokenKind)); }));
         if (TokenText->empty())
-        {
-            TokenText = Text->ToString(TokenStart, TokenLength);
-        }
+            {
+                TokenText = Text->ToString(TokenStart, TokenLength);
+            }
 
         return std::make_shared<const SyntaxToken>(SyntaxTree, Kind, TokenStart, TokenText, TokenValue);
     }
@@ -56,9 +55,9 @@ namespace Mamba
     {
         const auto Index = Position + Offset;
         if (Index >= Text->Length())
-        {
-            return '\0';
-        }
+            {
+                return '\0';
+            }
 
         return (*Text)[Index];
     }
@@ -70,218 +69,218 @@ namespace Mamba
         Value = nullptr;
 
         switch (Current())
-        {
-            case TEXT('\0'):
-                Kind = SyntaxKind::EndOfFileToken;
-                break;
-            case TEXT('+'):
-                ++Position;
-                if (Current() != TEXT('='))
-                {
-                    Kind = SyntaxKind::PlusToken;
-                }
-                else
-                {
-                    Kind = SyntaxKind::PlusEqualsToken;
+            {
+                case TEXT('\0'):
+                    Kind = SyntaxKind::EndOfFileToken;
+                    break;
+                case TEXT('+'):
                     ++Position;
-                }
-                break;
-            case TEXT('-'):
-                ++Position;
-                if (Current() != TEXT('='))
-                {
-                    Kind = SyntaxKind::MinusToken;
-                }
-                else
-                {
-                    Kind = SyntaxKind::MinusEqualsToken;
+                    if (Current() != TEXT('='))
+                        {
+                            Kind = SyntaxKind::PlusToken;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::PlusEqualsToken;
+                            ++Position;
+                        }
+                    break;
+                case TEXT('-'):
                     ++Position;
-                }
-                break;
-            case TEXT('*'):
-                ++Position;
-                if (Current() != TEXT('='))
-                {
-                    Kind = SyntaxKind::StarToken;
-                }
-                else
-                {
-                    Kind = SyntaxKind::StarEqualsToken;
+                    if (Current() != TEXT('='))
+                        {
+                            Kind = SyntaxKind::MinusToken;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::MinusEqualsToken;
+                            ++Position;
+                        }
+                    break;
+                case TEXT('*'):
                     ++Position;
-                }
-                break;
-            case TEXT('/'):
-                ++Position;
-                if (Current() != TEXT('='))
-                {
-                    Kind = SyntaxKind::SlashToken;
-                }
-                else
-                {
-                    Kind = SyntaxKind::SlashEqualsToken;
+                    if (Current() != TEXT('='))
+                        {
+                            Kind = SyntaxKind::StarToken;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::StarEqualsToken;
+                            ++Position;
+                        }
+                    break;
+                case TEXT('/'):
                     ++Position;
-                }
-                break;
-            case TEXT('('):
-                Kind = SyntaxKind::OpenParenthesisToken;
-                ++Position;
-                break;
-            case TEXT(')'):
-                Kind = SyntaxKind::CloseParenthesisToken;
-                ++Position;
-                break;
-            case TEXT('{'):
-                Kind = SyntaxKind::OpenBraceToken;
-                ++Position;
-                break;
-            case TEXT('}'):
-                Kind = SyntaxKind::CloseBraceToken;
-                ++Position;
-                break;
-            case TEXT(':'):
-                Kind = SyntaxKind::ColonToken;
-                ++Position;
-                break;
-            case TEXT(','):
-                Kind = SyntaxKind::CommaToken;
-                ++Position;
-                break;
-            case TEXT('~'):
-                Kind = SyntaxKind::TildeToken;
-                ++Position;
-                break;
-            case TEXT('^'):
-                ++Position;
-                if (Current() != TEXT('='))
-                {
-                    Kind = SyntaxKind::HatToken;
-                }
-                else
-                {
-                    Kind = SyntaxKind::HatEqualsToken;
+                    if (Current() != TEXT('='))
+                        {
+                            Kind = SyntaxKind::SlashToken;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::SlashEqualsToken;
+                            ++Position;
+                        }
+                    break;
+                case TEXT('('):
+                    Kind = SyntaxKind::OpenParenthesisToken;
                     ++Position;
-                }
-                break;
-            case TEXT('&'):
-                ++Position;
-                if (Current() == TEXT('&'))
-                {
-                    Kind = SyntaxKind::AmpersandAmpersandToken;
+                    break;
+                case TEXT(')'):
+                    Kind = SyntaxKind::CloseParenthesisToken;
                     ++Position;
-                }
-                else if (Current() == TEXT('='))
-                {
-                    Kind = SyntaxKind::AmpersandEqualsToken;
+                    break;
+                case TEXT('{'):
+                    Kind = SyntaxKind::OpenBraceToken;
                     ++Position;
-                }
-                else
-                {
-                    Kind = SyntaxKind::AmpersandToken;
-                }
-                break;
-            case TEXT('|'):
-                ++Position;
-                if (Current() == TEXT('|'))
-                {
-                    Kind = SyntaxKind::PipePipeToken;
+                    break;
+                case TEXT('}'):
+                    Kind = SyntaxKind::CloseBraceToken;
                     ++Position;
-                }
-                else if (Current() == TEXT('='))
-                {
-                    Kind = SyntaxKind::PipeEqualsToken;
+                    break;
+                case TEXT(':'):
+                    Kind = SyntaxKind::ColonToken;
                     ++Position;
-                }
-                else
-                {
-                    Kind = SyntaxKind::PipeToken;
-                }
-                break;
-            case TEXT('='):
-                ++Position;
-                if (Current() != TEXT('='))
-                {
-                    Kind = SyntaxKind::EqualsToken;
-                }
-                else
-                {
-                    Kind = SyntaxKind::EqualsEqualsToken;
+                    break;
+                case TEXT(','):
+                    Kind = SyntaxKind::CommaToken;
                     ++Position;
-                }
-                break;
-            case TEXT('!'):
-                ++Position;
-                if (Current() != TEXT('='))
-                {
-                    Kind = SyntaxKind::BangToken;
-                }
-                else
-                {
-                    Kind = SyntaxKind::BangEqualsToken;
+                    break;
+                case TEXT('~'):
+                    Kind = SyntaxKind::TildeToken;
                     ++Position;
-                }
-                break;
-            case TEXT('<'):
-                ++Position;
-                if (Current() != TEXT('='))
-                {
-                    Kind = SyntaxKind::LessToken;
-                }
-                else
-                {
-                    Kind = SyntaxKind::LessOrEqualsToken;
+                    break;
+                case TEXT('^'):
                     ++Position;
-                }
-                break;
-            case TEXT('>'):
-                ++Position;
-                if (Current() != TEXT('='))
-                {
-                    Kind = SyntaxKind::GreaterToken;
-                }
-                else
-                {
-                    Kind = SyntaxKind::GreaterOrEqualsToken;
+                    if (Current() != TEXT('='))
+                        {
+                            Kind = SyntaxKind::HatToken;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::HatEqualsToken;
+                            ++Position;
+                        }
+                    break;
+                case TEXT('&'):
                     ++Position;
-                }
-                break;
-            case TEXT('"'):
-                ReadString();
-                break;
-            case TEXT('0'):
-            case TEXT('1'):
-            case TEXT('2'):
-            case TEXT('3'):
-            case TEXT('4'):
-            case TEXT('5'):
-            case TEXT('6'):
-            case TEXT('7'):
-            case TEXT('8'):
-            case TEXT('9'):
-                ReadNumber();
-                break;
-            case TEXT(' '):
-            case TEXT('\n'):
-            case TEXT('\t'):
-            case TEXT('\r'):
-                ReadWhitespace();
-                break;
-            case TEXT('_'):
-                ReadIdentifierOrKeyword();
-                break;
-            default:
-                if (IsLetter(Current()))
-                {
+                    if (Current() == TEXT('&'))
+                        {
+                            Kind = SyntaxKind::AmpersandAmpersandToken;
+                            ++Position;
+                        }
+                    else if (Current() == TEXT('='))
+                        {
+                            Kind = SyntaxKind::AmpersandEqualsToken;
+                            ++Position;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::AmpersandToken;
+                        }
+                    break;
+                case TEXT('|'):
+                    ++Position;
+                    if (Current() == TEXT('|'))
+                        {
+                            Kind = SyntaxKind::PipePipeToken;
+                            ++Position;
+                        }
+                    else if (Current() == TEXT('='))
+                        {
+                            Kind = SyntaxKind::PipeEqualsToken;
+                            ++Position;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::PipeToken;
+                        }
+                    break;
+                case TEXT('='):
+                    ++Position;
+                    if (Current() != TEXT('='))
+                        {
+                            Kind = SyntaxKind::EqualsToken;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::EqualsEqualsToken;
+                            ++Position;
+                        }
+                    break;
+                case TEXT('!'):
+                    ++Position;
+                    if (Current() != TEXT('='))
+                        {
+                            Kind = SyntaxKind::BangToken;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::BangEqualsToken;
+                            ++Position;
+                        }
+                    break;
+                case TEXT('<'):
+                    ++Position;
+                    if (Current() != TEXT('='))
+                        {
+                            Kind = SyntaxKind::LessToken;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::LessOrEqualsToken;
+                            ++Position;
+                        }
+                    break;
+                case TEXT('>'):
+                    ++Position;
+                    if (Current() != TEXT('='))
+                        {
+                            Kind = SyntaxKind::GreaterToken;
+                        }
+                    else
+                        {
+                            Kind = SyntaxKind::GreaterOrEqualsToken;
+                            ++Position;
+                        }
+                    break;
+                case TEXT('"'):
+                    ReadString();
+                    break;
+                case TEXT('0'):
+                case TEXT('1'):
+                case TEXT('2'):
+                case TEXT('3'):
+                case TEXT('4'):
+                case TEXT('5'):
+                case TEXT('6'):
+                case TEXT('7'):
+                case TEXT('8'):
+                case TEXT('9'):
+                    ReadNumber();
+                    break;
+                case TEXT(' '):
+                case TEXT('\n'):
+                case TEXT('\t'):
+                case TEXT('\r'):
+                    ReadWhitespace();
+                    break;
+                case TEXT('_'):
                     ReadIdentifierOrKeyword();
-                }
-                else
-                {
-                    const auto Span = TextSpan(Position, 1);
-                    const auto Location = TextLocation(Text, Span);
-                    Diagnostics.ReportInvalidCharacter(Location, Current());
-                    ++Position;
-                }
-                break;
-        }
+                    break;
+                default:
+                    if (IsLetter(Current()))
+                        {
+                            ReadIdentifierOrKeyword();
+                        }
+                    else
+                        {
+                            const auto Span = TextSpan(Position, 1);
+                            const auto Location = TextLocation(Text, Span);
+                            Diagnostics.ReportInvalidCharacter(Location, Current());
+                            ++Position;
+                        }
+                    break;
+            }
     }
 
     void Lexer::ReadString() noexcept
@@ -291,35 +290,35 @@ namespace Mamba
 
         bool Done = false;
         while (!Done)
-        {
-            switch (Current())
             {
-                case TEXT('\0'):
-                case TEXT('\r'):
-                case TEXT('\n'):
-                {
-                    const auto Span = TextSpan(Start, 1);
-                    const auto Location = TextLocation(Text, Span);
-                    Diagnostics.ReportUnterminatedString(Location);
-                    Done = true;
-                    break;
-                }
-                case TEXT('"'):
-                    if (Lookahead() == TEXT('"'))
+                switch (Current())
                     {
-                        Position += 2;
+                        case TEXT('\0'):
+                        case TEXT('\r'):
+                        case TEXT('\n'):
+                            {
+                                const auto Span = TextSpan(Start, 1);
+                                const auto Location = TextLocation(Text, Span);
+                                Diagnostics.ReportUnterminatedString(Location);
+                                Done = true;
+                                break;
+                            }
+                        case TEXT('"'):
+                            if (Lookahead() == TEXT('"'))
+                                {
+                                    Position += 2;
+                                }
+                            else
+                                {
+                                    ++Position;
+                                    Done = true;
+                                }
+                            break;
+                        default:
+                            ++Position;
+                            break;
                     }
-                    else
-                    {
-                        ++Position;
-                        Done = true;
-                    }
-                    break;
-                default:
-                    ++Position;
-                    break;
             }
-        }
 
         const auto Length = Position - Start;
 
@@ -330,9 +329,9 @@ namespace Mamba
     void Lexer::ReadIdentifierOrKeyword() noexcept
     {
         while (IsLetterOrDigit(Current()) || Current() == TEXT('_'))
-        {
-            ++Position;
-        }
+            {
+                ++Position;
+            }
 
         const auto Length = Position - Start;
         const auto Span = TextSpan(Start, Length);
@@ -343,9 +342,9 @@ namespace Mamba
     void Lexer::ReadWhitespace() noexcept
     {
         while (Current() == TEXT(' ') || Current() == TEXT('\n') || Current() == TEXT('\t') || Current() == TEXT('\r'))
-        {
-            ++Position;
-        }
+            {
+                ++Position;
+            }
 
         Kind = SyntaxKind::WhitespaceToken;
     }
@@ -360,17 +359,17 @@ namespace Mamba
 
         // The current character is guaranteed to be a digit
         if (Current() != TEXT('0'))
-        {
-            ReadDecimal();
-        }
+            {
+                ReadDecimal();
+            }
         else if (Lookahead() == TEXT('x') || Lookahead() == TEXT('X'))
-        {
-            ReadHexadecimal();
-        }
+            {
+                ReadHexadecimal();
+            }
         else if (Lookahead() == TEXT('b') || Lookahead() == TEXT('B'))
-        {
-            ReadBinary();
-        }
+            {
+                ReadBinary();
+            }
 
         ReadOctal();
 
@@ -380,9 +379,9 @@ namespace Mamba
     void Lexer::ReadDecimal() noexcept
     {
         while (IsDecimalDigit(Current()))
-        {
-            ++Position;
-        }
+            {
+                ++Position;
+            }
 
         const auto Length = Position - Start;
         const auto Span = TextSpan(Start, Length);
@@ -393,9 +392,9 @@ namespace Mamba
     void Lexer::ReadHexadecimal() noexcept
     {
         while (IsHexadecimalDigit(Current()))
-        {
-            ++Position;
-        }
+            {
+                ++Position;
+            }
 
         // Skip the '0x' or '0X' character sequence
         const auto Length = Position - Start;
@@ -407,9 +406,9 @@ namespace Mamba
     void Lexer::ReadBinary() noexcept
     {
         while (IsHexadecimalDigit(Current()))
-        {
-            ++Position;
-        }
+            {
+                ++Position;
+            }
 
         // Skip the '0b' or '0B' character sequence
         const auto Length = Position - Start;
@@ -421,9 +420,9 @@ namespace Mamba
     void Lexer::ReadOctal() noexcept
     {
         while (IsHexadecimalDigit(Current()))
-        {
-            ++Position;
-        }
+            {
+                ++Position;
+            }
 
         // Skip the 0 prefix
         const auto Length = Position - Start;
@@ -468,13 +467,13 @@ namespace Mamba
         // otherwise they are int64. If the literal represents a value outside the range of int64,
         // it is represented by unsigned int64, otherwise diagnostics are required.
         if (Value <= std::numeric_limits<std::int32_t>::max())
-        {
-            this->Value = std::make_shared<Literal>(static_cast<std::int32_t>(Value));
-        }
+            {
+                this->Value = std::make_shared<Literal>(static_cast<std::int32_t>(Value));
+            }
         else if (Value <= std::numeric_limits<std::int64_t>::max())
-        {
-            this->Value = std::make_shared<Literal>(static_cast<std::int64_t>(Value));
-        }
+            {
+                this->Value = std::make_shared<Literal>(static_cast<std::int64_t>(Value));
+            }
 
         this->Value = std::make_shared<Literal>(Value);
     }

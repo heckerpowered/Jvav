@@ -20,9 +20,9 @@ CallExpressionSyntax::CallExpressionSyntax(
 CallExpressionSyntax::~CallExpressionSyntax() noexcept
 {
     for (auto Argument : Arguments.Nodes())
-    {
-        delete Argument;
-    }
+        {
+            delete Argument;
+        }
 }
 
 SyntaxKind CallExpressionSyntax::Kind() const noexcept
@@ -39,13 +39,13 @@ std::vector<const SyntaxNode*> CallExpressionSyntax::Children() const noexcept
     Result.emplace_back(Identifier);
     Result.emplace_back(OpenParenthesisToken);
 
-#if defined(__cpp_lib_containers_ranges) && __cpp_lib_containers_ranges >= 202202L
+#if __cpp_lib_containers_ranges >= 202202L
     Result.append_range(Arguments.WithSeperators());
 #else
     for (auto Argument : Arguments.WithSeperators())
-    {
-        Result.emplace_back(std::forward<decltype(Argument)>(Argument));
-    }
+        {
+            Result.emplace_back(std::forward<decltype(Argument)>(Argument));
+        }
 #endif
 
     Result.emplace_back(CloseParenthesisToken);

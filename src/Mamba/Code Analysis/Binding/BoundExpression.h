@@ -2,9 +2,8 @@
 
 #include <memory>
 
-#include "MambaCore.h"
-
 #include "BoundNode.h"
+#include "Constant.h"
 
 namespace Mamba
 {
@@ -16,6 +15,6 @@ namespace Mamba
         [[nodiscard]] BoundExpression(const std::shared_ptr<const class SyntaxNode> Syntax) noexcept;
 
         virtual std::shared_ptr<const class TypeSymbol> Type() const noexcept = 0;
-        virtual NullableSharedPtr<const class BoundConstant> ConstantValue() const noexcept;
+        virtual Constant ConstantValue() const noexcept;
     };
 } // namespace Mamba

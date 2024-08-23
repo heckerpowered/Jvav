@@ -1,70 +1,8 @@
 #include "Binder.h"
 
-#include <memory>
-#include <ranges>
-
-#include <fast_io.h>
-
-#include "AssignmentExpressionSyntax.h"
-#include "BinaryExpressionSyntax.h"
-#include "BlockStatementSyntax.h"
-#include "BoundAssignmentExpression.h"
-#include "BoundBinaryExpression.h"
-#include "BoundBinaryOperator.h"
-#include "BoundBlockStatement.h"
-#include "BoundCallExpression.h"
-#include "BoundCompilationUnit.h"
-#include "BoundCompoundAssignmentExpression.h"
-#include "BoundConstant.h"
-#include "BoundDoWhileStatement.h"
-#include "BoundExpression.h"
-#include "BoundExpressionStatement.h"
-#include "BoundForStatement.h"
-#include "BoundFunctionDeclaration.h"
-#include "BoundIfStatement.h"
-#include "BoundLiteralExpression.h"
-#include "BoundNodeKind.h"
-#include "BoundReturnStatement.h"
-#include "BoundScope.h"
-#include "BoundStatement.h"
-#include "BoundUnaryExpression.h"
-#include "BoundUnaryOperator.h"
-#include "BoundVariableDeclaration.h"
-#include "BoundVariableExpression.h"
-#include "BoundWhileStatement.h"
-#include "BreakStatementSyntax.h"
-#include "CallExpressionSyntax.h"
-#include "CompilationUnitSyntax.h"
-#include "ContinueStatementSyntax.h"
-#include "DoWhileStatementSyntax.h"
-#include "ElseClauseSyntax.h"
-#include "ExpressionStatementSyntax.h"
-#include "ExpressionSyntax.h"
-#include "ForStatementSyntax.h"
-#include "FunctionDeclarationSyntax.h"
-#include "FunctionSymbol.h"
-#include "IfStatementSyntax.h"
-#include "LiteralExpressionSyntax.h"
-#include "MambaCore.h"
-#include "NameExpressionSyntax.h"
-#include "ParameterSymbol.h"
-#include "ParameterSyntax.h"
-#include "ParenthesizedExpressionSyntax.h"
-#include "ReturnStatementSyntax.h"
-#include "StatementSyntax.h"
-#include "Symbol.h"
-#include "SyntaxFacts.h"
-#include "SyntaxKind.h"
-#include "SyntaxTree.h"
-#include "TypeClauseSyntax.h"
-#include "TypeSymbol.h"
-#include "UnaryExpressionSyntax.h"
-#include "VariableDeclarationSyntax.h"
-#include "WhileStatementSyntax.h"
-
 using namespace Mamba;
 
-std::shared_ptr<const BoundCompilationUnit> Binder::BindCompilationUnit() noexcept
+BoundCompilationUnit* Binder::BindCompilationUnit() noexcept
 {
     const auto Root = SyntaxTree->Root();
     for (auto&& Member : Root->Members)
@@ -72,7 +10,7 @@ std::shared_ptr<const BoundCompilationUnit> Binder::BindCompilationUnit() noexce
         BindMember(Member);
     }
 
-    return std::make_shared<BoundCompilationUnit>(Root, Scope);
+    return new BoundCompilationUnit(Root, Scope);
 }
 
 void Binder::BindMember(const std::shared_ptr<const class MemberSyntax> Member) noexcept
@@ -122,8 +60,7 @@ std::vector<std::shared_ptr<const ParameterSymbol>> Binder::BindParameter(
     ParameterSymbols.reserve(Parameters.size());
 
     auto Index = 0;
-    for (auto&& Parameter : Parameters | std::views::transform([](auto&& Node)
-                                                               { return std::dynamic_pointer_cast<const ParameterSyntax>(Node); }))
+    for (auto&& Parameter : Parameters | std::views::transform([](auto&& Node) { return std::dynamic_pointer_cast<const ParameterSyntax>(Node); }))
     {
         ++Index;
 
@@ -195,8 +132,7 @@ std::shared_ptr<const BoundStatement> Binder::BindBlockStatement(const std::shar
 
     for (auto&& Statement : BlockStatement->Statements)
     {
-        BoundStatements.emplace_back(Hatcher([&]
-                                             { return BindStatement(Statement); }));
+        BoundStatements.emplace_back(Hatcher([&] { return BindStatement(Statement); }));
     }
 
     return std::make_shared<BoundBlockStatement>(BlockStatement, BoundStatements);

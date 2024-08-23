@@ -1,27 +1,31 @@
 #include "Symbol.h"
-#include "SymbolKind.h"
 
-namespace Mamba
+using namespace Mamba;
+
+Symbol::Symbol(StringView Name) noexcept :
+    PrivateName(Name) {}
+
+StringView Symbol::Name() const noexcept
 {
-    Symbol::Symbol(const std::shared_ptr<const String> Name) noexcept : Name(Name) {}
+    return PrivateName;
+}
 
-    bool Symbol::IsFunction() const noexcept
-    {
-        return Kind() == SymbolKind::Function;
-    }
+bool Symbol::IsFunction() const noexcept
+{
+    return Kind() == SymbolKind::Function;
+}
 
-    bool Symbol::IsVariable() const noexcept
-    {
-        return Kind() == SymbolKind::Variable;
-    }
+bool Symbol::IsVariable() const noexcept
+{
+    return Kind() == SymbolKind::Variable;
+}
 
-    bool Symbol::IsParameter() const noexcept
-    {
-        return Kind() == SymbolKind::Parameter;
-    }
+bool Symbol::IsParameter() const noexcept
+{
+    return Kind() == SymbolKind::Parameter;
+}
 
-    bool Symbol::IsType() const noexcept
-    {
-        return Kind() == SymbolKind::Type;
-    }
-} // namespace Mamba
+bool Symbol::IsType() const noexcept
+{
+    return Kind() == SymbolKind::Type;
+}

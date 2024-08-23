@@ -8,13 +8,14 @@ namespace Mamba
 {
     class Symbol
     {
+        StringView PrivateName;
+
     protected:
-        [[nodiscard]] Symbol(const std::shared_ptr<const String> Name) noexcept;
+        [[nodiscard]] Symbol(StringView Name) noexcept;
         virtual ~Symbol() = default;
 
     public:
-        const std::shared_ptr<const String> Name;
-
+        [[nodiscard]] StringView Name() const noexcept;
         [[nodiscard]] virtual SymbolKind Kind() const noexcept = 0;
         [[nodiscard]] bool IsFunction() const noexcept;
         [[nodiscard]] bool IsVariable() const noexcept;

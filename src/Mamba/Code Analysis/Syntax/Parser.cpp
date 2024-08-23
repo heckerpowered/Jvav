@@ -57,22 +57,8 @@ std::vector<MemberSyntax*> Parser::ParseMembers() noexcept
 
     while (Current()->Kind() != SyntaxKind::EndOfFileToken)
     {
-        auto StartToken = Current();
-
         auto Member = ParseMember();
         Members.emplace_back(Member);
-
-        // If ParseMember() did not consume any tokens,
-        // we need to skip the current token and continue
-        // in order to avoid an infinite loop.
-        //
-        // We don't need to report an error, because we'll
-        // already tried to parse an expression statement
-        // and reported one.
-        if (Current() == StartToken)
-        {
-            NextToken();
-        }
     }
 
     return Members;
@@ -80,12 +66,23 @@ std::vector<MemberSyntax*> Parser::ParseMembers() noexcept
 
 MemberSyntax* Parser::ParseMember() noexcept
 {
+    auto StartToken = Current();
+    auto Result = static_cast<MemberSyntax*>(nullptr);
     if (Current()->Kind() == SyntaxKind::FunctionKeyword)
     {
-        return ParseFunctionDeclaration();
+        Result = ParseFunctionDeclaration();
+    }
+    else
+    {
+        Result = ParseGlobalStatement();
     }
 
-    return ParseGlobalStatement();
+    if (Current() == StartToken)
+    {
+        NextToken();
+    }
+
+    return Result;
 }
 
 FunctionDeclarationSyntax* Parser::ParseFunctionDeclaration() noexcept

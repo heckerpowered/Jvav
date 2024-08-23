@@ -18,22 +18,22 @@ namespace Mamba
     {
         [[nodiscard]] constexpr Container<T> SkipSeperators(const Container<const SyntaxNode*>& NodesAndSeparators) const noexcept
         {
-#if defined(__cpp_lib_ranges_enumerate) && __cpp_lib_ranges_enumerate >= 202302L
+#if __cpp_lib_ranges_enumerate >= 202302L
             // NodesAndSeparators | std::views::enumerate;
 #endif
             if (NodesAndSeparators.size() == 1)
-            {
-                return Container<T>{ static_cast<T>(NodesAndSeparators.front()) };
-            }
+                {
+                    return Container<T>{ static_cast<T>(NodesAndSeparators.front()) };
+                }
             auto Result = Container<T>(NodesAndSeparators.size() / 2);
-#if defined(__cpp_size_t_suffix) && __cpp_size_t_suffix >= 202011L
+#if __cpp_size_t_suffix >= 202011L
             for (auto Index = 0uz; Index < NodesAndSeparators.size() / 2; ++Index)
 #else
             for (auto Index = std::size_t(); Index < NodesAndSeparators.size() / 2; ++Index)
 #endif
-            {
-                Result[Index] = static_cast<T>(NodesAndSeparators[Index * 2]);
-            }
+                {
+                    Result[Index] = static_cast<T>(NodesAndSeparators[Index * 2]);
+                }
             return Result;
         }
 

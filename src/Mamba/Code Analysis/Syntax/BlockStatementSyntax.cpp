@@ -18,9 +18,9 @@ BlockStatementSyntax::BlockStatementSyntax(
 BlockStatementSyntax::~BlockStatementSyntax() noexcept
 {
     for (auto&& Statement : Statements)
-    {
-        delete Statement;
-    }
+        {
+            delete Statement;
+        }
 }
 
 SyntaxKind BlockStatementSyntax::Kind() const noexcept
@@ -35,13 +35,13 @@ std::vector<const SyntaxNode*> BlockStatementSyntax::Children() const noexcept
 
     Result.emplace_back(OpenBraceToken);
 
-#if defined(__cpp_lib_containers_ranges) && __cpp_lib_containers_ranges >= 202202L
+#if __cpp_lib_containers_ranges >= 202202L
     Result.append_range(Statements);
 #else
     for (auto Statement : Statements)
-    {
-        Result.emplace_back(Statement);
-    }
+        {
+            Result.emplace_back(Statement);
+        }
 #endif
 
     Result.emplace_back(CloseBraceToken);

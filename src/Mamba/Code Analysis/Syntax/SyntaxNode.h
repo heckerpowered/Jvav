@@ -14,6 +14,7 @@ namespace Mamba
     class SyntaxNode
     {
         const class SyntaxTree* PrivateSyntaxTree;
+        TextLocation PrivateLocation;
 
     public:
         [[nodiscard]] SyntaxNode(const class SyntaxTree* SyntaxTree) noexcept;
@@ -43,7 +44,8 @@ namespace Mamba
         // Gets all the ancestors of the node, excluding the node itself, in the order of closest to farthest.
         [[nodiscard]] std::vector<const SyntaxNode*> Ancestors() const noexcept;
 
-#if defined(__cpp_lib_ranges_to_container) && __cpp_lib_ranges_to_container >= 202202L
+#if __cpp_lib_ranges_to_container >= 202202L
+
         template<template<typename...> typename ContainerType>
         [[nodiscard]] auto Children() const noexcept
         {
