@@ -3,17 +3,36 @@ add_rules("plugin.compile_commands.autoupdate")
 
 add_requires("fast_io")
 
+local includedirs = {
+    "src/Mamba", 
+    "src/Mamba/Core", 
+    "src/Mamba/Code Analysis", 
+    "src/Mamba/Code Analysis/Syntax", 
+    "src/Mamba/Code Analysis/Text", 
+    "src/Mamba/Code Analysis/Binding", 
+    "src/Mamba/Code Analysis/Symbol",
+    "src/Mamba/Code Analysis/Linking",
+    "src/Mamba/Code Generation",
+}
+
+local llvm_config = "/opt/homebrew/opt/llvm/bin/llvm-config"
+
+
+set_languages("c++20")
+add_languages("c++26")
+
 target("Jvav")
     set_kind("binary")
     add_files("src/Mamba/**.cpp")
     add_headerfiles("src/Mamba/**.h")
-    set_languages("clatest", "c++latest")
     add_packages("fast_io")
-    set_toolchains("llvm")
+    set_toolchains("clang")
+    set_filename("mamba")
     set_warnings("all", "extra")
-    add_includedirs("src/Mamba", "src/Mamba/Core", "src/Mamba/Code Analysis", "src/Mamba/Code Analysis/Syntax", "src/Mamba/Code Analysis/Text", "src/Mamba/Code Analysis/Binding", "src/Mamba/Code Analysis/Symbol", "src/Mamba/Code Analysis/Emit", "src/Mamba/Code Analysis/Linking")
+    add_includedirs(includedirs)
     if is_os("macosx") then
         add_linkdirs("/opt/homebrew/opt/llvm/lib/c++") -- macOS compability
+        add_includedirs("/opt/homebrew/opt/llvm/include")
     end
     if is_mode("release") then
         set_optimize("fastest")
@@ -25,6 +44,11 @@ target("Jvav")
         add_defines("DEBUG")
     end
 
+    add_cxxflags("$(shell " .. llvm_config .. " --cxxflags)")
+    add_ldflags("$(shell " .. llvm_config .. " --ldflags)")
+    add_syslinks("$(shell " .. llvm_config .. " --system-libs)")
+
+
 for _, file in ipairs(os.files("src/Test/**.cpp")) do
     local name = path.basename(file)
     target(name)
@@ -33,7 +57,7 @@ for _, file in ipairs(os.files("src/Test/**.cpp")) do
         add_files("src/Mamba/**.cpp")
         add_headerfiles("src/Mamba/**.h")
         set_languages("clatest", "c++latest")
-        add_includedirs("src/Mamba", "src/Mamba/Core", "src/Mamba/Code Analysis", "src/Mamba/Code Analysis/Syntax", "src/Mamba/Code Analysis/Text", "src/Mamba/Code Analysis/Binding", "src/Mamba/Code Analysis/Symbol", "src/Mamba/Code Analysis/Emit", "src/Mamba/Code Analysis/Linking")
+        add_includedirs(includedirs)
         add_files("src/Test/" .. name .. ".cpp")
         add_packages("fast_io")
         add_tests("default")

@@ -1,4 +1,6 @@
+#include "BoundCompilationUnit.h"
 #include "Lexer.h"
+#include "LLVMBackend.h"
 #include "MambaCore.h"
 
 #include "Binder.h"
@@ -153,4 +155,8 @@ void Compiler::Compile() noexcept
     {
         delete BoundCompilationUnit;
     }
+
+    auto vector = BoundCompilationUnits | std::ranges::to<std::vector>();
+    auto span = std::span(vector);
+    LLVMBackend::GenerateCode(span, "Main");
 }

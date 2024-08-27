@@ -48,8 +48,7 @@ namespace Mamba
 
         template<typename SelfType>
         [[nodiscard]] auto operator[](this SelfType&& Self, std::size_t Index)
-            noexcept(noexcept(std::forward<SelfType>(Self).Super::operator[](Index))
-            ) -> decltype(std::forward<SelfType>(Self).Super::operator[](Index))
+            noexcept(noexcept(std::forward<SelfType>(Self).Super::operator[](Index)))
         {
             return static_cast<ValueType>(std::forward<SelfType>(Self).Super::operator[](Index * 2));
         }

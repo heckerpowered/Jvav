@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "BoundProgram.h"
 #include "Diagnostic.h"
 
@@ -19,6 +17,6 @@ namespace Mamba
         Emitter
     {
     public:
-        virtual std::vector<Diagnostic> Emit(const BoundProgram& Program, const StringView ModuleName) noexcept = 0;
+        virtual std::vector<Diagnostic> Emit(const BoundProgram& Program, StringView ModuleName) noexcept = 0;
     };
 } // namespace Mamba
