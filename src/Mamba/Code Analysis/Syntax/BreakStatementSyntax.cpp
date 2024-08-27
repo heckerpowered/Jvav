@@ -14,7 +14,17 @@ SyntaxKind BreakStatementSyntax::Kind() const noexcept
     return SyntaxKind::BreakStatement;
 }
 
-std::vector<const SyntaxNode*> BreakStatementSyntax::Children() const noexcept
+std::size_t BreakStatementSyntax::ChildrenCount() const noexcept
 {
-    return { Keyword };
+    return 1;
+}
+
+const SyntaxNode* BreakStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index != 0)
+    {
+        ReportChildrenAccessOutOfBounds(Index);
+    }
+
+    return Keyword;
 }

@@ -1,9 +1,8 @@
 #pragma once
 
-#include <memory>
-
 #include "BoundExpression.h"
 #include "BoundNodeKind.h"
+#include "Literal.h"
 
 namespace Mamba
 {
@@ -13,16 +12,15 @@ namespace Mamba
         using Super = BoundExpression;
 
         [[nodiscard]] BoundLiteralExpression(
-            const std::shared_ptr<const class SyntaxNode> Syntax,
-            const std::shared_ptr<const struct Literal> Value
+            const SyntaxNode* Syntax,
+            Literal Value
         ) noexcept;
 
         BoundNodeKind Kind() const noexcept override;
-        std::shared_ptr<const class TypeSymbol> Type() const noexcept override;
-        std::shared_ptr<const class BoundConstant> ConstantValue() const noexcept override;
+        const TypeSymbol* Type() const noexcept override;
+        Constant ConstantValue() const noexcept override;
 
     private:
-        const std::shared_ptr<const class TypeSymbol> PrivateType;
-        const std::shared_ptr<const struct Literal> Value;
+        Literal Value;
     };
 } // namespace Mamba

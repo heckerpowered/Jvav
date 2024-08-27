@@ -95,7 +95,7 @@ namespace Mamba
             TEXT("Variable '"),
             Name,
             TEXT("' is already declared, previous declaration at "),
-            *Location.FileName(),
+            Location.FileName(),
             TEXT(":"),
             Location.StartLine(),
             TEXT(":"),
@@ -108,13 +108,13 @@ namespace Mamba
         ReportWarning(Location, TEXT("Unreachable code."));
     }
 
-    void DiagnosticBag::ReportUnreachableCode(const std::shared_ptr<const SyntaxNode> Node) noexcept
+    void DiagnosticBag::ReportUnreachableCode(const SyntaxNode* Node) noexcept
     {
         switch (Node->Kind())
         {
             case SyntaxKind::BlockStatement:
             {
-                const auto Statements = std::static_pointer_cast<const BlockStatementSyntax>(Node)->Statements;
+                auto Statements = static_cast<const BlockStatementSyntax*>(Node)->Statements;
                 if (!Statements.empty())
                 {
                     ReportUnreachableCode(Statements.front());
@@ -123,34 +123,34 @@ namespace Mamba
             }
 
             case SyntaxKind::VariableDeclaration:
-                ReportUnreachableCode(std::static_pointer_cast<const VariableDeclarationSyntax>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const VariableDeclarationSyntax*>(Node)->Keyword->Location());
                 return;
             case SyntaxKind::IfStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const IfStatementSyntax>(Node)->IfKeyword->Location());
+                ReportUnreachableCode(static_cast<const IfStatementSyntax*>(Node)->IfKeyword->Location());
                 return;
             case SyntaxKind::WhileStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const WhileStatementSyntax>(Node)->WhileKeyword->Location());
+                ReportUnreachableCode(static_cast<const WhileStatementSyntax*>(Node)->WhileKeyword->Location());
                 return;
             case SyntaxKind::DoWhileStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const DoWhileStatementSyntax>(Node)->WhileKeyword->Location());
+                ReportUnreachableCode(static_cast<const DoWhileStatementSyntax*>(Node)->WhileKeyword->Location());
                 return;
             case SyntaxKind::ForStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const ForStatementSyntax>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const ForStatementSyntax*>(Node)->Keyword->Location());
                 return;
             case SyntaxKind::BreakStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const BreakStatementSyntax>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const BreakStatementSyntax*>(Node)->Keyword->Location());
                 return;
             case SyntaxKind::ContinueStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const ContinueStatementSyntax>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const ContinueStatementSyntax*>(Node)->Keyword->Location());
                 return;
             case SyntaxKind::ReturnStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const ReturnStatementSyntax>(Node)->ReturnKeyword->Location());
+                ReportUnreachableCode(static_cast<const ReturnStatementSyntax*>(Node)->ReturnKeyword->Location());
                 return;
             case SyntaxKind::ExpressionStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const ExpressionStatementSyntax>(Node)->Expression->Location());
+                ReportUnreachableCode(static_cast<const ExpressionStatementSyntax*>(Node)->Expression->Location());
                 return;
             case SyntaxKind::CallExpression:
-                ReportUnreachableCode(std::static_pointer_cast<const CallExpressionSyntax>(Node)->Identifier->Location());
+                ReportUnreachableCode(static_cast<const CallExpressionSyntax*>(Node)->Identifier->Location());
                 return;
             default:
                 break;

@@ -2,19 +2,22 @@
 
 #include "TypeSymbol.h"
 
-namespace Mamba
-{
-    ParameterSymbol::ParameterSymbol(
-        const std::shared_ptr<const String> Name,
-        const std::shared_ptr<const class TypeSymbol> Type,
-        const std::size_t Oridinal
-    ) noexcept :
-        Super(Name, false, Type, nullptr), Oridinal(Oridinal)
-    {
-    }
+using namespace Mamba;
 
-    SymbolKind ParameterSymbol::Kind() const noexcept
+ParameterSymbol::ParameterSymbol(StringView Name, const TypeSymbol* Type, std::size_t Oridinal) noexcept :
+    Super(Name, false, Type, {}), Oridinal(Oridinal)
+{
+}
+
+ParameterSymbol::~ParameterSymbol() noexcept
+{
+    if (!TypeSymbol::IsBuiltInType(Type))
     {
-        return SymbolKind::Parameter;
+        delete Type;
     }
-} // namespace Mamba
+}
+
+SymbolKind ParameterSymbol::Kind() const noexcept
+{
+    return SymbolKind::Parameter;
+}

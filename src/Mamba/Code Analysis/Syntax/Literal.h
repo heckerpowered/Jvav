@@ -18,6 +18,8 @@ namespace Mamba
     {
         using ValueType = std::variant<LiteralType::String, LiteralType::FloatingPoint, LiteralType::Number, LiteralType::Boolean, LiteralType::Empty>;
 
+        ValueType Value;
+
         [[nodiscard]] constexpr Literal() noexcept = default;
 
         template<typename T>
@@ -32,10 +34,5 @@ namespace Mamba
         {
             return std::get<T>(Value);
         }
-
-    private:
-        ValueType Value;
     };
-
-    static_assert(std::constructible_from<Literal::ValueType, const bool>);
 } // namespace Mamba

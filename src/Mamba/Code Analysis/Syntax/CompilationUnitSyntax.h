@@ -21,10 +21,13 @@ namespace Mamba
         ~CompilationUnitSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<const SyntaxNode*> Children() const noexcept override;
 
         std::vector<MemberSyntax*> Members;
         const SyntaxToken* EndOfFileToken;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 
 } // namespace Mamba

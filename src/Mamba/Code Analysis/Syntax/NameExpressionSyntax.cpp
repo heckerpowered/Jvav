@@ -15,7 +15,17 @@ SyntaxKind NameExpressionSyntax::Kind() const noexcept
     return SyntaxKind::NameExpression;
 }
 
-std::vector<const SyntaxNode*> NameExpressionSyntax::Children() const noexcept
+std::size_t NameExpressionSyntax::ChildrenCount() const noexcept
 {
-    return { IdentifierToken };
+    return 1;
+}
+
+const SyntaxNode* NameExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index != 0)
+    {
+        ReportChildrenAccessOutOfBounds(Index);
+    }
+
+    return IdentifierToken;
 }

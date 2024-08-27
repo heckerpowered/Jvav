@@ -43,7 +43,34 @@ SyntaxKind ForStatementSyntax::Kind() const noexcept
     return SyntaxKind::ForStatement;
 }
 
-std::vector<const SyntaxNode*> ForStatementSyntax::Children() const noexcept
+std::size_t ForStatementSyntax::ChildrenCount() const noexcept
 {
-    return { Keyword, OpenParenthesisToken, InitStatement, InitStatementColonToken, Condition, ConditionColonToken, Expression, CloseParenthesisToken, Body };
+    return 9;
+}
+
+const SyntaxNode* ForStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
+    {
+        case 0:
+            return Keyword;
+        case 1:
+            return OpenParenthesisToken;
+        case 2:
+            return InitStatement;
+        case 3:
+            return InitStatementColonToken;
+        case 4:
+            return Condition;
+        case 5:
+            return ConditionColonToken;
+        case 6:
+            return Expression;
+        case 7:
+            return CloseParenthesisToken;
+        case 8:
+            return Body;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
 }

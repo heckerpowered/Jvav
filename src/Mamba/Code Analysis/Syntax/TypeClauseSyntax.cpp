@@ -18,7 +18,20 @@ SyntaxKind TypeClauseSyntax::Kind() const noexcept
     return SyntaxKind::TypeClause;
 }
 
-std::vector<const SyntaxNode*> TypeClauseSyntax::Children() const noexcept
+std::size_t TypeClauseSyntax::ChildrenCount() const noexcept
 {
-    return { ColonToken, Identifier };
+    return 2;
+}
+
+const SyntaxNode* TypeClauseSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
+    {
+        case 0:
+            return ColonToken;
+        case 1:
+            return Identifier;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
 }

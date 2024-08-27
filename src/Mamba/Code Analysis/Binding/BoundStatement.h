@@ -2,7 +2,6 @@
 
 #include "BoundNode.h"
 #include "SyntaxNode.h"
-#include <memory>
 
 namespace Mamba
 {
@@ -11,6 +10,6 @@ namespace Mamba
     public:
         using Super = BoundNode;
 
-        [[nodiscard]] BoundStatement(const std::shared_ptr<const class SyntaxNode> Syntax) noexcept;
+        [[nodiscard]] BoundStatement(const SyntaxNode* Syntax) noexcept;
     };
 } // namespace Mamba

@@ -5,6 +5,7 @@
 
 #include "Diagnostic.h"
 #include "SyntaxKind.h"
+#include "SyntaxNode.h"
 #include "TextLocation.h"
 
 namespace Mamba
@@ -53,7 +54,7 @@ namespace Mamba
         void ReportDiscardExpressionValue(const TextLocation Location) noexcept;
         void ReportVariableAlreadyDeclared(const TextLocation Location, const StringView Name) noexcept;
         void ReportUnreachableCode(const TextLocation Location) noexcept;
-        void ReportUnreachableCode(const std::shared_ptr<const class SyntaxNode> Node) noexcept;
+        void ReportUnreachableCode(const SyntaxNode* Node) noexcept;
     };
 
 } // namespace Mamba

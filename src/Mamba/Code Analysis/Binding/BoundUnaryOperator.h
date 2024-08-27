@@ -1,40 +1,28 @@
 #pragma once
 
-#include <memory>
-
 #include "BoundUnaryOperatorKind.h"
 #include "MambaCore.h"
 #include "SyntaxKind.h"
+#include "TypeSymbol.h"
 
 namespace Mamba
 {
     class BoundUnaryOperator
     {
-        [[nodiscard]] BoundUnaryOperator(
-            const SyntaxKind SyntaxKind,
-            const BoundUnaryOperatorKind Kind,
-            const std::shared_ptr<const class TypeSymbol> OperandType
-        ) noexcept;
-
-        [[nodiscard]] BoundUnaryOperator(
-            const SyntaxKind SyntaxKind,
-            const BoundUnaryOperatorKind Kind,
-            const std::shared_ptr<const class TypeSymbol> OperandType,
-            const std::shared_ptr<const class TypeSymbol> ResultType
-        ) noexcept;
+        [[nodiscard]] BoundUnaryOperator(SyntaxKind SyntaxKind, BoundUnaryOperatorKind Kind, const TypeSymbol* OperandType) noexcept;
+        [[nodiscard]] BoundUnaryOperator(SyntaxKind SyntaxKind, BoundUnaryOperatorKind Kind, const TypeSymbol* OperandType, const TypeSymbol* ResultType) noexcept;
 
     public:
-        const enum SyntaxKind SyntaxKind;
-        const BoundUnaryOperatorKind Kind;
-        const std::shared_ptr<const class TypeSymbol> OperandType;
-        const std::shared_ptr<const class TypeSymbol> ResultType;
+        enum SyntaxKind SyntaxKind;
+        BoundUnaryOperatorKind Kind;
+        const TypeSymbol* OperandType;
+        const TypeSymbol* ResultType;
 
     private:
         static BoundUnaryOperator Operators[];
 
     public:
         // when the return value is not null, the life time of the object lasts to the end of the program
-        static NullablePointer<const BoundUnaryOperator>
-            Bind(const enum SyntaxKind SyntaxKind, const std::shared_ptr<const class TypeSymbol> OperandType) noexcept;
+        static NullablePointer<const BoundUnaryOperator> Bind(enum SyntaxKind SyntaxKind, const TypeSymbol* OperandType) noexcept;
     };
 } // namespace Mamba

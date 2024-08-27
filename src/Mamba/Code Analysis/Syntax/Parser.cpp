@@ -5,8 +5,8 @@
 
 using namespace Mamba;
 
-Parser::Parser(const class SyntaxTree* SyntaxTree, std::span<const SyntaxToken> Tokens) noexcept :
-    SyntaxTree(SyntaxTree), Tokens(Tokens), Position(0)
+Parser::Parser(const class SyntaxTree* SyntaxTree, std::vector<const SyntaxToken>&& Tokens) noexcept :
+    SyntaxTree(SyntaxTree), Tokens(std::move(Tokens)), Position(0)
 {
 }
 

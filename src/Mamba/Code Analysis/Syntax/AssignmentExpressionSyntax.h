@@ -3,7 +3,6 @@
 #include "ExpressionSyntax.h"
 #include "SyntaxKind.h"
 #include "SyntaxToken.h"
-#include <vector>
 
 namespace Mamba
 {
@@ -21,11 +20,14 @@ namespace Mamba
 
         ~AssignmentExpressionSyntax() noexcept override;
 
-        std::vector<const SyntaxNode*> Children() const noexcept override;
         SyntaxKind Kind() const noexcept override;
 
         const SyntaxToken* IdentifierToken;
         const SyntaxToken* AssignmentToken;
         const ExpressionSyntax* Expression;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

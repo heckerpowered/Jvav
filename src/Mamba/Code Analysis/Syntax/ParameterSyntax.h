@@ -21,9 +21,12 @@ namespace Mamba
         ~ParameterSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<const SyntaxNode*> Children() const noexcept override;
 
         const SyntaxToken* Identifier;
         const class TypeClauseSyntax* Type;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

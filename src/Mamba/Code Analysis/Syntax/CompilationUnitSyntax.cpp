@@ -10,9 +10,9 @@ CompilationUnitSyntax::CompilationUnitSyntax(const SyntaxTree* SyntaxTree, std::
 CompilationUnitSyntax::~CompilationUnitSyntax() noexcept
 {
     for (auto&& Member : Members)
-        {
-            delete Member;
-        }
+    {
+        delete Member;
+    }
 }
 
 SyntaxKind CompilationUnitSyntax::Kind() const noexcept
@@ -20,20 +20,21 @@ SyntaxKind CompilationUnitSyntax::Kind() const noexcept
     return SyntaxKind::CompilationUnit;
 }
 
-std::vector<const SyntaxNode*> CompilationUnitSyntax::Children() const noexcept
+std::size_t CompilationUnitSyntax::ChildrenCount() const noexcept
 {
-    auto Children = std::vector<const SyntaxNode*>();
-    Children.reserve(Members.size() + 1);
+    return Members.size() + 1;
+}
 
-#if __cpp_lib_containers_ranges >= 202202L
-    Children.append_range(Members);
-#else
-    for (auto&& Member : Members)
-        {
-            Children.emplace_back(Member);
-        }
-#endif
+const SyntaxNode* CompilationUnitSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index < Members.size())
+    {
+        return Members[Index];
+    }
+    else if (Index == Members.size())
+    {
+        return EndOfFileToken;
+    }
 
-    Children.emplace_back(EndOfFileToken);
-    return Children;
+    ReportChildrenAccessOutOfBounds(Index);
 }

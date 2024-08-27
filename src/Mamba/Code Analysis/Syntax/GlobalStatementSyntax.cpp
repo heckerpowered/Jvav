@@ -22,7 +22,17 @@ SyntaxKind GlobalStatementSyntax::Kind() const noexcept
     return SyntaxKind::GlobalStatement;
 }
 
-std::vector<const SyntaxNode*> GlobalStatementSyntax::Children() const noexcept
+std::size_t GlobalStatementSyntax::ChildrenCount() const noexcept
 {
-    return { Statement };
+    return 1;
+}
+
+const SyntaxNode* GlobalStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index != 0)
+    {
+        ReportChildrenAccessOutOfBounds(Index);
+    }
+
+    return Statement;
 }

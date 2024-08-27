@@ -1,10 +1,10 @@
 #pragma once
 
-#include <memory>
-
+#include "Constant.h"
 #include "MambaCore.h"
 #include "Symbol.h"
 #include "SymbolKind.h"
+#include "TypeSymbol.h"
 
 namespace Mamba
 {
@@ -13,17 +13,13 @@ namespace Mamba
     public:
         using Super = Symbol;
 
-        [[nodiscard]] VariableSymbol(
-            const std::shared_ptr<const String> Name,
-            const bool IsConstant,
-            const std::shared_ptr<const class TypeSymbol> Type,
-            const NullableSharedPtr<const class BoundConstant> Constant
-        ) noexcept;
+        [[nodiscard]] VariableSymbol(StringView Name, bool IsConstant, const TypeSymbol* Type, struct Constant Constant) noexcept;
+        ~VariableSymbol() noexcept override;
 
         SymbolKind Kind() const noexcept override;
 
-        const bool IsConstant;
-        const std::shared_ptr<const class TypeSymbol> Type;
-        const NullableSharedPtr<const class BoundConstant> Constant;
+        bool IsConstant;
+        const TypeSymbol* Type;
+        struct Constant Constant;
     };
 } // namespace Mamba

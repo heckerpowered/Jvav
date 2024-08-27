@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Colors.h"
 #include <memory>
+#include <source_location>
 #include <string>
 #include <utility>
 
@@ -126,6 +128,13 @@ namespace Mamba
         }
 
         std::unreachable();
+    }
+
+    template<typename... T>
+    [[noreturn]] void InternalCompilerError(std::source_location SourceLocation = std::source_location::current(), T&&... Args) noexcept
+    {
+        fast_io::io::perrln(SourceLocation, ": ", Color("internal compiler error: ", Colors::BrightForegroundRed), std::forward<T>(Args)...);
+        fast_io::fast_terminate();
     }
 
     // Hatcher stores a callable object, so that the result of the call can be emplace constructed into a container by

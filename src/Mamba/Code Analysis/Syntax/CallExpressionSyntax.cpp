@@ -20,9 +20,9 @@ CallExpressionSyntax::CallExpressionSyntax(
 CallExpressionSyntax::~CallExpressionSyntax() noexcept
 {
     for (auto Argument : Arguments.Nodes())
-        {
-            delete Argument;
-        }
+    {
+        delete Argument;
+    }
 }
 
 SyntaxKind CallExpressionSyntax::Kind() const noexcept
@@ -30,25 +30,29 @@ SyntaxKind CallExpressionSyntax::Kind() const noexcept
     return SyntaxKind::CallExpression;
 }
 
-std::vector<const SyntaxNode*> CallExpressionSyntax::Children() const noexcept
+std::size_t CallExpressionSyntax::ChildrenCount() const noexcept
 {
-    auto Result = std::vector<const SyntaxNode*>();
+    return 2 + Arguments.size();
+}
 
-    // Arguments->Count() returns nodes count, so multiply by 2 to count with separators
-    Result.reserve(2 + Arguments.Count() * 2);
-    Result.emplace_back(Identifier);
-    Result.emplace_back(OpenParenthesisToken);
+const SyntaxNode* CallExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index == 0)
+    {
+        return Identifier;
+    }
+    else if (Index == 1)
+    {
+        return OpenParenthesisToken;
+    }
+    else if (Index < Arguments.size() + 2)
+    {
+        return Arguments[Index - 2];
+    }
+    else if (Index == Arguments.size() + 2)
+    {
+        return CloseParenthesisToken;
+    }
 
-#if __cpp_lib_containers_ranges >= 202202L
-    Result.append_range(Arguments.WithSeperators());
-#else
-    for (auto Argument : Arguments.WithSeperators())
-        {
-            Result.emplace_back(std::forward<decltype(Argument)>(Argument));
-        }
-#endif
-
-    Result.emplace_back(CloseParenthesisToken);
-
-    return Result;
+    ReportChildrenAccessOutOfBounds(Index);
 }

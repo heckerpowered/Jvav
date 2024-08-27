@@ -1,10 +1,8 @@
 #pragma once
 
-#include "MambaCore.h"
-
 #include "DiagnosticBag.h"
 #include "SourceText.h"
-#include "SourceTextInfo.h"
+#include "SyntaxTree.h"
 
 namespace Mamba
 {
@@ -14,7 +12,6 @@ namespace Mamba
         DiagnosticBag Diagnostics;
 
         void PrivateAddSourceFile(const std::string_view FileName) noexcept;
-
         void ReportNoInputFiles() noexcept;
 
     public:
@@ -31,13 +28,6 @@ namespace Mamba
             }
         }
 
-        void Compile() noexcept
-        {
-            if (SourceTexts.empty())
-            {
-                ReportNoInputFiles();
-                return;
-            }
-        }
+        void Compile() noexcept;
     };
 } // namespace Mamba

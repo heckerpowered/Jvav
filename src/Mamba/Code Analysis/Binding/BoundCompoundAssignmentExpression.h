@@ -1,9 +1,9 @@
 #pragma once
 
-#include <memory>
-
+#include "BoundBinaryOperator.h"
 #include "BoundExpression.h"
 #include "BoundNodeKind.h"
+#include "VariableSymbol.h"
 
 namespace Mamba
 {
@@ -13,17 +13,19 @@ namespace Mamba
         using Super = BoundExpression;
 
         [[nodiscard]] BoundCompoundAssignmentExpression(
-            const std::shared_ptr<const class SyntaxNode> Syntax,
-            const std::shared_ptr<const class VariableSymbol> Variable,
-            const class BoundBinaryOperator& Operator,
-            const std::shared_ptr<const class BoundExpression> Expression
+            const SyntaxNode* Syntax,
+            const VariableSymbol* Variable,
+            const BoundBinaryOperator& Operator,
+            const BoundExpression* Expression
         ) noexcept;
 
-        BoundNodeKind Kind() const noexcept override;
-        std::shared_ptr<const class TypeSymbol> Type() const noexcept override;
+        ~BoundCompoundAssignmentExpression() noexcept override;
 
-        const std::shared_ptr<const class VariableSymbol> Variable;
-        const class BoundBinaryOperator& Operator;
-        const std::shared_ptr<const class BoundExpression> Expression;
+        BoundNodeKind Kind() const noexcept override;
+        const TypeSymbol* Type() const noexcept override;
+
+        const VariableSymbol* Variable;
+        const BoundBinaryOperator& Operator;
+        const BoundExpression* Expression;
     };
 } // namespace Mamba

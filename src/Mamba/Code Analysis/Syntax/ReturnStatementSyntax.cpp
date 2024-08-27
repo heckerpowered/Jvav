@@ -21,7 +21,20 @@ SyntaxKind ReturnStatementSyntax::Kind() const noexcept
     return SyntaxKind::ReturnStatement;
 }
 
-std::vector<const SyntaxNode*> ReturnStatementSyntax::Children() const noexcept
+std::size_t ReturnStatementSyntax::ChildrenCount() const noexcept
 {
-    return { ReturnKeyword, Expression };
+    return 2;
+}
+
+const SyntaxNode* ReturnStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
+    {
+        case 0:
+            return ReturnKeyword;
+        case 1:
+            return Expression;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
 }

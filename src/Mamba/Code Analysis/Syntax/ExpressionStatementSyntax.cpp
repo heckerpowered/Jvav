@@ -22,7 +22,17 @@ SyntaxKind ExpressionStatementSyntax::Kind() const noexcept
     return SyntaxKind::ExpressionStatement;
 }
 
-std::vector<const SyntaxNode*> ExpressionStatementSyntax::Children() const noexcept
+std::size_t ExpressionStatementSyntax::ChildrenCount() const noexcept
 {
-    return { Expression };
+    return 1;
+}
+
+const SyntaxNode* ExpressionStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index != 0)
+    {
+        ReportChildrenAccessOutOfBounds(Index);
+    }
+
+    return Expression;
 }

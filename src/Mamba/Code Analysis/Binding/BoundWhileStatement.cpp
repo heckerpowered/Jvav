@@ -5,12 +5,18 @@
 using namespace Mamba;
 
 BoundWhileStatement::BoundWhileStatement(
-    const std::shared_ptr<const SyntaxNode> SyntaxNode,
-    const std::shared_ptr<const class BoundExpression> Condition,
-    const std::shared_ptr<const class BoundStatement> Body
+    const SyntaxNode* SyntaxNode,
+    const BoundExpression* Condition,
+    const BoundStatement* Body
 ) noexcept :
     Super(SyntaxNode), Condition(Condition), Body(Body)
 {
+}
+
+BoundWhileStatement::~BoundWhileStatement() noexcept
+{
+    delete Condition;
+    delete Body;
 }
 
 BoundNodeKind BoundWhileStatement::Kind() const noexcept

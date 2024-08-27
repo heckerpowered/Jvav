@@ -17,12 +17,27 @@ AssignmentExpressionSyntax::~AssignmentExpressionSyntax() noexcept
     delete Expression;
 }
 
-std::vector<const SyntaxNode*> AssignmentExpressionSyntax::Children() const noexcept
-{
-    return { IdentifierToken, AssignmentToken, Expression };
-}
-
 SyntaxKind AssignmentExpressionSyntax::Kind() const noexcept
 {
     return SyntaxKind::AssignmentExpression;
+}
+
+std::size_t AssignmentExpressionSyntax::ChildrenCount() const noexcept
+{
+    return 3;
+}
+
+const SyntaxNode* AssignmentExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
+    {
+        case 0:
+            return IdentifierToken;
+        case 1:
+            return AssignmentToken;
+        case 2:
+            return Expression;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
 }

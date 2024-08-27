@@ -14,7 +14,17 @@ SyntaxKind ContinueStatementSyntax::Kind() const noexcept
     return SyntaxKind::ContinueStatement;
 }
 
-std::vector<const SyntaxNode*> ContinueStatementSyntax::Children() const noexcept
+std::size_t ContinueStatementSyntax::ChildrenCount() const noexcept
 {
-    return { Keyword };
+    return 1;
+}
+
+const SyntaxNode* ContinueStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index != 0)
+    {
+        ReportChildrenAccessOutOfBounds(Index);
+    }
+
+    return Keyword;
 }

@@ -19,19 +19,19 @@ namespace Mamba
 
 #if __cpp_explicit_this_parameter >= 202110L
         template<typename SelfT>
-        [[nodiscard]] auto&& operator[](this SelfT&& Self, const std::size_t Position) noexcept
+        [[nodiscard]] auto&& operator[](this SelfT&& Self, std::size_t Position) noexcept
         {
             return std::forward_like<SelfT>(Self.PrivateInfo.Text[Position]);
         }
 #else
-        [[nodiscard]] Char operator[](const std::size_t Position) const noexcept
+        [[nodiscard]] Char operator[](std::size_t Position) const noexcept
         {
             return PrivateInfo.Text[Position];
         }
 #endif
 
         [[nodiscard]] std::size_t Length() const noexcept;
-        [[nodiscard]] std::size_t LineIndex(const std::size_t Position) const noexcept;
+        [[nodiscard]] std::size_t LineIndex(std::size_t Position) const noexcept;
         [[nodiscard]] const std::vector<TextLine>& Lines() const noexcept;
 
         template<typename SelfT>
@@ -40,11 +40,10 @@ namespace Mamba
             return std::forward_like<SelfT>(Self.PrivateInfo.Text);
         }
 
-        [[nodiscard]] StringView SubView(const std::size_t Start, const std::size_t Length) const noexcept;
-        [[nodiscard]] StringView SubView(const TextSpan Span) const noexcept;
+        [[nodiscard]] StringView SubView(std::size_t Start, std::size_t Length) const noexcept;
 
-        [[nodiscard]] std::size_t RelativeBegin(const StringView View) const noexcept;
-        [[nodiscard]] std::size_t RelativeEnd(const StringView View) const noexcept;
+        [[nodiscard]] std::size_t RelativeBegin(StringView View) const noexcept;
+        [[nodiscard]] std::size_t RelativeEnd(StringView View) const noexcept;
 
     private:
         static std::vector<TextLine> SplitLines(const SourceTextInfo& Info);

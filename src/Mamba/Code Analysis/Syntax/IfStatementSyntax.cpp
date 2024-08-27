@@ -29,42 +29,28 @@ SyntaxKind IfStatementSyntax::Kind() const noexcept
     return SyntaxKind::IfStatement;
 }
 
-std::vector<const SyntaxNode*> IfStatementSyntax::Children() const noexcept
+std::size_t IfStatementSyntax::ChildrenCount() const noexcept
 {
-    // Calculates the number of children, in for statement, parentheses and else clause are optional,
-    // so there are at least 3 children
-    auto ChildrenCount = 3;
-    if (OpenParenthesisToken)
-    {
-        ++ChildrenCount;
-    }
-    if (CloseParenthesisToken)
-    {
-        ++ChildrenCount;
-    }
-    if (ElseClause)
-    {
-        ++ChildrenCount;
-    }
+    return ElseClause ? 3 : 4;
+}
 
-    auto Children = std::vector<const SyntaxNode*>();
-    Children.reserve(ChildrenCount);
-
-    Children.emplace_back(IfKeyword);
-    if (OpenParenthesisToken)
+const SyntaxNode* IfStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
     {
-        Children.emplace_back(OpenParenthesisToken);
+        case 0:
+            return IfKeyword;
+        case 1:
+            return Condition;
+        case 2:
+            return ThenStatement;
+        case 3:
+            if (ElseClause)
+            {
+                return ElseClause;
+            }
+            [[fallthrough]];
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
     }
-    Children.emplace_back(Condition);
-    if (CloseParenthesisToken)
-    {
-        Children.emplace_back(CloseParenthesisToken);
-    }
-    Children.emplace_back(ThenStatement);
-    if (ElseClause)
-    {
-        Children.emplace_back(ElseClause);
-    }
-
-    return Children;
 }

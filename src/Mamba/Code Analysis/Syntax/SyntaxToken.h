@@ -22,7 +22,9 @@ namespace Mamba
 
         virtual SyntaxKind Kind() const noexcept override;
         virtual StringView Text() const noexcept override;
-        virtual std::vector<const SyntaxNode*> Children() const noexcept override;
+
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
 
         [[nodiscard]] std::size_t Position() const noexcept;
         [[nodiscard]] Literal Value() const noexcept;

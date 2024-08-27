@@ -1,7 +1,6 @@
 #pragma once
 
-#include <memory>
-
+#include "BoundExpression.h"
 #include "BoundStatement.h"
 
 namespace Mamba
@@ -12,12 +11,13 @@ namespace Mamba
         using Super = BoundStatement;
 
         [[nodiscard]] BoundReturnStatement(
-            const std::shared_ptr<const class SyntaxNode> Syntax,
-            const std::shared_ptr<const class BoundExpression> Expression
+            const SyntaxNode* Syntax,
+            const BoundExpression* Expression
         ) noexcept;
+        ~BoundReturnStatement() noexcept override;
 
         BoundNodeKind Kind() const noexcept override;
 
-        const std::shared_ptr<const class BoundExpression> Expression;
+        const BoundExpression* Expression;
     };
 } // namespace Mamba

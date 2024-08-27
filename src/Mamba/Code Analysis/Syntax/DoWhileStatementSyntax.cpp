@@ -24,7 +24,24 @@ SyntaxKind DoWhileStatementSyntax::Kind() const noexcept
     return SyntaxKind::DoWhileStatement;
 }
 
-std::vector<const SyntaxNode*> DoWhileStatementSyntax::Children() const noexcept
+std::size_t DoWhileStatementSyntax::ChildrenCount() const noexcept
 {
-    return { DoKeyword, Body, WhileKeyword, Condition };
+    return 4;
+}
+
+const SyntaxNode* Mamba::DoWhileStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
+    {
+        case 0:
+            return DoKeyword;
+        case 1:
+            return Body;
+        case 2:
+            return WhileKeyword;
+        case 3:
+            return Condition;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
 }

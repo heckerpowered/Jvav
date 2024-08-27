@@ -2,7 +2,7 @@
 
 using namespace Mamba;
 
-BoundExpression::BoundExpression(const std::shared_ptr<const class SyntaxNode> Syntax) noexcept :
+BoundExpression::BoundExpression(const SyntaxNode* Syntax) noexcept :
     Super(Syntax) {}
 
 Constant BoundExpression::ConstantValue() const noexcept

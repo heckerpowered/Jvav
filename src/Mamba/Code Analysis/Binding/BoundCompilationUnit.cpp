@@ -1,11 +1,10 @@
 #include "BoundCompilationUnit.h"
-#include "BoundScope.h"
 
 using namespace Mamba;
 
 BoundCompilationUnit::BoundCompilationUnit(
-    const std::shared_ptr<const class SyntaxNode> SyntaxNode,
-    const std::shared_ptr<const class BoundScope> GlobalScope
+    const SyntaxNode* SyntaxNode,
+    const BoundScope* GlobalScope
 ) noexcept :
     Super(SyntaxNode), GlobalScope(GlobalScope)
 {

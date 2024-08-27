@@ -2,4 +2,5 @@
 
 using namespace Mamba;
 
-BoundNode::BoundNode(const std::shared_ptr<const class SyntaxNode> Syntax) noexcept : Syntax(Syntax) {}
+BoundNode::BoundNode(const SyntaxNode* Syntax) noexcept :
+    Syntax(Syntax) {}

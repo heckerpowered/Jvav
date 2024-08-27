@@ -21,7 +21,20 @@ SyntaxKind UnaryExpressionSyntax::Kind() const noexcept
     return SyntaxKind::UnaryExpression;
 }
 
-std::vector<const SyntaxNode*> UnaryExpressionSyntax::Children() const noexcept
+std::size_t UnaryExpressionSyntax::ChildrenCount() const noexcept
 {
-    return { OperatorToken, Operand };
+    return 2;
+}
+
+const SyntaxNode* UnaryExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
+    {
+        case 0:
+            return OperatorToken;
+        case 1:
+            return Operand;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
 }

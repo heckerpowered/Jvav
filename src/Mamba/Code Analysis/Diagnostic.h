@@ -3,7 +3,6 @@
 #include "MambaCore.h"
 
 #include "TextLocation.h"
-#include <memory>
 
 namespace Mamba
 {

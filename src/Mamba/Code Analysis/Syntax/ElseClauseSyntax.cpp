@@ -21,7 +21,20 @@ SyntaxKind ElseClauseSyntax::Kind() const noexcept
     return SyntaxKind::ElseClause;
 }
 
-std::vector<const SyntaxNode*> ElseClauseSyntax::Children() const noexcept
+std::size_t ElseClauseSyntax::ChildrenCount() const noexcept
 {
-    return { ElseKeyword, ElseStatement };
+    return 2;
+}
+
+const SyntaxNode* ElseClauseSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
+    {
+        case 0:
+            return ElseKeyword;
+        case 1:
+            return ElseStatement;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
 }

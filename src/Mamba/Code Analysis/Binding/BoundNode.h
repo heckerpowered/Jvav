@@ -1,20 +1,19 @@
 #pragma once
 
-#include <memory>
-
 #include "BoundNodeKind.h"
+#include "SyntaxNode.h"
 
 namespace Mamba
 {
     class BoundNode
     {
     protected:
-        [[nodiscard]] BoundNode(const std::shared_ptr<const class SyntaxNode> Syntax) noexcept;
+        [[nodiscard]] BoundNode(const SyntaxNode* Syntax) noexcept;
 
     public:
-        virtual ~BoundNode() = default;
+        virtual ~BoundNode() noexcept = default;
         virtual BoundNodeKind Kind() const noexcept = 0;
 
-        const std::shared_ptr<const class SyntaxNode> Syntax;
+        const SyntaxNode* Syntax;
     };
 } // namespace Mamba

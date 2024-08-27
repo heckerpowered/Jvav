@@ -10,21 +10,16 @@ namespace Mamba
     public:
         using Super = ExpressionSyntax;
 
-        [[nodiscard]] LiteralExpressionSyntax(
-            const class SyntaxTree* SyntaxTree,
-            const SyntaxToken* LiteralToken
-        ) noexcept;
-
-        [[nodiscard]] LiteralExpressionSyntax(
-            const class SyntaxTree* SyntaxTree,
-            const SyntaxToken* LiteralToken,
-            const Literal Value
-        ) noexcept;
+        [[nodiscard]] LiteralExpressionSyntax(const class SyntaxTree* SyntaxTree, const SyntaxToken* LiteralToken) noexcept;
+        [[nodiscard]] LiteralExpressionSyntax(const class SyntaxTree* SyntaxTree, const SyntaxToken* LiteralToken, Literal Value) noexcept;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<const SyntaxNode*> Children() const noexcept override;
 
         const SyntaxToken* LiteralToken;
         Literal Value;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

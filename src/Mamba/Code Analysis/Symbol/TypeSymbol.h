@@ -13,14 +13,17 @@ namespace Mamba
     public:
         using Super = Symbol;
 
-        [[nodiscard]] TypeSymbol(const std::shared_ptr<const String> Name) noexcept;
-        virtual ~TypeSymbol() noexcept;
+        [[nodiscard]] TypeSymbol(StringView Name) noexcept;
+        virtual ~TypeSymbol() noexcept = default;
 
         SymbolKind Kind() const noexcept override;
 
-        static const std::shared_ptr<const TypeSymbol> Int;
-        static const std::shared_ptr<const TypeSymbol> Bool;
-        static const std::shared_ptr<const TypeSymbol> String;
-        static const std::shared_ptr<const TypeSymbol> Void;
+        static const TypeSymbol Int;
+        static const TypeSymbol Bool;
+        static const TypeSymbol String;
+        static const TypeSymbol Void;
+        static const TypeSymbol Double;
+
+        static bool IsBuiltInType(const TypeSymbol* Type) noexcept;
     };
 } // namespace Mamba

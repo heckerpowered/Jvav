@@ -1,7 +1,6 @@
 #pragma once
 
 #include "SourceText.h"
-#include "TextSpan.h"
 
 namespace Mamba
 {
@@ -13,7 +12,7 @@ namespace Mamba
         template<typename SelfT>
         [[nodiscard]] decltype(auto) FileName(this SelfT&& Self) noexcept
         {
-            return std::forward_like<SelfT>(Self.Text.FileName);
+            return std::forward_like<SelfT>(Self.Text).Info().FileName;
         }
 
         [[nodiscard]] std::size_t StartLine() const noexcept;

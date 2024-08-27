@@ -21,7 +21,9 @@
 #include "BoundVariableDeclaration.h"
 #include "BoundVariableExpression.h"
 #include "BoundWhileStatement.h"
+#include "BreakStatementSyntax.h"
 #include "CallExpressionSyntax.h"
+#include "CompilationUnitSyntax.h"
 #include "Constant.h"
 #include "ContinueStatementSyntax.h"
 #include "DiagnosticBag.h"
@@ -33,6 +35,7 @@
 #include "LiteralExpressionSyntax.h"
 #include "MambaCore.h"
 #include "NameExpressionSyntax.h"
+#include "ParameterSymbol.h"
 #include "ParenthesizedExpressionSyntax.h"
 #include "ReturnStatementSyntax.h"
 #include "ScopeGuard.h"
@@ -49,7 +52,6 @@ namespace Mamba
     {
         BoundScope* Scope;
         const class SyntaxTree* SyntaxTree;
-        DiagnosticBag Diagnostics;
 
         void BindMember(const MemberSyntax* Member) noexcept;
         void BindFunctionDeclaration(const FunctionDeclarationSyntax* FunctionDeclaration) noexcept;
@@ -60,14 +62,14 @@ namespace Mamba
         ) noexcept;
 
         VariableSymbol* BindVariableDeclaration(const SyntaxToken* Identifier, bool IsReadOnly, const TypeSymbol* Type, Constant Constant) noexcept;
-        std::vector<ParameterSymbol*> BindParameter(const FunctionDeclarationSyntax* FunctionDeclaration) noexcept;
+        std::vector<const ParameterSymbol*> BindParameter(const FunctionDeclarationSyntax* FunctionDeclaration) noexcept;
 
-        BoundStatement* BindBreakStatement(const std::shared_ptr<const class BreakStatementSyntax> BreakStatement) noexcept;
+        BoundStatement* BindBreakStatement(const BreakStatementSyntax* BreakStatement) noexcept;
         BoundExpression* BindParenthesizedExpression(const ParenthesizedExpressionSyntax* ParenthesizedExpression) noexcept;
-        BoundAssignmentExpression* BindAssignmentExpression(const AssignmentExpressionSyntax* AssignmentExpression) noexcept;
         BoundExpressionStatement* BindExpressionStatement(const ExpressionStatementSyntax* ExpressionStatement) noexcept;
         BoundVariableDeclaration* BindVariableDeclaration(const VariableDeclarationSyntax* VariableDeclaration) noexcept;
-        NullablePointer<TypeSymbol*> BindTypeClause(NullablePointer<const TypeClauseSyntax> TypeClause) noexcept;
+        BoundExpression* BindAssignmentExpression(const AssignmentExpressionSyntax* AssignmentExpression) noexcept;
+        NullablePointer<const TypeSymbol> BindTypeClause(NullablePointer<const TypeClauseSyntax> TypeClause) noexcept;
         BoundLiteralExpression* BindLiteralExpression(const LiteralExpressionSyntax* LiteralExpression) noexcept;
         BoundDoWhileStatement* BindDoWhileStatement(const DoWhileStatementSyntax* DoWhileStatement) noexcept;
         BoundBinaryExpression* BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept;
@@ -90,6 +92,8 @@ namespace Mamba
         void DeclareBuiltinFunction();
 
     public:
+        DiagnosticBag Diagnostics;
+
         [[nodiscard]] Binder(const class SyntaxTree* SyntaxTree) noexcept;
 
         BoundCompilationUnit* BindCompilationUnit() noexcept;

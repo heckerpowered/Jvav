@@ -25,7 +25,22 @@ SyntaxKind ParenthesizedExpressionSyntax::Kind() const noexcept
     return SyntaxKind::ParenthesizedExpression;
 }
 
-std::vector<const SyntaxNode*> ParenthesizedExpressionSyntax::Children() const noexcept
+std::size_t ParenthesizedExpressionSyntax::ChildrenCount() const noexcept
 {
-    return { OpenParenthesisToken, Expression, CloseParenthesisToken };
+    return 3;
+}
+
+const SyntaxNode* ParenthesizedExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
+    {
+        case 0:
+            return OpenParenthesisToken;
+        case 1:
+            return Expression;
+        case 2:
+            return CloseParenthesisToken;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
 }

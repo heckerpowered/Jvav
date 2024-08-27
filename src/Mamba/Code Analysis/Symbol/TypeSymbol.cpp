@@ -2,21 +2,24 @@
 
 using namespace Mamba;
 
-// why qualified name is required here?
-TypeSymbol::TypeSymbol(const std::shared_ptr<const ::Mamba::String> Name) noexcept : Super(Name) {}
-
-Mamba::TypeSymbol::~TypeSymbol() noexcept {}
+TypeSymbol::TypeSymbol(StringView Name) noexcept :
+    Super(Name) {}
 
 SymbolKind TypeSymbol::Kind() const noexcept
 {
     return SymbolKind::Type;
 }
 
-const std::shared_ptr<const TypeSymbol> TypeSymbol::Int =
-    std::make_shared<const TypeSymbol>(std::make_shared<const ::Mamba::String>(TEXT("int")));
-const std::shared_ptr<const TypeSymbol> TypeSymbol::Bool =
-    std::make_shared<const TypeSymbol>(std::make_shared<const ::Mamba::String>(TEXT("bool")));
-const std::shared_ptr<const TypeSymbol> TypeSymbol::String =
-    std::make_shared<const TypeSymbol>(std::make_shared<const ::Mamba::String>(TEXT("string")));
-const std::shared_ptr<const TypeSymbol> TypeSymbol::Void =
-    std::make_shared<const TypeSymbol>(std::make_shared<const ::Mamba::String>(TEXT("void")));
+bool TypeSymbol::IsBuiltInType(const TypeSymbol* Type) noexcept
+{
+    return Type == &TypeSymbol::Int ||
+           Type == &TypeSymbol::Bool ||
+           Type == &TypeSymbol::String ||
+           Type == &TypeSymbol::Void;
+}
+
+const TypeSymbol TypeSymbol::Int = TypeSymbol(TEXT("int"));
+const TypeSymbol TypeSymbol::Bool = TypeSymbol(TEXT("bool"));
+const TypeSymbol TypeSymbol::String = TypeSymbol(TEXT("string"));
+const TypeSymbol TypeSymbol::Void = TypeSymbol(TEXT("void"));
+const TypeSymbol TypeSymbol::Double = TypeSymbol(TEXT("double"));

@@ -90,22 +90,36 @@ namespace Mamba
 
     std::vector<SyntaxKind> SyntaxFacts::GetUnaryOperatorKinds() noexcept
     {
-        return { SyntaxKind::PlusToken, SyntaxKind::MinusToken, SyntaxKind::BangToken, SyntaxKind::TildeToken };
+        return {
+            SyntaxKind::PlusToken,
+            SyntaxKind::MinusToken,
+            SyntaxKind::BangToken,
+            SyntaxKind::TildeToken
+        };
     }
 
     std::vector<SyntaxKind> SyntaxFacts::GetBinaryOperatorKinds() noexcept
     {
-        return { SyntaxKind::StarToken,         SyntaxKind::SlashToken,
-                 SyntaxKind::PlusToken,         SyntaxKind::MinusToken,
-                 SyntaxKind::EqualsEqualsToken, SyntaxKind::BangEqualsToken,
-                 SyntaxKind::LessToken,         SyntaxKind::LessOrEqualsToken,
-                 SyntaxKind::GreaterToken,      SyntaxKind::GreaterOrEqualsToken,
-                 SyntaxKind::AmpersandToken,    SyntaxKind::AmpersandAmpersandToken,
-                 SyntaxKind::PipeToken,         SyntaxKind::PipePipeToken,
-                 SyntaxKind::HatToken };
+        return {
+            SyntaxKind::StarToken,
+            SyntaxKind::SlashToken,
+            SyntaxKind::PlusToken,
+            SyntaxKind::MinusToken,
+            SyntaxKind::EqualsEqualsToken,
+            SyntaxKind::BangEqualsToken,
+            SyntaxKind::LessToken,
+            SyntaxKind::LessOrEqualsToken,
+            SyntaxKind::GreaterToken,
+            SyntaxKind::GreaterOrEqualsToken,
+            SyntaxKind::AmpersandToken,
+            SyntaxKind::AmpersandAmpersandToken,
+            SyntaxKind::PipeToken,
+            SyntaxKind::PipePipeToken,
+            SyntaxKind::HatToken
+        };
     }
 
-    String SyntaxFacts::GetText(const SyntaxKind Kind) noexcept
+    StringView SyntaxFacts::GetText(const SyntaxKind Kind) noexcept
     {
         switch (Kind)
         {
@@ -202,7 +216,7 @@ namespace Mamba
         }
     }
 
-    String SyntaxFacts::ToString(const SyntaxKind Kind) noexcept
+    StringView SyntaxFacts::ToString(const SyntaxKind Kind) noexcept
     {
         switch (Kind)
         {

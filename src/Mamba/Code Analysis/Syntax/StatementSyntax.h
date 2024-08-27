@@ -2,8 +2,6 @@
 
 #include "SyntaxNode.h"
 
-#include <memory>
-
 namespace Mamba
 {
     class StatementSyntax : public SyntaxNode

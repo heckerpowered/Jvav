@@ -17,11 +17,28 @@ SyntaxKind WhileStatementSyntax::Kind() const noexcept
     return SyntaxKind::WhileStatement;
 }
 
-WhileStatementSyntax::~WhileStatementSyntax() noexcept
+std::size_t WhileStatementSyntax::ChildrenCount() const noexcept
 {
+    return 3;
 }
 
-std::vector<const SyntaxNode*> WhileStatementSyntax::Children() const noexcept
+const SyntaxNode* WhileStatementSyntax::ChildAt(std::size_t Index) const noexcept
 {
-    return { WhileKeyword, Condition, Body };
+    switch (Index)
+    {
+        case 0:
+            return WhileKeyword;
+        case 1:
+            return Condition;
+        case 2:
+            return Body;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
+}
+
+WhileStatementSyntax::~WhileStatementSyntax() noexcept
+{
+    delete Condition;
+    delete Body;
 }

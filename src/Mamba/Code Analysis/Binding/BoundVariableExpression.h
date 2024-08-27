@@ -1,8 +1,7 @@
 #pragma once
 
-#include <memory>
-
 #include "BoundExpression.h"
+#include "VariableSymbol.h"
 
 namespace Mamba
 {
@@ -12,13 +11,13 @@ namespace Mamba
         using Super = BoundExpression;
 
         [[nodiscard]] BoundVariableExpression(
-            const std::shared_ptr<const class SyntaxNode> Syntax,
-            const std::shared_ptr<const class VariableSymbol> Variable
+            const SyntaxNode* Syntax,
+            const VariableSymbol* Variable
         ) noexcept;
 
         BoundNodeKind Kind() const noexcept override;
-        virtual std::shared_ptr<const class TypeSymbol> Type() const noexcept override;
+        const TypeSymbol* Type() const noexcept override;
 
-        const std::shared_ptr<const class VariableSymbol> Variable;
+        const VariableSymbol* Variable;
     };
 } // namespace Mamba

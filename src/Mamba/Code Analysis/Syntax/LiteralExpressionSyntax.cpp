@@ -24,7 +24,17 @@ SyntaxKind LiteralExpressionSyntax::Kind() const noexcept
     return SyntaxKind::LiteralExpression;
 }
 
-std::vector<const SyntaxNode*> LiteralExpressionSyntax::Children() const noexcept
+std::size_t LiteralExpressionSyntax::ChildrenCount() const noexcept
 {
-    return { LiteralToken };
+    return 1;
+}
+
+const SyntaxNode* LiteralExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index != 0)
+    {
+        ReportChildrenAccessOutOfBounds(Index);
+    }
+
+    return LiteralToken;
 }

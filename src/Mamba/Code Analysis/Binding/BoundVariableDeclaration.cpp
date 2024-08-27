@@ -3,12 +3,17 @@
 using namespace Mamba;
 
 BoundVariableDeclaration::BoundVariableDeclaration(
-    const std::shared_ptr<const SyntaxNode> Syntax,
-    const std::shared_ptr<const VariableSymbol> Variable,
-    const std::shared_ptr<const BoundExpression> Initializer
+    const SyntaxNode* Syntax,
+    const VariableSymbol* Variable,
+    const BoundExpression* Initializer
 ) noexcept :
     Super(Syntax), Variable(Variable), Initializer(Initializer)
 {
+}
+
+BoundVariableDeclaration::~BoundVariableDeclaration() noexcept
+{
+    delete Initializer;
 }
 
 BoundNodeKind BoundVariableDeclaration::Kind() const noexcept

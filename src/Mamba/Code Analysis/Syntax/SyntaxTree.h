@@ -12,18 +12,19 @@ namespace Mamba
 
     class SyntaxTree
     {
-        std::optional<CompilationUnitSyntax> PrivateRoot;
+        CompilationUnitSyntax* PrivateRoot;
         const SourceText& PrivateSourceText;
 
         friend class Compiler;
 
     public:
         [[nodiscard]] SyntaxTree(const class SourceText& SourceText) noexcept;
+        ~SyntaxTree() noexcept;
 
         template<typename SelfT>
         [[nodiscard]] auto&& Root(this SelfT&& Self) noexcept
         {
-            return std::forward<SelfT>(Self).PrivateRoot.value();
+            return std::forward<SelfT>(Self).PrivateRoot;
         }
 
         template<typename SelfT>

@@ -1,10 +1,15 @@
 #include "Binder.h"
+#include "BoundCallExpression.h"
+#include "BoundCompoundAssignmentExpression.h"
+#include "BoundExpressionStatement.h"
+#include "MambaCore.h"
+#include "SyntaxFacts.h"
 
 using namespace Mamba;
 
 BoundCompilationUnit* Binder::BindCompilationUnit() noexcept
 {
-    const auto Root = SyntaxTree->Root();
+    auto Root = SyntaxTree->Root();
     for (auto&& Member : Root->Members)
     {
         BindMember(Member);
@@ -13,73 +18,81 @@ BoundCompilationUnit* Binder::BindCompilationUnit() noexcept
     return new BoundCompilationUnit(Root, Scope);
 }
 
-void Binder::BindMember(const std::shared_ptr<const class MemberSyntax> Member) noexcept
+void Binder::BindMember(const MemberSyntax* Member) noexcept
 {
-    if (const auto FunctionDeclaration = std::dynamic_pointer_cast<const FunctionDeclarationSyntax>(Member))
+    if (auto FunctionDeclaration = dynamic_cast<const FunctionDeclarationSyntax*>(Member))
     {
         BindFunctionDeclaration(FunctionDeclaration);
     }
 }
 
-void Binder::BindFunctionDeclaration(const std::shared_ptr<const FunctionDeclarationSyntax> FunctionDeclaration) noexcept
+void Binder::BindFunctionDeclaration(const FunctionDeclarationSyntax* FunctionDeclaration) noexcept
 {
     auto FunctionScope = EnterScope();
 
-    const auto Body = BindStatement(FunctionDeclaration->Body);
-    const auto BoundFunctionDeclaration = std::make_shared<class BoundFunctionDeclaration>(FunctionDeclaration, Body, Scope);
+    auto Body = BindStatement(FunctionDeclaration->Body);
+    auto BoundFunctionDeclaration = new class BoundFunctionDeclaration(FunctionDeclaration, Body);
 
     FunctionScope.PreLeave();
+
     DeclareFunction(FunctionDeclaration, BoundFunctionDeclaration);
 }
 
 void Binder::DeclareFunction(
-    const std::shared_ptr<const FunctionDeclarationSyntax> FunctionDeclaration,
-    const std::shared_ptr<const BoundFunctionDeclaration> BoundFunctionDeclaration
+    const FunctionDeclarationSyntax* FunctionDeclaration,
+    const BoundFunctionDeclaration* BoundFunctionDeclaration
 ) noexcept
 {
-    const auto Name = FunctionDeclaration->Identifier->Text;
+    auto Name = FunctionDeclaration->Identifier->Text();
     auto Parameters = BindParameter(FunctionDeclaration);
-    const auto Type = BindTypeClause(FunctionDeclaration->Type);
-    const auto FunctionSymbol = std::make_shared<class FunctionSymbol>(
-        Name,
-        std::move(Parameters),
-        Type ? Type : TypeSymbol::Void,
-        BoundFunctionDeclaration
-    );
+    auto Type = BindTypeClause(FunctionDeclaration->Type);
+    auto FunctionSymbol = new class FunctionSymbol(Name, std::move(Parameters), Type ? Type : &TypeSymbol::Void, BoundFunctionDeclaration);
 
     Scope->Declare(FunctionSymbol);
 }
 
-std::vector<std::shared_ptr<const ParameterSymbol>> Binder::BindParameter(
-    const std::shared_ptr<const FunctionDeclarationSyntax> FunctionDeclaration
+std::vector<const ParameterSymbol*> Binder::BindParameter(
+    const FunctionDeclarationSyntax* FunctionDeclaration
 ) noexcept
 {
-    const auto Parameters = FunctionDeclaration->Parameters->Nodes();
-
-    auto ParameterSymbols = std::vector<std::shared_ptr<const ParameterSymbol>>();
+    auto Parameters = FunctionDeclaration->Parameters.Nodes();
+    auto ParameterSymbols = std::vector<const ParameterSymbol*>();
     ParameterSymbols.reserve(Parameters.size());
 
+#if __cpp_lib_ranges_enumerate >= 202302L
+    for (auto [Index, Parameter] :
+         Parameters |
+             std::views::transform([](auto&& Node) { return dynamic_cast<const ParameterSyntax*>(Node); }) | std::views::enumerate)
+    {
+        const auto Name = Parameter->Identifier->Text();
+        const auto Type = new TypeSymbol(Parameter->Type->Identifier->Text());
+        const auto ParameterSymbol = new class ParameterSymbol(Name, Type, Index);
+        Scope->Declare(ParameterSymbol);
+    }
+#else
     auto Index = 0;
-    for (auto&& Parameter : Parameters | std::views::transform([](auto&& Node) { return std::dynamic_pointer_cast<const ParameterSyntax>(Node); }))
+    for (auto&& Parameter :
+         Parameters | std::views::transform([](auto&& Node) { return dynamic_cast<const ParameterSyntax*>(Node); }))
     {
         ++Index;
 
-        const auto Name = Parameter->Identifier->Text;
-        const auto Type = std::make_shared<TypeSymbol>(Parameter->Type->Identifier->Text);
-        const auto ParameterSymbol = std::make_shared<class ParameterSymbol>(Name, Type, Index);
+        const auto Name = Parameter->Identifier->Text();
+        const auto Type = new TypeSymbol(Parameter->Type->Identifier->Text());
+        const auto ParameterSymbol = new class ParameterSymbol(Name, Type, Index);
         Scope->Declare(ParameterSymbol);
     }
 
     return ParameterSymbols;
+#endif
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindStatement(const std::shared_ptr<const class StatementSyntax> Statement) noexcept
+BoundStatement* Binder::BindStatement(const StatementSyntax* Statement) noexcept
 {
-    const auto BoundStatement = BindStatementInternal(Statement);
-    if (const auto BoundExpressionStatement = std::dynamic_pointer_cast<const class BoundExpressionStatement>(BoundStatement))
+    auto BoundStatement = BindStatementInternal(Statement);
+    if (auto BoundExpressionStatement = dynamic_cast<const class BoundExpressionStatement*>(BoundStatement))
     {
         // The following expressions' values can be discarded by default.
-        const auto IsAllowedExpression =
+        auto IsAllowedExpression =
             BoundExpressionStatement->Expression->Kind() == BoundNodeKind::AssignmentExpression ||
             BoundExpressionStatement->Expression->Kind() == BoundNodeKind::CallExpression ||
             BoundExpressionStatement->Expression->Kind() == BoundNodeKind::CompoundAssignmentExpression;
@@ -93,127 +106,132 @@ std::shared_ptr<const BoundStatement> Binder::BindStatement(const std::shared_pt
     return BoundStatement;
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindStatementInternal(const std::shared_ptr<const class StatementSyntax> Statement) noexcept
+BoundStatement* Binder::BindStatementInternal(const StatementSyntax* Statement) noexcept
 {
     switch (Statement->Kind())
     {
         case SyntaxKind::BlockStatement:
-            return BindBlockStatement(std::dynamic_pointer_cast<const BlockStatementSyntax>(Statement));
+            return BindBlockStatement(static_cast<const BlockStatementSyntax*>(Statement));
         case SyntaxKind::VariableDeclaration:
-            return BindVariableDeclaration(std::dynamic_pointer_cast<const VariableDeclarationSyntax>(Statement));
+            return BindVariableDeclaration(static_cast<const VariableDeclarationSyntax*>(Statement));
         case SyntaxKind::IfStatement:
-            return BindIfStatement(std::dynamic_pointer_cast<const IfStatementSyntax>(Statement));
+            return BindIfStatement(static_cast<const IfStatementSyntax*>(Statement));
         case SyntaxKind::WhileStatement:
-            return BindWhileStatement(std::dynamic_pointer_cast<const WhileStatementSyntax>(Statement));
+            return BindWhileStatement(static_cast<const WhileStatementSyntax*>(Statement));
         case SyntaxKind::DoWhileStatement:
-            return BindDoWhileStatement(std::dynamic_pointer_cast<const DoWhileStatementSyntax>(Statement));
+            return BindDoWhileStatement(static_cast<const DoWhileStatementSyntax*>(Statement));
         case SyntaxKind::ForStatement:
-            return BindForStatement(std::dynamic_pointer_cast<const ForStatementSyntax>(Statement));
+            return BindForStatement(static_cast<const ForStatementSyntax*>(Statement));
         case SyntaxKind::BreakStatement:
-            return BindBreakStatement(std::dynamic_pointer_cast<const BreakStatementSyntax>(Statement));
+            return BindBreakStatement(static_cast<const BreakStatementSyntax*>(Statement));
         case SyntaxKind::ContinueStatement:
-            return BindContinueStatement(std::dynamic_pointer_cast<const ContinueStatementSyntax>(Statement));
+            return BindContinueStatement(static_cast<const ContinueStatementSyntax*>(Statement));
         case SyntaxKind::ReturnStatement:
-            return BindReturnStatement(std::dynamic_pointer_cast<const ReturnStatementSyntax>(Statement));
+            return BindReturnStatement(static_cast<const ReturnStatementSyntax*>(Statement));
         case SyntaxKind::ExpressionStatement:
-            return BindExpressionStatement(std::dynamic_pointer_cast<const ExpressionStatementSyntax>(Statement));
+            return BindExpressionStatement(static_cast<const ExpressionStatementSyntax*>(Statement));
         default:
+#ifdef DEBUG
             fast_io::io::perrln("Unexpected syntax: {}", fast_io::mnp::code_cvt(SyntaxFacts::ToString(Statement->Kind())));
+            fast_io::fast_terminate();
+#else
             std::unreachable();
+#endif
     }
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindBlockStatement(const std::shared_ptr<const BlockStatementSyntax> BlockStatement) noexcept
+BoundBlockStatement* Binder::BindBlockStatement(const BlockStatementSyntax* BlockStatement) noexcept
 {
-    auto BoundStatements = std::vector<std::shared_ptr<const BoundStatement>>();
-    BoundStatements.reserve(BlockStatement->Statements.size());
+    auto BlockScope = EnterScope();
 
-    const auto BlockScope = EnterScope();
+    auto BoundStatements = BlockStatement->Statements |
+                           std::views::transform([&](auto Statement) -> const BoundStatement* { return BindStatement(Statement); }) |
+                           std::ranges::to<std::vector>();
 
-    for (auto&& Statement : BlockStatement->Statements)
-    {
-        BoundStatements.emplace_back(Hatcher([&] { return BindStatement(Statement); }));
-    }
-
-    return std::make_shared<BoundBlockStatement>(BlockStatement, BoundStatements);
+    return new BoundBlockStatement(BlockStatement, std::move(BoundStatements));
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindExpressionStatement(const std::shared_ptr<const ExpressionStatementSyntax> ExpressionStatement) noexcept
+BoundExpressionStatement* Binder::BindExpressionStatement(const ExpressionStatementSyntax* ExpressionStatement) noexcept
 {
-    const auto Expression = BindExpression(ExpressionStatement->Expression);
-    return std::make_shared<BoundExpressionStatement>(ExpressionStatement, Expression);
+    auto Expression = BindExpression(ExpressionStatement->Expression);
+    return new BoundExpressionStatement(ExpressionStatement, Expression);
 }
 
-std::shared_ptr<const BoundExpression> Binder::BindExpression(const std::shared_ptr<const ExpressionSyntax> Expression) noexcept
+BoundExpression* Binder::BindExpression(const ExpressionSyntax* Expression) noexcept
 {
     switch (Expression->Kind())
     {
         case SyntaxKind::ParenthesizedExpression:
-            return BindParenthesizedExpression(std::dynamic_pointer_cast<const ParenthesizedExpressionSyntax>(Expression));
+            return BindParenthesizedExpression(static_cast<const ParenthesizedExpressionSyntax*>(Expression));
         case SyntaxKind::LiteralExpression:
-            return BindLiteralExpression(std::dynamic_pointer_cast<const LiteralExpressionSyntax>(Expression));
+            return BindLiteralExpression(static_cast<const LiteralExpressionSyntax*>(Expression));
         case SyntaxKind::NameExpression:
-            return BindNameExpression(std::dynamic_pointer_cast<const NameExpressionSyntax>(Expression));
+            return BindNameExpression(static_cast<const NameExpressionSyntax*>(Expression));
         case SyntaxKind::AssignmentExpression:
-            return BindAssignmentExpression(std::dynamic_pointer_cast<const AssignmentExpressionSyntax>(Expression));
+            return BindAssignmentExpression(static_cast<const AssignmentExpressionSyntax*>(Expression));
         case SyntaxKind::UnaryExpression:
-            return BindUnaryExpression(std::dynamic_pointer_cast<const UnaryExpressionSyntax>(Expression));
+            return BindUnaryExpression(static_cast<const UnaryExpressionSyntax*>(Expression));
         case SyntaxKind::BinaryExpression:
-            return BindBinaryExpression(std::dynamic_pointer_cast<const BinaryExpressionSyntax>(Expression));
+            return BindBinaryExpression(static_cast<const BinaryExpressionSyntax*>(Expression));
         case SyntaxKind::CallExpression:
-            return BindCallExpression(std::dynamic_pointer_cast<const CallExpressionSyntax>(Expression));
+            return BindCallExpression(static_cast<const CallExpressionSyntax*>(Expression));
         default:
-            fast_io::io::perrln("Unexpected {}", fast_io::mnp::code_cvt(SyntaxFacts::ToString(Expression->Kind())), ", expression expected.");
+#ifdef DEBUG
+            InternalCompilerError(
+                std::source_location::current(),
+                "Unexpected {}",
+                fast_io::mnp::code_cvt(SyntaxFacts::ToString(Expression->Kind())),
+                ", expression expected."
+            );
+#else
             std::unreachable();
+#endif
     }
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindVariableDeclaration(const std::shared_ptr<const VariableDeclarationSyntax> VariableDeclaration) noexcept
+BoundVariableDeclaration* Binder::BindVariableDeclaration(const VariableDeclarationSyntax* VariableDeclaration) noexcept
 {
-    const auto IsReadOnly = VariableDeclaration->Keyword->Kind() == SyntaxKind::LetKeyword;
-    const auto Type = BindTypeClause(VariableDeclaration->TypeClause);
-    const auto Initializer = BindExpression(VariableDeclaration->Initializer);
-    const auto VariableType = Type ? Type : Initializer->Type();
-    const auto Variable = BindVariableDeclaration(
+    auto IsReadOnly = VariableDeclaration->Keyword->Kind() == SyntaxKind::LetKeyword;
+    auto Type = BindTypeClause(VariableDeclaration->TypeClause);
+    auto Initializer = BindExpression(VariableDeclaration->Initializer);
+    auto VariableType = Type ? Type : Initializer->Type();
+    auto Variable = BindVariableDeclaration(
         VariableDeclaration->Identifier,
         IsReadOnly,
         VariableType,
         Initializer->ConstantValue()
     );
 
-    return std::make_shared<BoundVariableDeclaration>(VariableDeclaration, Variable, Initializer);
+    return new BoundVariableDeclaration(VariableDeclaration, Variable, Initializer);
 }
 
-std::shared_ptr<const VariableSymbol> Binder::BindVariableDeclaration(
-    const std::shared_ptr<const SyntaxToken> Identifier,
-    const bool IsReadOnly,
-    const std::shared_ptr<const TypeSymbol> Type,
-    const NullableSharedPtr<const BoundConstant> Constant
-) noexcept
+VariableSymbol* Binder::BindVariableDeclaration(const SyntaxToken* Identifier, bool IsReadOnly, const TypeSymbol* Type, Constant Constant) noexcept
 {
-    const auto Name = Identifier->Text;
-    if (!Name)
+    auto Name = Identifier->Text();
+    if (Name.empty())
     {
-        return std::make_shared<class VariableSymbol>(std::make_shared<String>(TEXT("?")), IsReadOnly, Type, Constant);
+#ifdef DEBUG
+        fast_io::io::perrln("Failed to bind variable declaration: empty identifier.");
+        fast_io::fast_terminate();
+#else
+        std::unreachable();
+#endif
     }
 
     if (!Scope->LookupVariable(Name).empty())
     {
-        Diagnostics.ReportVariableAlreadyDeclared(Identifier->Location(), *Name);
+        Diagnostics.ReportVariableAlreadyDeclared(Identifier->Location(), Name);
     }
 
-    const auto Variable = std::make_shared<class VariableSymbol>(Name, IsReadOnly, Type, Constant);
-
-    return Variable;
+    return new VariableSymbol(Name, IsReadOnly, Type, Constant);
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindIfStatement(const std::shared_ptr<const IfStatementSyntax> IfStatement) noexcept
+BoundIfStatement* Binder::BindIfStatement(const IfStatementSyntax* IfStatement) noexcept
 {
-    const auto Condition = BindExpression(IfStatement->Condition);
-
-    if (Condition->ConstantValue())
+    auto Condition = BindExpression(IfStatement->Condition);
+    if (Condition->ConstantValue().IsValid())
     {
-        if (!Condition->ConstantValue()->Value->Value.BooleanValue)
+        if (!Condition->ConstantValue().Get<bool>())
         {
             Diagnostics.ReportUnreachableCode(IfStatement->ElseClause->ElseStatement);
         }
@@ -224,73 +242,73 @@ std::shared_ptr<const BoundStatement> Binder::BindIfStatement(const std::shared_
         }
     }
 
-    const auto ThenStatement = BindStatement(IfStatement->ThenStatement);
-    const auto ElseStatement = IfStatement->ElseClause ? nullptr : BindStatement(IfStatement->ElseClause->ElseStatement);
-    return std::make_shared<BoundIfStatement>(IfStatement, Condition, ThenStatement, ElseStatement);
+    auto ThenStatement = BindStatement(IfStatement->ThenStatement);
+    auto ElseStatement = IfStatement->ElseClause ? nullptr : BindStatement(IfStatement->ElseClause->ElseStatement);
+    return new BoundIfStatement(IfStatement, Condition, ThenStatement, ElseStatement);
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindWhileStatement(const std::shared_ptr<const WhileStatementSyntax> WhileStatement) noexcept
+BoundWhileStatement* Binder::BindWhileStatement(const WhileStatementSyntax* WhileStatement) noexcept
 {
-    const auto WhileScope = EnterScope();
+    auto WhileScope = EnterScope();
 
-    const auto Condition = BindExpression(WhileStatement->Condition);
+    auto Condition = BindExpression(WhileStatement->Condition);
 
-    if (Condition->ConstantValue() && !Condition->ConstantValue()->Value->Value.BooleanValue)
+    if (Condition->ConstantValue().IsValid() && !Condition->ConstantValue().Get<bool>())
     {
         Diagnostics.ReportUnreachableCode(WhileStatement->Body);
     }
 
-    const auto Body = BindStatement(WhileStatement->Body);
-    return std::make_shared<BoundWhileStatement>(WhileStatement, Condition, Body);
+    auto Body = BindStatement(WhileStatement->Body);
+    return new BoundWhileStatement(WhileStatement, Condition, Body);
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindDoWhileStatement(const std::shared_ptr<const DoWhileStatementSyntax> DoWhileStatement) noexcept
+BoundDoWhileStatement* Binder::BindDoWhileStatement(const DoWhileStatementSyntax* DoWhileStatement) noexcept
 {
-    const auto Body = BindStatement(DoWhileStatement->Body);
-    const auto Condition = BindExpression(DoWhileStatement->Condition);
-    return std::make_shared<BoundDoWhileStatement>(DoWhileStatement, Body, Condition);
+    auto Body = BindStatement(DoWhileStatement->Body);
+    auto Condition = BindExpression(DoWhileStatement->Condition);
+    return new BoundDoWhileStatement(DoWhileStatement, Body, Condition);
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindForStatement(const std::shared_ptr<const ForStatementSyntax> ForStatement) noexcept
+BoundForStatement* Binder::BindForStatement(const ForStatementSyntax* ForStatement) noexcept
 {
-    const auto ForScope = EnterScope();
+    auto ForScope = EnterScope();
 
-    const auto InitStatement = BindStatement(ForStatement->InitStatement);
-    const auto Condition = BindExpression(ForStatement->Condition);
-    const auto Expression = BindExpression(ForStatement->Expression);
-    const auto Body = BindStatement(ForStatement->Body);
+    auto InitStatement = BindStatement(ForStatement->InitStatement);
+    auto Condition = BindExpression(ForStatement->Condition);
+    auto Expression = BindExpression(ForStatement->Expression);
+    auto Body = BindStatement(ForStatement->Body);
 
-    return std::make_shared<BoundForStatement>(ForStatement, InitStatement, Condition, Expression, Body);
+    return new BoundForStatement(ForStatement, InitStatement, Condition, Expression, Body);
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindBreakStatement(const std::shared_ptr<const BreakStatementSyntax> BreakStatement) noexcept
+BoundStatement* Binder::BindBreakStatement(const BreakStatementSyntax* BreakStatement) noexcept
 {
     fast_io::io::perrln("Failed to bind break statement: not implemented yet.");
     return {};
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindContinueStatement(const std::shared_ptr<const ContinueStatementSyntax> ContinueStatement) noexcept
+BoundStatement* Binder::BindContinueStatement(const ContinueStatementSyntax* ContinueStatement) noexcept
 {
     fast_io::io::perrln("Failed to bind continue statement: not implemented yet.");
     return {};
 }
 
-std::shared_ptr<const BoundStatement> Binder::BindReturnStatement(const std::shared_ptr<const ReturnStatementSyntax> ReturnStatement) noexcept
+BoundReturnStatement* Binder::BindReturnStatement(const ReturnStatementSyntax* ReturnStatement) noexcept
 {
     // TODO: Diagnostics
     const auto Expression = BindExpression(ReturnStatement->Expression);
-    return std::make_shared<BoundReturnStatement>(ReturnStatement, Expression);
+    return new BoundReturnStatement(ReturnStatement, Expression);
 }
 
-std::shared_ptr<const BoundExpression> Binder::BindLiteralExpression(const std::shared_ptr<const LiteralExpressionSyntax> LiteralExpression) noexcept
+BoundLiteralExpression* Binder::BindLiteralExpression(const LiteralExpressionSyntax* LiteralExpression) noexcept
 {
-    return std::make_shared<BoundLiteralExpression>(LiteralExpression, LiteralExpression->Value);
+    return new BoundLiteralExpression(LiteralExpression, LiteralExpression->Value);
 }
 
-std::shared_ptr<const BoundExpression> Binder::BindNameExpression(const std::shared_ptr<const NameExpressionSyntax> NameExpression) noexcept
+BoundVariableExpression* Binder::BindNameExpression(const NameExpressionSyntax* NameExpression) noexcept
 {
-    const auto Name = NameExpression->IdentifierToken->Text;
-    const auto Variables = Scope->LookupVariable(Name);
+    auto Name = NameExpression->IdentifierToken->Text();
+    auto Variables = Scope->LookupVariable(Name);
     if (Variables.empty())
     {
         // TODO: Diagnostics - undeclaraed identifier
@@ -302,21 +320,21 @@ std::shared_ptr<const BoundExpression> Binder::BindNameExpression(const std::sha
         return {};
     }
 
-    return std::make_shared<BoundVariableExpression>(NameExpression, Variables.front());
+    return new BoundVariableExpression(NameExpression, Variables.front());
 }
 
-std::shared_ptr<const BoundExpression> Binder::BindParenthesizedExpression(const std::shared_ptr<const ParenthesizedExpressionSyntax> ParenthesizedExpression) noexcept
+BoundExpression* Binder::BindParenthesizedExpression(const ParenthesizedExpressionSyntax* ParenthesizedExpression) noexcept
 {
     return BindExpression(ParenthesizedExpression->Expression);
 }
 
-std::shared_ptr<const BoundExpression> Binder::BindUnaryExpression(const std::shared_ptr<const UnaryExpressionSyntax> UnaryExpression) noexcept
+BoundUnaryExpression* Binder::BindUnaryExpression(const UnaryExpressionSyntax* UnaryExpression) noexcept
 {
-    const auto BoundOperand = BindExpression(UnaryExpression->Operand);
+    auto BoundOperand = BindExpression(UnaryExpression->Operand);
 
     // TODO: Check operand type
 
-    const auto BoundOperator = BoundUnaryOperator::Bind(
+    auto BoundOperator = BoundUnaryOperator::Bind(
         UnaryExpression->OperatorToken->Kind(),
         BoundOperand->Type()
     );
@@ -326,10 +344,10 @@ std::shared_ptr<const BoundExpression> Binder::BindUnaryExpression(const std::sh
         return {};
     }
 
-    return std::make_shared<BoundUnaryExpression>(UnaryExpression, *BoundOperator, BoundOperand);
+    return new BoundUnaryExpression(UnaryExpression, *BoundOperator, BoundOperand);
 }
 
-std::shared_ptr<const BoundExpression> Binder::BindBinaryExpression(const std::shared_ptr<const BinaryExpressionSyntax> BinaryExpression) noexcept
+BoundBinaryExpression* Binder::BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept
 {
     const auto BoundLeft = BindExpression(BinaryExpression->Left);
     const auto BoundRight = BindExpression(BinaryExpression->Right);
@@ -347,15 +365,15 @@ std::shared_ptr<const BoundExpression> Binder::BindBinaryExpression(const std::s
         return {};
     }
 
-    return std::make_shared<BoundBinaryExpression>(BinaryExpression, BoundLeft, *BoundOperator, BoundRight);
+    return new BoundBinaryExpression(BinaryExpression, BoundLeft, *BoundOperator, BoundRight);
 }
 
-std::shared_ptr<const BoundExpression> Binder::BindAssignmentExpression(const std::shared_ptr<const AssignmentExpressionSyntax> AssignmentExpression) noexcept
+BoundExpression* Binder::BindAssignmentExpression(const AssignmentExpressionSyntax* AssignmentExpression) noexcept
 {
-    const auto Name = AssignmentExpression->IdentifierToken->Text;
-    const auto BoundExpression = BindExpression(AssignmentExpression->Expression);
+    auto Name = AssignmentExpression->IdentifierToken->Text();
+    auto BoundExpression = BindExpression(AssignmentExpression->Expression);
 
-    const auto Variables = Scope->LookupVariable(Name);
+    auto Variables = Scope->LookupVariable(Name);
     if (Variables.empty())
     {
         // TODO: Diagnostics - undeclaraed identifier
@@ -367,7 +385,7 @@ std::shared_ptr<const BoundExpression> Binder::BindAssignmentExpression(const st
         return {};
     }
 
-    const auto Variable = Variables.front();
+    auto Variable = Variables.front();
     if (Variable->IsConstant)
     {
         // TODO: Diagnostics - constant variable cannot be assigned
@@ -375,12 +393,8 @@ std::shared_ptr<const BoundExpression> Binder::BindAssignmentExpression(const st
 
     if (AssignmentExpression->AssignmentToken->Kind() != SyntaxKind::EqualsToken)
     {
-        const auto EquivalentOperatorTokenKind = SyntaxFacts::GetBinaryOperatorOfAssignmentOperator(AssignmentExpression->AssignmentToken->Kind());
-        const auto BoundOperator = BoundBinaryOperator::Bind(
-            EquivalentOperatorTokenKind,
-            Variable->Type,
-            BoundExpression->Type()
-        );
+        auto EquivalentOperatorTokenKind = SyntaxFacts::GetBinaryOperatorOfAssignmentOperator(AssignmentExpression->AssignmentToken->Kind());
+        auto BoundOperator = BoundBinaryOperator::Bind(EquivalentOperatorTokenKind, Variable->Type, BoundExpression->Type());
 
         if (!BoundOperator)
         {
@@ -389,26 +403,21 @@ std::shared_ptr<const BoundExpression> Binder::BindAssignmentExpression(const st
         }
 
         // TODO: implement conversion
-        return std::make_shared<BoundCompoundAssignmentExpression>(
-            AssignmentExpression,
-            Variable,
-            *BoundOperator,
-            BoundExpression
-        );
+        return new BoundCompoundAssignmentExpression(AssignmentExpression, Variable, *BoundOperator, BoundExpression);
     }
 
-    return std::make_shared<BoundAssignmentExpression>(AssignmentExpression, Variable, BoundExpression);
+    return new BoundAssignmentExpression(AssignmentExpression, Variable, BoundExpression);
 }
 
-std::shared_ptr<const BoundExpression> Binder::BindCallExpression(const std::shared_ptr<const CallExpressionSyntax> CallExpression) noexcept
+BoundCallExpression* Binder::BindCallExpression(const CallExpressionSyntax* CallExpression) noexcept
 {
-    auto BoundArguments = std::vector<std::shared_ptr<const BoundExpression>>();
-    BoundArguments.reserve(CallExpression->Arguments->Count());
+    auto BoundArguments = std::vector<const BoundExpression*>();
+    BoundArguments.reserve(CallExpression->Arguments.Count());
 
-    for (auto&& Argument : CallExpression->Arguments->Nodes())
+    for (auto&& Argument : CallExpression->Arguments.Nodes())
     {
         // Argument is guaranteed to be a expression by the parser.
-        const auto BoundArgument = BindExpression(std::static_pointer_cast<const ExpressionSyntax>(Argument));
+        const auto BoundArgument = BindExpression(static_cast<const ExpressionSyntax*>(Argument));
 
         // TODO: Use hatcher to avoid copy
         BoundArguments.emplace_back(BoundArgument);
@@ -417,18 +426,18 @@ std::shared_ptr<const BoundExpression> Binder::BindCallExpression(const std::sha
     // TODO: Refinement Jvav standard
     // [basic.lookup]/? : If the declarations found by name lookup all denote functions,
     //                    the declarations are said to form an overload set.
-    const auto FunctionSet = Scope->LookupFunction(CallExpression->Identifier->Text);
+    const auto FunctionSet = Scope->LookupFunction(CallExpression->Identifier->Text());
     if (FunctionSet.empty())
     {
         // TODO: Diagnostics - undeclaraed function
-        fast_io::io::perrln("Undeclaraed function '", fast_io::mnp::code_cvt(*CallExpression->Identifier->Text), "'");
+        fast_io::io::perrln("Undeclaraed function '", fast_io::mnp::code_cvt(CallExpression->Identifier->Text()), "'");
         return {};
     }
 
     // TODO: Overload resolution. Before overload resolution is avaiable, function override is not permitted.
     const auto Function = FunctionSet.front();
 
-    if (CallExpression->Arguments->Count() != Function->Parameters.size())
+    if (CallExpression->Arguments.Count() != Function->Parameters.size())
     {
         // TODO: Report argument count mismatch
         fast_io::io::perrln("Failed to bind call expression: argument count mismatch.");
@@ -437,17 +446,17 @@ std::shared_ptr<const BoundExpression> Binder::BindCallExpression(const std::sha
 
     // TODO: implement conversion
 
-    return std::make_shared<BoundCallExpression>(CallExpression, Function, std::move(BoundArguments));
+    return new BoundCallExpression(CallExpression, Function, std::move(BoundArguments));
 }
 
-NullableSharedPtr<const TypeSymbol> Binder::BindTypeClause(const NullableSharedPtr<const TypeClauseSyntax> TypeClause) noexcept
+NullablePointer<const TypeSymbol> Binder::BindTypeClause(NullablePointer<const TypeClauseSyntax> TypeClause) noexcept
 {
     if (!TypeClause)
     {
         return {};
     }
 
-    const auto Types = Scope->LookupType(TypeClause->Identifier->Text);
+    const auto Types = Scope->LookupType(TypeClause->Identifier->Text());
     if (Types.empty())
     {
         // TODO: Diagnostics - undeclaraed type
@@ -467,6 +476,6 @@ void Binder::DeclareBuiltinFunctions() noexcept
 }
 
 Binder::Binder(const class SyntaxTree* SyntaxTree) noexcept :
-    Scope(std::make_shared<BoundScope>(nullptr)), SyntaxTree(SyntaxTree)
+    Scope(new BoundScope(nullptr)), SyntaxTree(SyntaxTree)
 {
 }

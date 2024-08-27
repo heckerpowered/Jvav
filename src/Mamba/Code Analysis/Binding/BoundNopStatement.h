@@ -12,7 +12,7 @@ namespace Mamba
     public:
         using Super = BoundStatement;
 
-        [[nodiscard]] BoundNopStatement(const std::shared_ptr<const class SyntaxNode> Syntax) noexcept;
+        [[nodiscard]] BoundNopStatement(const SyntaxNode* Syntax) noexcept;
 
         BoundNodeKind Kind() const noexcept override;
     };

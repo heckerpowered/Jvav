@@ -23,7 +23,20 @@ SyntaxKind ParameterSyntax::Kind() const noexcept
     return SyntaxKind::Parameter;
 }
 
-std::vector<const SyntaxNode*> ParameterSyntax::Children() const noexcept
+std::size_t ParameterSyntax::ChildrenCount() const noexcept
 {
-    return { Identifier, Type };
+    return 2;
+}
+
+const SyntaxNode* ParameterSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
+    {
+        case 0:
+            return Identifier;
+        case 1:
+            return Type;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
+    }
 }

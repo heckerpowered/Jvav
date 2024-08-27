@@ -18,9 +18,9 @@ BlockStatementSyntax::BlockStatementSyntax(
 BlockStatementSyntax::~BlockStatementSyntax() noexcept
 {
     for (auto&& Statement : Statements)
-        {
-            delete Statement;
-        }
+    {
+        delete Statement;
+    }
 }
 
 SyntaxKind BlockStatementSyntax::Kind() const noexcept
@@ -28,23 +28,25 @@ SyntaxKind BlockStatementSyntax::Kind() const noexcept
     return SyntaxKind::BlockStatement;
 }
 
-std::vector<const SyntaxNode*> BlockStatementSyntax::Children() const noexcept
+std::size_t BlockStatementSyntax::ChildrenCount() const noexcept
 {
-    auto Result = std::vector<const SyntaxNode*>();
-    Result.reserve(Statements.size() + 2);
+    return Statements.size() + 2;
+}
 
-    Result.emplace_back(OpenBraceToken);
+const SyntaxNode* BlockStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index == 0)
+    {
+        return OpenBraceToken;
+    }
+    else if (Index < Statements.size() + 1)
+    {
+        return Statements[Index - 1];
+    }
+    else if (Index == Statements.size() + 1)
+    {
+        return CloseBraceToken;
+    }
 
-#if __cpp_lib_containers_ranges >= 202202L
-    Result.append_range(Statements);
-#else
-    for (auto Statement : Statements)
-        {
-            Result.emplace_back(Statement);
-        }
-#endif
-
-    Result.emplace_back(CloseBraceToken);
-
-    return Result;
+    ReportChildrenAccessOutOfBounds(Index);
 }

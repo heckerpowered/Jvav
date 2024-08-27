@@ -1,16 +1,15 @@
 #include "SourceText.h"
 
 #include "TextLine.h"
-#include "TextSpan.h"
 
 #include <cstddef>
 
 using namespace Mamba;
 
-[[nodiscard]] constexpr std::size_t GetLineBreakWidth(const StringView Text, const std::size_t Position) noexcept
+[[nodiscard]] constexpr std::size_t GetLineBreakWidth(StringView Text, std::size_t Position) noexcept
 {
-    const auto Character = Text[Position];
-    const auto LineBreakCharacter = (Position + 1 >= Text.length() ? TEXT('\0') : Text[Position + 1]);
+    auto Character = Text[Position];
+    auto LineBreakCharacter = (Position + 1 >= Text.length() ? TEXT('\0') : Text[Position + 1]);
 
     if (Character == TEXT('\r') && LineBreakCharacter == TEXT('\n'))
     {
@@ -41,8 +40,8 @@ std::size_t SourceText::LineIndex(const std::size_t Position) const noexcept
 
     while (Lower <= Upper)
     {
-        const auto Index = Lower + (Upper - Lower) / 2;
-        const auto Start = PrivateLines[Index].Start;
+        auto Index = Lower + (Upper - Lower) / 2;
+        auto Start = PrivateLines[Index].Start;
 
         if (Position == Start)
         {
@@ -67,26 +66,21 @@ const std::vector<TextLine>& SourceText::Lines() const noexcept
     return PrivateLines;
 }
 
-StringView SourceText::SubView(const std::size_t Start, const std::size_t Length) const noexcept
+StringView SourceText::SubView(std::size_t Start, std::size_t Length) const noexcept
 {
-    const auto End = Start + Length;
-    const auto ViewBegin = PrivateInfo.Text.data() + Start;
-    const auto ViewEnd = PrivateInfo.Text.data() + End;
+    auto End = Start + Length;
+    auto ViewBegin = PrivateInfo.Text.data() + Start;
+    auto ViewEnd = PrivateInfo.Text.data() + End;
 
     return StringView(ViewBegin, ViewEnd);
 }
 
-StringView SourceText::SubView(const TextSpan Span) const noexcept
-{
-    return SubView(Span.Start, Span.Length);
-}
-
-std::size_t SourceText::RelativeBegin(const StringView View) const noexcept
+std::size_t SourceText::RelativeBegin(StringView View) const noexcept
 {
     return View.data() - PrivateInfo.Text.data();
 }
 
-std::size_t SourceText::RelativeEnd(const StringView View) const noexcept
+std::size_t SourceText::RelativeEnd(StringView View) const noexcept
 {
     return RelativeBegin(View) + View.length();
 }
@@ -117,15 +111,15 @@ std::vector<TextLine> SourceText::SplitLines(const SourceTextInfo& Info)
 
     while (Position < Text.length())
     {
-        const auto LineBreakWidth = GetLineBreakWidth(Text, Position);
+        auto LineBreakWidth = GetLineBreakWidth(Text, Position);
         if (LineBreakWidth == 0)
         {
             ++Position;
         }
         else
         {
-            const auto LineLength = Position - LineStart;
-            const auto LineLengthIncludingLineBreak = LineLength + LineBreakWidth;
+            auto LineLength = Position - LineStart;
+            auto LineLengthIncludingLineBreak = LineLength + LineBreakWidth;
             Lines.emplace_back(LineStart, LineLength, LineLengthIncludingLineBreak);
 
             Position += LineBreakWidth;
@@ -135,7 +129,7 @@ std::vector<TextLine> SourceText::SplitLines(const SourceTextInfo& Info)
 
     if (Position >= LineStart)
     {
-        const auto LineLength = Position - LineStart;
+        auto LineLength = Position - LineStart;
         Lines.emplace_back(LineStart, LineLength, LineLength);
     }
 

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <memory>
-
+#include "BoundExpression.h"
 #include "BoundNodeKind.h"
 #include "BoundStatement.h"
 #include "MambaCore.h"
@@ -13,17 +12,13 @@ namespace Mamba
     public:
         using Super = BoundStatement;
 
-        [[nodiscard]] BoundIfStatement(
-            const std::shared_ptr<const class SyntaxNode> Syntax,
-            const std::shared_ptr<const class BoundExpression> Condition,
-            const std::shared_ptr<const class BoundStatement> ThenStatement,
-            const NullableSharedPtr<const class BoundStatement> ElseStatement
-        ) noexcept;
+        [[nodiscard]] BoundIfStatement(const SyntaxNode* Syntax, const BoundExpression* Condition, const BoundStatement* ThenStatement, NullablePointer<const BoundStatement> ElseStatement) noexcept;
+        ~BoundIfStatement() noexcept override;
 
         BoundNodeKind Kind() const noexcept override;
 
-        const std::shared_ptr<const class BoundExpression> Condition;
-        const std::shared_ptr<const class BoundStatement> ThenStatement;
-        const NullableSharedPtr<const class BoundStatement> ElseStatement;
+        const BoundExpression* Condition;
+        const BoundStatement* ThenStatement;
+        NullablePointer<const BoundStatement> ElseStatement;
     };
 } // namespace Mamba

@@ -38,24 +38,41 @@ SyntaxKind FunctionDeclarationSyntax::Kind() const noexcept
     return SyntaxKind::FunctionDeclaration;
 }
 
-std::vector<const SyntaxNode*> FunctionDeclarationSyntax::Children() const noexcept
+std::size_t FunctionDeclarationSyntax::ChildrenCount() const noexcept
 {
-    auto Children = std::vector<const SyntaxNode*>();
-    Children.reserve(6 + Parameters.Count() * 2);
+    return 6 + Parameters.size();
+}
 
-    Children.emplace_back(FunctionKeyword);
-    Children.emplace_back(Identifier);
-    Children.emplace_back(OpenParenthesisToken);
-    for (auto Parameter : Parameters.Nodes())
+const SyntaxNode* FunctionDeclarationSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index == 0)
     {
-        Children.emplace_back(Parameter);
+        return FunctionKeyword;
     }
-    Children.emplace_back(CloseParenthesisToken);
-    if (Type)
+    else if (Index == 1)
     {
-        Children.emplace_back(Type);
+        return Identifier;
     }
-    Children.emplace_back(Body);
+    else if (Index == 2)
+    {
+        return OpenParenthesisToken;
+    }
+    else if (Index < Parameters.size() + 3)
+    {
+        return Parameters[Index - 3];
+    }
+    else if (Index == Parameters.size() + 3)
+    {
+        return CloseParenthesisToken;
+    }
+    else if (Index == Parameters.size() + 4)
+    {
+        return Type ? static_cast<const SyntaxNode*>(Type) : Body;
+    }
+    else if (Index == Parameters.size() + 5 && Type)
+    {
+        return Body;
+    }
 
-    return Children;
+    ReportChildrenAccessOutOfBounds(Index);
 }

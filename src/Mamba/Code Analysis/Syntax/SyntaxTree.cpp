@@ -7,6 +7,11 @@ SyntaxTree::SyntaxTree(const SourceText& SourceText) noexcept :
 {
 }
 
+SyntaxTree::~SyntaxTree() noexcept
+{
+    delete PrivateRoot;
+}
+
 NullablePointer<const SyntaxNode> SyntaxTree::Parent(const SyntaxNode& Node) const noexcept
 {
     const auto Iterator = ParentsMap.find(&Node);

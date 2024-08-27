@@ -22,18 +22,18 @@ namespace Mamba
             // NodesAndSeparators | std::views::enumerate;
 #endif
             if (NodesAndSeparators.size() == 1)
-                {
-                    return Container<T>{ static_cast<T>(NodesAndSeparators.front()) };
-                }
+            {
+                return Container<T>{ static_cast<T>(NodesAndSeparators.front()) };
+            }
             auto Result = Container<T>(NodesAndSeparators.size() / 2);
 #if __cpp_size_t_suffix >= 202011L
             for (auto Index = 0uz; Index < NodesAndSeparators.size() / 2; ++Index)
 #else
             for (auto Index = std::size_t(); Index < NodesAndSeparators.size() / 2; ++Index)
 #endif
-                {
-                    Result[Index] = static_cast<T>(NodesAndSeparators[Index * 2]);
-                }
+            {
+                Result[Index] = static_cast<T>(NodesAndSeparators[Index * 2]);
+            }
             return Result;
         }
 
@@ -51,7 +51,7 @@ namespace Mamba
             noexcept(noexcept(std::forward<SelfType>(Self).Super::operator[](Index))
             ) -> decltype(std::forward<SelfType>(Self).Super::operator[](Index))
         {
-            return static_cast<const ValueType*>(std::forward<SelfType>(Self).Super::operator[](Index * 2));
+            return static_cast<ValueType>(std::forward<SelfType>(Self).Super::operator[](Index * 2));
         }
 
         [[nodiscard]] constexpr std::size_t Count() const noexcept
@@ -64,6 +64,7 @@ namespace Mamba
             return SkipSeperators(*this);
         }
 
+        // TODO: use ranges instead
         [[nodiscard]] constexpr T GetSeparator(const std::size_t Index) const noexcept
 
         {
