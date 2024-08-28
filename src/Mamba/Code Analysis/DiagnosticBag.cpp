@@ -6,6 +6,8 @@
 #include "Diagnostic.h"
 #include "DoWhileStatementSyntax.h"
 #include "ExpressionStatementSyntax.h"
+#include "fast_io_core_impl/concepts/strlike.h"
+#include "fast_io_freestanding_impl/serializations/strlike_get.h"
 #include "ForStatementSyntax.h"
 #include "IfStatementSyntax.h"
 #include "MambaCore.h"
@@ -36,7 +38,7 @@ namespace Mamba
 
     void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept
     {
-        ReportError(Location, TEXT("Invalid character '"), Character, TEXT("'."));
+        ReportError(Location, TEXT("Invalid character '"), (Character), TEXT("'."));
     }
 
     void DiagnosticBag::ReportUnterminatedString(const TextLocation Location) noexcept
@@ -71,15 +73,22 @@ namespace Mamba
     ) noexcept
     {
         // Unexpected token 'Kind', Expected: 'ExpectedKind'.
-        ReportError(
-            Location,
-            TEXT("Unexpected token '"),
-            SyntaxFacts::GetText(Kind),
-            TEXT("'"),
-            TEXT("Expected: '"),
-            SyntaxFacts::ToString(ExpectedKind),
-            TEXT("'.")
-        );
+        if (ExpectedKind == SyntaxKind::IdentifierToken)
+        {
+            ReportError(Location, TEXT("不写参数类型胆大包天😡"));
+        }
+        else
+        {
+            ReportError(
+                Location,
+                TEXT("Unexpected token '"),
+                SyntaxFacts::ToString(Kind),
+                TEXT("' "),
+                TEXT("Expected: '"),
+                SyntaxFacts::ToString(ExpectedKind),
+                TEXT("'.")
+            );
+        }
     }
 
     void DiagnosticBag::ReportDiscardExpressionValue(const TextLocation Location) noexcept

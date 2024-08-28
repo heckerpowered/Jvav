@@ -10,7 +10,7 @@ std::size_t TextLocation::StartLine() const noexcept
 
 std::size_t TextLocation::StartCharacter() const noexcept
 {
-    return Text.RelativeBegin(View) - Text.Lines()[StartLine()].Start;
+    return Text.RelativeBegin(View);
 }
 
 std::size_t TextLocation::EndLine() const noexcept
@@ -20,5 +20,5 @@ std::size_t TextLocation::EndLine() const noexcept
 
 std::size_t TextLocation::EndCharacter() const noexcept
 {
-    return Text.RelativeEnd(View) - Text.Lines()[EndLine()].Start;
+    return Text.RelativeEnd(View);
 }

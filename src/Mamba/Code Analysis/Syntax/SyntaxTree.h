@@ -19,6 +19,12 @@ namespace Mamba
 
     public:
         [[nodiscard]] SyntaxTree(const class SourceText& SourceText) noexcept;
+
+        SyntaxTree(const SyntaxTree&) noexcept = delete;
+        SyntaxTree(SyntaxTree&& Other) noexcept;
+
+        SyntaxTree& operator=(const SyntaxTree&) noexcept = delete;
+
         ~SyntaxTree() noexcept;
 
         template<typename SelfT>

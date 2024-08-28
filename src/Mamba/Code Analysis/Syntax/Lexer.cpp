@@ -1,6 +1,7 @@
 #include "Lexer.h"
 
 #include "DiagnosticBag.h"
+#include "fast_io.h"
 #include "Literal.h"
 #include "SourceText.h"
 #include "SyntaxFacts.h"
@@ -269,6 +270,7 @@ namespace Mamba
                 {
                     auto View = Text().SubView(Position, 1);
                     auto Location = TextLocation(Text(), View);
+
                     Diagnostics.ReportInvalidCharacter(Location, Current());
                     ++Position;
                 }

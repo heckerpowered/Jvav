@@ -1,13 +1,32 @@
 #include "Parser.h"
 
+#include "MambaCore.h"
 #include "SyntaxFacts.h"
+#include "SyntaxTree.h"
 #include "UnaryExpressionSyntax.h"
 
 using namespace Mamba;
 
-Parser::Parser(const class SyntaxTree* SyntaxTree, std::vector<const SyntaxToken>&& Tokens) noexcept :
+Parser::Parser(const class SyntaxTree* SyntaxTree, std::vector<SyntaxToken>&& Tokens) noexcept :
     SyntaxTree(SyntaxTree), Tokens(std::move(Tokens)), Position(0)
 {
+    if (this->Tokens.empty())
+    {
+        InternalCompilerError(std::source_location::current(), "No tokens provided to parser.");
+    }
+    else if (this->Tokens.back().Kind() != SyntaxKind::EndOfFileToken)
+    {
+        InternalCompilerError(std::source_location::current(), "Tokens do not end with EndOfFileToken.");
+    }
+}
+
+Parser::Parser(Parser&& Other) noexcept :
+    SyntaxTree(Other.SyntaxTree),
+    Tokens(std::move(Other.Tokens)),
+    Position(Other.Position)
+{
+    Other.SyntaxTree = {};
+    Other.Position = 0;
 }
 
 const SyntaxToken* Parser::Peek(std::size_t Offset) noexcept

@@ -6,7 +6,7 @@ namespace Mamba
 {
     struct TextLocation
     {
-        SourceText Text;
+        const SourceText& Text;
         StringView View;
 
         template<typename SelfT>

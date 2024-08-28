@@ -1,4 +1,5 @@
 #include "BoundCompilationUnit.h"
+#include "DiagnosticPrinter.h"
 #include "Lexer.h"
 #include "LLVMBackend.h"
 #include "MambaCore.h"
@@ -6,76 +7,22 @@
 #include "Binder.h"
 #include "Colors.h"
 #include "Compiler.h"
+#include "fast_io.h"
 #include "Parser.h"
 
 using namespace fast_io::io;
 using namespace Mamba;
 
-void PrintError(const Diagnostic& Diagnostic) noexcept
-{
-    println(
-        Color(fast_io::mnp::code_cvt(Diagnostic.Location.FileName()), Colors::BrightForegroundWhite),
-        Color(":", Colors::BrightForegroundWhite),
-        Color(Diagnostic.Location.StartLine(), Colors::BrightForegroundWhite),
-        Color(":", Colors::BrightForegroundWhite),
-        Color(Diagnostic.Location.StartCharacter(), Colors::BrightForegroundWhite),
-        " ",
-        Color("error: ", Colors::BrightForegroundRed),
-        Color(fast_io::mnp::code_cvt(Diagnostic.Message), Colors::BrightForegroundWhite)
-    );
-}
-
-void PrintWarning(const Diagnostic& Diagnostic) noexcept
-{
-    println(
-        Color(fast_io::mnp::code_cvt(Diagnostic.Location.FileName()), Colors::BrightForegroundWhite),
-        Color(":", Colors::BrightForegroundWhite),
-        Color(Diagnostic.Location.StartLine(), Colors::BrightForegroundWhite),
-        Color(":", Colors::BrightForegroundWhite),
-        Color(Diagnostic.Location.StartCharacter(), Colors::BrightForegroundWhite),
-        " ",
-        Color("warning: ", Colors::BrightForegroundWhite),
-        Color(fast_io::mnp::code_cvt(Diagnostic.Message), Colors::BrightForegroundWhite)
-    );
-}
-
-void PrintInformation(const Diagnostic& Diagnostic) noexcept
-{
-    println(
-        Color(fast_io::mnp::code_cvt(Diagnostic.Location.FileName()), Colors::BrightForegroundWhite),
-        Color(":", Colors::BrightForegroundWhite),
-        Color(Diagnostic.Location.StartLine(), Colors::BrightForegroundWhite),
-        Color(":", Colors::BrightForegroundWhite),
-        Color(Diagnostic.Location.StartCharacter(), Colors::BrightForegroundWhite),
-        " ",
-        Color("note: ", Colors::BrightForegroundCyan),
-        Color(fast_io::mnp::code_cvt(Diagnostic.Message), Colors::BrightForegroundWhite)
-    );
-}
-
-void PrintDiagnostic(const Diagnostic& Diagnostic) noexcept
-{
-    switch (Diagnostic.Severity)
-    {
-        case DiagnosticSeverity::Error:
-            PrintError(Diagnostic);
-            break;
-        case DiagnosticSeverity::Warning:
-            PrintWarning(Diagnostic);
-            break;
-        case DiagnosticSeverity::Information:
-            PrintInformation(Diagnostic);
-            break;
-        default:
-            std::unreachable();
-    }
-}
-
 void PrintDiagnostics(std::span<const Diagnostic> Diagnostics) noexcept
 {
     for (auto&& Diagnostic : Diagnostics)
     {
-        PrintDiagnostic(Diagnostic);
+        fast_io::io::println(Diagnostic);
+    }
+
+    if (!Diagnostics.empty())
+    {
+        exit(0);
     }
 }
 
@@ -112,16 +59,25 @@ void Compiler::ReportNoInputFiles() noexcept
     );
 }
 
-Parser Parse(const std::tuple<SyntaxTree, Lexer>& Input) noexcept
+Parser Parse(std::tuple<SyntaxTree&, Lexer&> Input) noexcept
 {
     auto [SyntaxTree, Lexer] = Input;
-    auto Tokens = std::vector<const SyntaxToken>{};
-    auto Token = Lexer.Lex();
-    do
+    auto Tokens = std::vector<SyntaxToken>{};
+    while (true)
     {
+        auto Token = Lexer.Lex();
+        if (Token.Kind() == SyntaxKind::WhitespaceToken)
+        {
+            continue;
+        }
+
         Tokens.emplace_back(Token);
-        Token = Lexer.Lex();
-    } while (Token.Kind() != SyntaxKind::EndOfFileToken);
+        if (Token.Kind() == SyntaxKind::EndOfFileToken)
+        {
+            break;
+        }
+    }
+
     PrintDiagnostics(Lexer.Diagnostics);
     return Parser(&SyntaxTree, std::move(Tokens));
 }
@@ -134,18 +90,18 @@ void Compiler::Compile() noexcept
         return;
     }
 
-    auto SyntaxTrees = SourceTexts | std::views::transform([](auto SourceText) { return SyntaxTree(SourceText); });
-    auto Lexers = SyntaxTrees | std::views::transform([](auto SyntaxTree) { return Lexer(&SyntaxTree); });
-    auto Parsers = std::views::zip(SyntaxTrees, Lexers) | std::views::transform(Parse);
-    for (const std::tuple<SyntaxTree, Parser>& Input : std::views::zip(SyntaxTrees, Parsers))
+    auto SyntaxTrees = SourceTexts | std::views::transform([](auto&& SourceText) { return SyntaxTree(SourceText); }) | std::ranges::to<std::vector>();
+    auto Lexers = SyntaxTrees | std::views::transform([](auto&& SyntaxTree) { return Lexer(&SyntaxTree); }) | std::ranges::to<std::vector>();
+    auto Parsers = std::views::zip(SyntaxTrees, Lexers) | std::views::transform(Parse) | std::ranges::to<std::vector>();
+    for (std::tuple<SyntaxTree&, Parser&> Input : std::views::zip(SyntaxTrees, Parsers))
     {
-        auto [SyntaxTree, Parser] = Input;
+        auto&& [SyntaxTree, Parser] = Input;
         SyntaxTree.PrivateRoot = Parser.ParseCompilationUnit();
         SyntaxTree.BuildParentsMap(*SyntaxTree.Root());
         PrintDiagnostics(Parser.Diagnostics);
     }
-    auto Binders = SyntaxTrees | std::views::transform([](auto&& SyntaxTree) { return Binder(&SyntaxTree); });
-    auto BoundCompilationUnits = Binders | std::views::transform([](auto&& Binder) { return Binder.BindCompilationUnit(); });
+    auto Binders = SyntaxTrees | std::views::transform([](auto&& SyntaxTree) { return Binder(&SyntaxTree); }) | std::ranges::to<std::vector>();
+    auto BoundCompilationUnits = Binders | std::views::transform([](auto&& Binder) { return Binder.BindCompilationUnit(); }) | std::ranges::to<std::vector>();
     for (auto&& Binder : Binders)
     {
         PrintDiagnostics(Binder.Diagnostics);
@@ -155,8 +111,5 @@ void Compiler::Compile() noexcept
     {
         delete BoundCompilationUnit;
     }
-
-    auto vector = BoundCompilationUnits | std::ranges::to<std::vector>();
-    auto span = std::span(vector);
-    LLVMBackend::GenerateCode(span, "Main");
+    // LLVMBackend::GenerateCode(span, "Main");
 }

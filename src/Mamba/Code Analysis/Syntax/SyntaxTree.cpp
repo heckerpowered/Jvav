@@ -7,6 +7,14 @@ SyntaxTree::SyntaxTree(const SourceText& SourceText) noexcept :
 {
 }
 
+SyntaxTree::SyntaxTree(SyntaxTree&& Other) noexcept :
+    PrivateRoot(Other.PrivateRoot),
+    PrivateSourceText(Other.PrivateSourceText),
+    ParentsMap(std::move(Other.ParentsMap))
+{
+    Other.PrivateRoot = {};
+}
+
 SyntaxTree::~SyntaxTree() noexcept
 {
     delete PrivateRoot;

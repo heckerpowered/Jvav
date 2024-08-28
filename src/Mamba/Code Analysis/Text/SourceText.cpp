@@ -1,5 +1,6 @@
 #include "SourceText.h"
 
+#include "fast_io_core_impl/integers/impl.h"
 #include "TextLine.h"
 
 #include <cstddef>

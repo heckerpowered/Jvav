@@ -31,13 +31,15 @@ namespace Mamba
     class Parser
     {
         const class SyntaxTree* SyntaxTree;
-        std::vector<const SyntaxToken> Tokens;
+        std::vector<SyntaxToken> Tokens;
         std::size_t Position;
 
     public:
         DiagnosticBag Diagnostics;
 
-        [[nodiscard]] Parser(const class SyntaxTree* SyntaxTree, std::vector<const SyntaxToken>&& Tokens) noexcept;
+        [[nodiscard]] Parser(const class SyntaxTree* SyntaxTree, std::vector<SyntaxToken>&& Tokens) noexcept;
+        Parser(const Parser&) = delete;
+        Parser(Parser&& Other) noexcept;
 
     private:
         [[nodiscard]] const SyntaxToken* Peek(std::size_t Offset) noexcept;

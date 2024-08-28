@@ -1,5 +1,6 @@
 #pragma once
 
+#include "fast_io.h"
 #include "Literal.h"
 #include "MambaCore.h"
 #include "SyntaxKind.h"

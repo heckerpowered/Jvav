@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Colors.h"
+#include "fast_io_core_impl/concepts/operation_details.h"
 #include <memory>
 #include <source_location>
 #include <string>
@@ -133,7 +134,17 @@ namespace Mamba
     template<typename... T>
     [[noreturn]] void InternalCompilerError(std::source_location SourceLocation = std::source_location::current(), T&&... Args) noexcept
     {
-        fast_io::io::perrln(SourceLocation, ": ", Color("internal compiler error: ", Colors::BrightForegroundRed), std::forward<T>(Args)...);
+        // <file-name>:<line>:<column>: internal compiler error: <message>
+        fast_io::io::perrln(
+            fast_io::mnp::os_c_str(SourceLocation.file_name()),
+            ":",
+            SourceLocation.line(),
+            ":",
+            SourceLocation.column(),
+            ": ",
+            Color("internal compiler error: ", Colors::BrightForegroundRed),
+            std::forward<T>(Args)...
+        );
         fast_io::fast_terminate();
     }
 
