@@ -67,19 +67,18 @@ namespace Mamba
 
         auto Indent = fast_io::concat(LineIndex + 1).length() + 5;
 
-        auto Length = Diagnostic.Location.Text.Length();
         for (auto Index [[maybe_unused]] : std::views::iota(0uz, Indent))
         {
             print(out, " ");
         }
 
         auto RelativeBegin = Diagnostic.Location.StartCharacter() - Line.Start;
-        for (auto Index [[maybe_unused]] : std::views::iota(0uz, RelativeBegin - 1))
+        for (auto Index [[maybe_unused]] : std::views::iota(0uz, RelativeBegin - 2))
         {
             print(out, " ");
         }
 
-        print(out, Color("☝️🤓", Colors::BrightForegroundGreen));
+        print(out, Color("🤓👆", Colors::BrightForegroundGreen));
         // for (auto Index [[maybe_unused]] : std::views::iota(1uz, Length))
         // {
         //   print(out, Color("~", Colors::BrightForegroundGreen));

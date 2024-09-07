@@ -4,18 +4,18 @@
 
 using namespace Mamba;
 
-BoundBinaryOperator::BoundBinaryOperator(enum SyntaxKind SyntaxKind, BoundBinaryOperatorKind Kind, const TypeSymbol* Type) noexcept :
-    BoundBinaryOperator(SyntaxKind, Kind, Type, Type, Type)
+BoundBinaryOperator::BoundBinaryOperator(SyntaxKind Kind, BoundBinaryOperatorKind BoundKind, const TypeSymbol* Type) noexcept :
+    BoundBinaryOperator(Kind, BoundKind, Type, Type, Type)
 {
 }
 
-BoundBinaryOperator::BoundBinaryOperator(enum SyntaxKind SyntaxKind, BoundBinaryOperatorKind Kind, const TypeSymbol* OperandType, const TypeSymbol* ResultType) noexcept :
-    BoundBinaryOperator(SyntaxKind, Kind, OperandType, OperandType, ResultType)
+BoundBinaryOperator::BoundBinaryOperator(SyntaxKind Kind, BoundBinaryOperatorKind BoundKind, const TypeSymbol* OperandType, const TypeSymbol* ResultType) noexcept :
+    BoundBinaryOperator(Kind, BoundKind, OperandType, OperandType, ResultType)
 {
 }
 
-BoundBinaryOperator::BoundBinaryOperator(enum SyntaxKind SyntaxKind, BoundBinaryOperatorKind Kind, const TypeSymbol* LeftType, const TypeSymbol* RightType, const TypeSymbol* ResultType) noexcept :
-    SyntaxKind(SyntaxKind), Kind(Kind), LeftType(LeftType), RightType(RightType), Type(ResultType)
+BoundBinaryOperator::BoundBinaryOperator(SyntaxKind Kind, BoundBinaryOperatorKind BoundKind, const TypeSymbol* LeftType, const TypeSymbol* RightType, const TypeSymbol* ResultType) noexcept :
+    Kind(Kind), BoundKind(BoundKind), LeftType(LeftType), RightType(RightType), Type(ResultType)
 {
 }
 
@@ -47,12 +47,12 @@ BoundBinaryOperator BoundBinaryOperator::Operators[]{
     BoundBinaryOperator(SyntaxKind::BangEqualsToken, BoundBinaryOperatorKind::NotEquals, &TypeSymbol::String, &TypeSymbol::Bool),
 };
 
-NullablePointer<const BoundBinaryOperator> BoundBinaryOperator::Bind(enum SyntaxKind SyntaxKind, const TypeSymbol* LeftType, const TypeSymbol* RightType) noexcept
+NullablePointer<const BoundBinaryOperator> BoundBinaryOperator::Bind(SyntaxKind Kind, const TypeSymbol* LeftType, const TypeSymbol* RightType) noexcept
 {
     auto Result = std::ranges::find_if(
         std::ranges::begin(Operators),
         std::ranges::end(Operators),
-        [=](const BoundBinaryOperator& Operator) { return Operator.SyntaxKind == SyntaxKind && Operator.LeftType == LeftType && Operator.RightType == RightType; }
+        [=](const BoundBinaryOperator& Operator) { return Operator.Kind == Kind && Operator.LeftType == LeftType && Operator.RightType == RightType; }
     );
     if (Result == std::ranges::end(Operators))
     {

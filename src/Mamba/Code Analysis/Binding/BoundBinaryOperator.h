@@ -21,8 +21,8 @@ namespace Mamba
         BoundBinaryOperator& operator=(BoundBinaryOperator&&) = delete;
 
     public:
-        enum SyntaxKind SyntaxKind;
-        BoundBinaryOperatorKind Kind;
+        enum SyntaxKind Kind;
+        BoundBinaryOperatorKind BoundKind;
         const TypeSymbol* LeftType;
         const TypeSymbol* RightType;
         const TypeSymbol* Type;
@@ -32,7 +32,7 @@ namespace Mamba
 
     public:
         static NullablePointer<const BoundBinaryOperator> Bind(
-            enum SyntaxKind SyntaxKind,
+            SyntaxKind Kind,
             const TypeSymbol* LeftType,
             const TypeSymbol* RightType
         ) noexcept;

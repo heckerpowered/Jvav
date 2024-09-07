@@ -12,7 +12,7 @@ Constant ConstantFolding::Fold(
         return {};
     }
 
-    switch (Operator.Kind)
+    switch (Operator.BoundKind)
     {
         case BoundUnaryOperatorKind::Identity:
             return Operand->ConstantValue();
@@ -39,7 +39,7 @@ Constant ConstantFolding::Fold(
     // Special case && and || because there are cases where only one
     // side needs to be known.
 
-    if (Operator.Kind == BoundBinaryOperatorKind::LogicalAnd)
+    if (Operator.BoundKind == BoundBinaryOperatorKind::LogicalAnd)
     {
         if ((LeftConstant.IsValid() && !LeftConstant.Get<bool>()) ||
             (RightConstant.IsValid() && !RightConstant.Get<bool>()))
@@ -48,7 +48,7 @@ Constant ConstantFolding::Fold(
         }
     }
 
-    if (Operator.Kind == BoundBinaryOperatorKind::LogicalOr)
+    if (Operator.BoundKind == BoundBinaryOperatorKind::LogicalOr)
     {
         if ((LeftConstant.IsValid() && LeftConstant.Get<bool>()) ||
             (RightConstant.IsValid() && RightConstant.Get<bool>()))
@@ -62,7 +62,7 @@ Constant ConstantFolding::Fold(
         return {};
     }
 
-    switch (Operator.Kind)
+    switch (Operator.BoundKind)
     {
         case BoundBinaryOperatorKind::Addition:
             return LeftConstant + RightConstant;

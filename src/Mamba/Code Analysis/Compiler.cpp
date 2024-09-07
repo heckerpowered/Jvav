@@ -111,5 +111,6 @@ void Compiler::Compile() noexcept
     {
         delete BoundCompilationUnit;
     }
-    // LLVMBackend::GenerateCode(span, "Main");
+
+    LLVMBackend::GenerateCode(BoundCompilationUnits, "Main");
 }

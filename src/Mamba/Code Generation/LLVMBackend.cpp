@@ -13,6 +13,4 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     auto LLVMModule = Module(ModuleName, Context);
 
     auto Builder = IRBuilder<>(Context);
-
-    LLVMModule.print(errs(), {});
 }
