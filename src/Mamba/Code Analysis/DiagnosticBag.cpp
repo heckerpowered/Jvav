@@ -6,8 +6,6 @@
 #include "Diagnostic.h"
 #include "DoWhileStatementSyntax.h"
 #include "ExpressionStatementSyntax.h"
-#include "fast_io_core_impl/concepts/strlike.h"
-#include "fast_io_freestanding_impl/serializations/strlike_get.h"
 #include "ForStatementSyntax.h"
 #include "IfStatementSyntax.h"
 #include "MambaCore.h"
@@ -38,7 +36,7 @@ namespace Mamba
 
     void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept
     {
-        ReportError(Location, TEXT("Invalid character '"), (Character), TEXT("'."));
+        ReportError(Location, TEXT("Invalid character '"), Character, TEXT("'."));
     }
 
     void DiagnosticBag::ReportUnterminatedString(const TextLocation Location) noexcept
