@@ -4,6 +4,7 @@
 #include "BoundExpressionStatement.h"
 #include "MambaCore.h"
 #include "SyntaxFacts.h"
+#include <source_location>
 
 using namespace Mamba;
 
@@ -202,6 +203,7 @@ BoundVariableDeclaration* Binder::BindVariableDeclaration(const VariableDeclarat
         Initializer->ConstantValue()
     );
 
+    Scope->Declare(Variable);
     return new BoundVariableDeclaration(VariableDeclaration, Variable, Initializer);
 }
 
@@ -311,13 +313,16 @@ BoundVariableExpression* Binder::BindNameExpression(const NameExpressionSyntax* 
     auto Variables = Scope->LookupVariable(Name);
     if (Variables.empty())
     {
-        // TODO: Diagnostics - undeclaraed identifier
-        return {};
+        auto ErrorVariable = new VariableSymbol(TEXT("<error>"), false, &TypeSymbol::Void, {});
+        Scope->Declare(ErrorVariable);
+
+        Diagnostics.ReportUndeclaredIdentifier(NameExpression->Location(), Name);
+        return new BoundVariableExpression(NameExpression, ErrorVariable);
     }
     else if (Variables.size() > 1)
     {
-        // TODO: Diagnostics - ambiguous identifier
-        return {};
+        Diagnostics.ReportAmbiguousIdentifier(NameExpression->Location(), Name);
+        return new BoundVariableExpression(NameExpression, Variables.front());
     }
 
     return new BoundVariableExpression(NameExpression, Variables.front());

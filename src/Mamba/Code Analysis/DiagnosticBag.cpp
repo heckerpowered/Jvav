@@ -36,32 +36,32 @@ namespace Mamba
 
     void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept
     {
-        ReportError(Location, TEXT("Invalid character '"), fast_io::mnp::chvw(Character), TEXT("'."));
+        ReportError(Location, TEXT("无效字符 '"), fast_io::mnp::chvw(Character), TEXT("'."));
     }
 
     void DiagnosticBag::ReportUnterminatedString(const TextLocation Location) noexcept
     {
-        ReportError(Location, TEXT("Unterminated string literal."));
+        ReportError(Location, TEXT("未结束的字符串字面量"));
     }
 
     void DiagnosticBag::ReportInvalidDecimal(const TextLocation Location, const StringView Literal) noexcept
     {
-        ReportError(Location, Concat(TEXT("Invalid decimal number '"), Literal, TEXT("'.")));
+        ReportError(Location, Concat(TEXT("无效十进制字面量 '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportInvalidHexadecimal(const TextLocation Location, const StringView Literal) noexcept
     {
-        ReportError(Location, Concat(TEXT("Invalid hexadecimal number '"), Literal, TEXT("'.")));
+        ReportError(Location, Concat(TEXT("无效十六进制字面量 '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportInvalidBinary(const TextLocation Location, const StringView Literal) noexcept
     {
-        ReportError(Location, Concat(TEXT("Invalid binary number '"), Literal, TEXT("'.")));
+        ReportError(Location, Concat(TEXT("无效二进制字面量 '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportInvalidOctal(const TextLocation Location, const StringView Literal) noexcept
     {
-        ReportError(Location, Concat(TEXT("Invalid octal number '"), Literal, TEXT("'.")));
+        ReportError(Location, Concat(TEXT("无效八进制字面量 '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportUnexpectedToken(
@@ -73,7 +73,7 @@ namespace Mamba
         // Unexpected token 'Kind', Expected: 'ExpectedKind'.
         if (ExpectedKind == SyntaxKind::IdentifierToken)
         {
-            ReportError(Location, TEXT("不写参数类型胆大包天😡"));
+            ReportError(Location, TEXT("此处应有标识符"));
         }
         else
         {
@@ -91,17 +91,17 @@ namespace Mamba
 
     void DiagnosticBag::ReportDiscardExpressionValue(const TextLocation Location) noexcept
     {
-        ReportWarning(Location, TEXT("The result of the expression is discarded."));
+        ReportWarning(Location, TEXT("表达式的结果被忽略"));
     }
 
-    void DiagnosticBag::ReportVariableAlreadyDeclared(const TextLocation Location, const StringView Name) noexcept
+    void DiagnosticBag::ReportVariableAlreadyDeclared(const TextLocation Location, StringView Name) noexcept
     {
         // Variable 'Name' is already declared, previous declaration at FileName:StartLine:StartCharacter.
         ReportError(
             Location,
-            TEXT("Variable '"),
+            TEXT("变量 '"),
             Name,
-            TEXT("' is already declared, previous declaration at "),
+            TEXT("' 已在此处声明过: "),
             Location.FileName(),
             TEXT(":"),
             Location.StartLine(),
@@ -112,7 +112,7 @@ namespace Mamba
 
     void DiagnosticBag::ReportUnreachableCode(const TextLocation Location) noexcept
     {
-        ReportWarning(Location, TEXT("Unreachable code."));
+        ReportWarning(Location, TEXT("此处永远不会被执行"));
     }
 
     void DiagnosticBag::ReportUnreachableCode(const SyntaxNode* Node) noexcept
@@ -162,5 +162,15 @@ namespace Mamba
             default:
                 break;
         }
+    }
+
+    void DiagnosticBag::ReportUndeclaredIdentifier(TextLocation Location, StringView Name) noexcept
+    {
+        ReportError(Location, TEXT("未声明的标识符 '"), Name, TEXT("'."));
+    }
+
+    void DiagnosticBag::ReportAmbiguousIdentifier(TextLocation Location, StringView Name) noexcept
+    {
+        ReportError(Location, TEXT("标识符有歧义 '"), Name, TEXT("'."));
     }
 } // namespace Mamba
