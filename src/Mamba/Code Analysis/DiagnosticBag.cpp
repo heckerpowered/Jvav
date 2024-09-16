@@ -36,7 +36,7 @@ namespace Mamba
 
     void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept
     {
-        ReportError(Location, TEXT("Invalid character '"), Character, TEXT("'."));
+        ReportError(Location, TEXT("Invalid character '"), fast_io::mnp::chvw(Character), TEXT("'."));
     }
 
     void DiagnosticBag::ReportUnterminatedString(const TextLocation Location) noexcept
@@ -106,7 +106,7 @@ namespace Mamba
             TEXT(":"),
             Location.StartLine(),
             TEXT(":"),
-            Location.StartCharacter()
+            Location.RelativeStartCharacter()
         );
     }
 

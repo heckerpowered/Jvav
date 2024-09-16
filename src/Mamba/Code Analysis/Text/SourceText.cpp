@@ -121,7 +121,7 @@ std::vector<TextLine> SourceText::SplitLines(const SourceTextInfo& Info)
         {
             auto LineLength = Position - LineStart;
             auto LineLengthIncludingLineBreak = LineLength + LineBreakWidth;
-            Lines.emplace_back(LineStart, LineLength, LineLengthIncludingLineBreak);
+            Lines.emplace_back(LineStart + 1, LineLength, LineLengthIncludingLineBreak);
 
             Position += LineBreakWidth;
             LineStart = Position;

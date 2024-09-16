@@ -16,8 +16,11 @@ namespace Mamba
         }
 
         [[nodiscard]] std::size_t StartLine() const noexcept;
-        [[nodiscard]] std::size_t StartCharacter() const noexcept;
+        [[nodiscard]] std::size_t AbsoluteStartCharacter() const noexcept;
+        [[nodiscard]] std::size_t RelativeStartCharacter() const noexcept;
+
         [[nodiscard]] std::size_t EndLine() const noexcept;
-        [[nodiscard]] std::size_t EndCharacter() const noexcept;
+        [[nodiscard]] std::size_t AbsoluteEndCharacter() const noexcept;
+        [[nodiscard]] std::size_t RelativeEndCharacter() const noexcept;
     };
 } // namespace Mamba
