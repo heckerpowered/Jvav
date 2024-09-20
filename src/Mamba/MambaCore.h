@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Colors.h"
-#include "fast_io_core_impl/concepts/operation_details.h"
 #include <memory>
 #include <source_location>
 #include <string>
