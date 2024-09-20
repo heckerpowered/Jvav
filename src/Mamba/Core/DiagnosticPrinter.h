@@ -30,11 +30,11 @@ namespace Mamba
         switch (Severity)
         {
             case DiagnosticSeverity::Error:
-                return "error";
+                return "错误";
             case DiagnosticSeverity::Warning:
-                return "warning";
+                return "警告";
             case DiagnosticSeverity::Information:
-                return "info";
+                return "信息";
             default:
                 std::unreachable();
         }
@@ -86,53 +86,28 @@ namespace Mamba
     constexpr std::string LocationGuide(const Diagnostic& Diagnostic) noexcept
     {
         constexpr std::string_view PointerCharacter = Fun ? "🤓👆" : "^";
+        constexpr std::string_view WaveCharacter = Fun ? "👆" : "~";
+        constexpr std::string_view IndentCharacter = " ";
+
         constexpr auto PointerCharacterSize = Fun ? 2 : 1;
 
-        constexpr auto IndentCharacter = ' ';
-
         // 5 = indent (2 spaces) + " | "
-        auto BaseIndent = fast_io::concat(Diagnostic.LineNumber()).length() + 5;
-        auto ExtraIndent = Diagnostic.Location.RelativeStartCharacter();
+        auto PrefixIndent = fast_io::concat(Diagnostic.LineNumber()).length() + 5;
+        auto ContentIndent = Diagnostic.Location.RelativeStartCharacter();
+        auto IndentLength = PrefixIndent + ContentIndent;
+
+        auto Indent = std::views::repeat(IndentCharacter, IndentLength) | std::views::join | std::ranges::to<std::string>();
+
         auto Length = Diagnostic.Location.View.size();
-        auto Indent = std::string(BaseIndent + ExtraIndent - (Fun ? 2 : 0), IndentCharacter);
-
-        if constexpr (Fun)
-        {
-            constexpr auto WaveCharacter = U'👆';
-            auto WaveLength = Length <= PointerCharacterSize ? 0 : Length - PointerCharacterSize;
-            if (WaveLength == 0)
-            {
-                return fast_io::concat(
-                    Indent,
-                    PointerCharacter
-                );
-            }
-
-            auto WaveString = std::u32string(WaveCharacter, WaveLength);
-            return fast_io::concat(
-                Indent,
-                PointerCharacter,
-                fast_io::mnp::code_cvt(WaveString)
-            );
-        }
-
-        constexpr auto WaveCharacter = '~';
-        auto WaveString = std::string(Length - PointerCharacter.size(), WaveCharacter);
+        auto WaveLength = Length <= PointerCharacterSize ? 0 : Length - PointerCharacterSize;
+        auto Wave = std::views::repeat(WaveCharacter, WaveLength) | std::views::join | std::ranges::to<std::string>();
 
         if constexpr (WithColor)
         {
-            return fast_io::concat(
-                Indent,
-                Color(PointerCharacter, Colors::BrightForegroundGreen),
-                Color(WaveString, Colors::BrightForegroundGreen)
-            );
+            return fast_io::concat(Indent, Color(PointerCharacter, Colors::BrightForegroundGreen), Color(Wave, Colors::BrightForegroundGreen));
         }
 
-        return fast_io::concat(
-            Indent,
-            PointerCharacter,
-            WaveString
-        );
+        return fast_io::concat(Indent, PointerCharacter, Wave);
     }
 
     template<std::integral char_type>
