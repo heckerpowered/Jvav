@@ -2,7 +2,7 @@ name: Publish to GitHub
 
 on: 
     push:
-        branches: ["main", "*"]
+        branches: ["main", "github-action"]
     pull_request:
         branches: ["main"]
 
