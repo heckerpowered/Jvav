@@ -7,7 +7,7 @@ on:
         branches: ["main"]
 
 jobs:
-    build:
+    build-macOS:
         runs-on: macos-latest
 
         steps:
@@ -37,5 +37,35 @@ jobs:
               with:
                 name: Mamba
                 path: |
-                    build/macosx/arm64/release/Jvav
-                    build/windows/x64/release/Jvav.exe
+                    build/macosx/arm64/release/mamba
+
+    build-windows:
+        runs-on: windows-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup xmake
+              uses: xmake-io/github-action-setup-xmake@v1
+              with:
+                xmake-version: latest
+
+            - name: Setup Scoop
+              run: |
+                Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+                Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+            - name: Setup LLVM
+              run: scoop install llvm
+
+            - name: Build
+              run: ./build.sh
+
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: Mamba
+                path: |
+                    build/windows/x64/release/mamba.exe
+
+
