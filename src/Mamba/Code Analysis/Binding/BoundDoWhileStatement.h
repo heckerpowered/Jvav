@@ -1,7 +1,6 @@
 #pragma once
 
-#include <memory>
-
+#include "BoundExpression.h"
 #include "BoundNodeKind.h"
 #include "BoundStatement.h"
 
@@ -13,14 +12,16 @@ namespace Mamba
         using Super = BoundStatement;
 
         [[nodiscard]] BoundDoWhileStatement(
-            const std::shared_ptr<const class SyntaxNode> SyntaxNode,
-            const std::shared_ptr<const class BoundStatement> Body,
-            const std::shared_ptr<const class BoundExpression> Condition
+            const SyntaxNode* SyntaxNode,
+            const BoundStatement* Body,
+            const BoundExpression* Condition
         ) noexcept;
+
+        ~BoundDoWhileStatement() noexcept override;
 
         BoundNodeKind Kind() const noexcept override;
 
-        const std::shared_ptr<const class BoundStatement> Body;
-        const std::shared_ptr<const class BoundExpression> Condition;
+        const BoundStatement* Body;
+        const BoundExpression* Condition;
     };
 } // namespace Mamba

@@ -3,7 +3,6 @@
 #include "ExpressionSyntax.h"
 #include "SyntaxToken.h"
 #include "SyntaxTree.h"
-#include <memory>
 
 namespace Mamba
 {
@@ -13,15 +12,20 @@ namespace Mamba
         using Super = ExpressionSyntax;
 
         [[nodiscard]] UnaryExpressionSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> OperatorToken,
-            const std::shared_ptr<const class ExpressionSyntax> Operand
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* OperatorToken,
+            const ExpressionSyntax* Operand
         ) noexcept;
 
-        SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        ~UnaryExpressionSyntax() noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> OperatorToken;
-        const std::shared_ptr<const class ExpressionSyntax> Operand;
+        SyntaxKind Kind() const noexcept override;
+
+        const SyntaxToken* OperatorToken;
+        const ExpressionSyntax* Operand;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

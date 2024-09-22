@@ -67,13 +67,14 @@ BraceWrapping:
   AfterClass: true
   AfterControlStatement: Always
   AfterEnum: true
+  AfterFunction: true
   AfterNamespace: true
   AfterStruct: true
   AfterExternBlock: true
   BeforeCatch: true
   BeforeElse: true
   BeforeLambdaBody: false
-  IndentBraces: true
+  IndentBraces: false
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
@@ -82,7 +83,7 @@ BreakAdjacentStringLiterals: true
 BreakAfterAttributes: Leave
 # BreakAfterReturnType: Automatic
 BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Custom
 BreakBeforeConceptDeclarations: Allowed
 BreakBeforeInlineASMColon: OnlyMultiline
 BreakBeforeTernaryOperators: true

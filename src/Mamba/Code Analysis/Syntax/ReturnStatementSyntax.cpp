@@ -1,26 +1,40 @@
 #include "ReturnStatementSyntax.h"
 
-#include "ExpressionSyntax.h"
-#include "SyntaxToken.h"
+using namespace Mamba;
 
-namespace Mamba
+ReturnStatementSyntax::ReturnStatementSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* ReturnKeyword,
+    NullablePointer<const ExpressionSyntax> Expression
+) noexcept :
+    Super(SyntaxTree), ReturnKeyword(ReturnKeyword), Expression(Expression)
 {
-    ReturnStatementSyntax::ReturnStatementSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> ReturnKeyword,
-        const NullableSharedPtr<const class ExpressionSyntax> Expression
-    ) noexcept :
-        Super(SyntaxTree), ReturnKeyword(ReturnKeyword), Expression(Expression)
-    {
-    }
+}
 
-    SyntaxKind ReturnStatementSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::ReturnStatement;
-    }
+ReturnStatementSyntax::~ReturnStatementSyntax() noexcept
+{
+    delete Expression;
+}
 
-    std::vector<std::shared_ptr<const class SyntaxNode>> ReturnStatementSyntax::Children() const noexcept
+SyntaxKind ReturnStatementSyntax::Kind() const noexcept
+{
+    return SyntaxKind::ReturnStatement;
+}
+
+std::size_t ReturnStatementSyntax::ChildrenCount() const noexcept
+{
+    return 2;
+}
+
+const SyntaxNode* ReturnStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
     {
-        return { ReturnKeyword, Expression };
+        case 0:
+            return ReturnKeyword;
+        case 1:
+            return Expression;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
     }
-} // namespace Mamba
+}

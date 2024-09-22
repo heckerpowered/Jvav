@@ -1,38 +1,33 @@
 #pragma once
 
+#include "fast_io.h"
+#include "Literal.h"
 #include "MambaCore.h"
 #include "SyntaxKind.h"
 #include "SyntaxNode.h"
-#include "TextSpan.h"
-#include <memory>
 
 namespace Mamba
 {
+    class SyntaxTree;
+
     class SyntaxToken : public SyntaxNode
     {
-        using Super = SyntaxNode;
+        StringView PrivateText;
+        Literal PrivateValue;
+        SyntaxKind PrivateKind;
 
     public:
-        [[nodiscard]] SyntaxToken(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const SyntaxKind Kind,
-            const std::size_t Position,
-            const std::shared_ptr<const String> Text,
-            const NullableSharedPtr<struct Literal> Value
-        ) noexcept;
+        using Super = SyntaxNode;
+
+        [[nodiscard]] SyntaxToken(const class SyntaxTree* SyntaxTree, SyntaxKind Kind, StringView Text, Literal Value = {}) noexcept;
 
         virtual SyntaxKind Kind() const noexcept override;
+        virtual StringView Text() const noexcept override;
 
-        virtual TextSpan Span() const noexcept override;
-        virtual TextSpan FullSpan() const noexcept override;
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
 
-        virtual std::vector<std::shared_ptr<const SyntaxNode>> Children() const noexcept override;
-
-        std::size_t Position;
-        const std::shared_ptr<const String> Text;
-        const NullableSharedPtr<Literal> Value;
-
-    private:
-        SyntaxKind KindValue;
+        [[nodiscard]] std::size_t Position() const noexcept;
+        [[nodiscard]] Literal Value() const noexcept;
     };
 } // namespace Mamba

@@ -1,35 +1,31 @@
 #include "TextLocation.h"
-
 #include "SourceText.h"
-#include "TextLine.h"
-#include "TextSpan.h"
 
-#include <memory>
+using namespace Mamba;
 
-namespace Mamba
+std::size_t TextLocation::StartLine() const noexcept
 {
-    std::shared_ptr<const String> TextLocation::FileName() const noexcept
-    {
-        return Text->FileName;
-    }
+    return Text.LineIndex(Text.RelativeBegin(View));
+}
 
-    std::size_t TextLocation::StartLine() const noexcept
-    {
-        return Text->GetLineIndex(Span.Start);
-    }
+std::size_t TextLocation::AbsoluteStartCharacter() const noexcept
+{
+    return Text.RelativeBegin(View);
+}
 
-    std::size_t TextLocation::StartCharacter() const noexcept
-    {
-        return Span.Start - Text->Lines[StartLine()]->Start;
-    }
+std::size_t TextLocation::RelativeStartCharacter() const noexcept
+{
+    auto Line = Text.Lines()[StartLine()];
+    return AbsoluteStartCharacter() - Line.Start;
+}
 
-    std::size_t TextLocation::EndLine() const noexcept
-    {
-        return Text->GetLineIndex(Span.End());
-    }
+std::size_t TextLocation::EndLine() const noexcept
+{
+    return Text.LineIndex(Text.RelativeEnd(View));
+}
 
-    std::size_t TextLocation::EndCharacter() const noexcept
-    {
-        return Span.End() - Text->Lines[EndLine()]->Start;
-    }
-} // namespace Mamba
+std::size_t TextLocation::AbsoluteEndCharacter() const noexcept
+{
+    auto Line = Text.Lines()[EndLine()];
+    return AbsoluteEndCharacter() - Line.End();
+}

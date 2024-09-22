@@ -1,35 +1,25 @@
 #pragma once
 
 #include "ExpressionSyntax.h"
-
-#include <memory>
+#include "SyntaxToken.h"
 
 namespace Mamba
 {
-    // A expression that represents a literal value, empty values are disallowed
     class LiteralExpressionSyntax : public ExpressionSyntax
     {
     public:
         using Super = ExpressionSyntax;
 
-        [[nodiscard]] LiteralExpressionSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> LiteralToken
-        ) noexcept;
-
-        [[nodiscard]] LiteralExpressionSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> LiteralToken,
-            // use class in this elaborated-type-specifier is valid, but may cause linker error under Microsoft ABI
-            // https://eel.is/c++draft/dcl.dcl#dcl.type.elab-7
-            // https://zh.cppreference.com/w/cpp/language/elaborated_type_specifier
-            const std::shared_ptr<const struct Literal> Value
-        ) noexcept;
+        [[nodiscard]] LiteralExpressionSyntax(const class SyntaxTree* SyntaxTree, const SyntaxToken* LiteralToken) noexcept;
+        [[nodiscard]] LiteralExpressionSyntax(const class SyntaxTree* SyntaxTree, const SyntaxToken* LiteralToken, Literal Value) noexcept;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> LiteralToken;
-        const std::shared_ptr<const struct Literal> Value;
+        const SyntaxToken* LiteralToken;
+        Literal Value;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

@@ -1,22 +1,21 @@
 #include "VariableSymbol.h"
 
-#include "TypeSymbol.h"
+using namespace Mamba;
 
-namespace Mamba
+VariableSymbol::VariableSymbol(StringView Name, bool IsConstant, const TypeSymbol* Type, struct Constant Constant) noexcept :
+    Super(Name), IsConstant(IsConstant), Type(Type), Constant(Constant)
 {
-    VariableSymbol::VariableSymbol(
-        const std::shared_ptr<const String> Name,
-        const bool IsConstant,
-        const std::shared_ptr<const class TypeSymbol> Type,
-        const NullableSharedPtr<const class BoundConstant> Constant
-    ) noexcept :
-        Super(Name), IsConstant(IsConstant), Type(Type), Constant(Constant)
-    {
-    }
+}
 
-    SymbolKind VariableSymbol::Kind() const noexcept
+VariableSymbol::~VariableSymbol() noexcept
+{
+    if (!TypeSymbol::IsBuiltInType(Type))
     {
-        return SymbolKind::Variable;
+        delete Type;
     }
+}
 
-} // namespace Mamba
+SymbolKind VariableSymbol::Kind() const noexcept
+{
+    return SymbolKind::Variable;
+}

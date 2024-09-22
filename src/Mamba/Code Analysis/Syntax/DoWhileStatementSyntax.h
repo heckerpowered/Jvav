@@ -3,8 +3,7 @@
 #include "ExpressionSyntax.h"
 #include "StatementSyntax.h"
 #include "SyntaxKind.h"
-
-#include <memory>
+#include "SyntaxToken.h"
 
 namespace Mamba
 {
@@ -13,18 +12,25 @@ namespace Mamba
     public:
         using Super = StatementSyntax;
 
-        [[nodiscard]] DoWhileStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                             const std::shared_ptr<const class SyntaxToken> DoKeyword,
-                                             const std::shared_ptr<const class StatementSyntax> Body,
-                                             const std::shared_ptr<const class SyntaxToken> WhileKeyword,
-                                             const std::shared_ptr<const class ExpressionSyntax> Condition) noexcept;
+        [[nodiscard]] DoWhileStatementSyntax(
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* DoKeyword,
+            const StatementSyntax* Body,
+            const SyntaxToken* WhileKeyword,
+            const ExpressionSyntax* Condition
+        ) noexcept;
+
+        ~DoWhileStatementSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> DoKeyword;
-        const std::shared_ptr<const class StatementSyntax> Body;
-        const std::shared_ptr<const class SyntaxToken> WhileKeyword;
-        const std::shared_ptr<const class ExpressionSyntax> Condition;
+        const SyntaxToken* DoKeyword;
+        const StatementSyntax* Body;
+        const SyntaxToken* WhileKeyword;
+        const ExpressionSyntax* Condition;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

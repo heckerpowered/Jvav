@@ -1,24 +1,40 @@
 #include "ElseClauseSyntax.h"
 
-#include "StatementSyntax.h"
-#include "SyntaxToken.h"
+using namespace Mamba;
 
-namespace Mamba
+ElseClauseSyntax::ElseClauseSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* ElseKeyword,
+    const StatementSyntax* ElseStatement
+) noexcept :
+    Super(SyntaxTree), ElseKeyword(ElseKeyword), ElseStatement(ElseStatement)
 {
-    ElseClauseSyntax::ElseClauseSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                       const std::shared_ptr<const class SyntaxToken> ElseKeyword,
-                                       const std::shared_ptr<const class StatementSyntax> ElseStatement) noexcept :
-        Super(SyntaxTree), ElseKeyword(ElseKeyword), ElseStatement(ElseStatement)
-    {
-    }
+}
 
-    SyntaxKind ElseClauseSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::ElseClause;
-    }
+ElseClauseSyntax::~ElseClauseSyntax() noexcept
+{
+    delete ElseStatement;
+}
 
-    std::vector<std::shared_ptr<const SyntaxNode>> ElseClauseSyntax::Children() const noexcept
+SyntaxKind ElseClauseSyntax::Kind() const noexcept
+{
+    return SyntaxKind::ElseClause;
+}
+
+std::size_t ElseClauseSyntax::ChildrenCount() const noexcept
+{
+    return 2;
+}
+
+const SyntaxNode* ElseClauseSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
     {
-        return { ElseKeyword, ElseStatement };
+        case 0:
+            return ElseKeyword;
+        case 1:
+            return ElseStatement;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
     }
-} // namespace Mamba
+}

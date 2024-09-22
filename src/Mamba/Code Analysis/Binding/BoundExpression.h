@@ -1,10 +1,8 @@
 #pragma once
 
-#include <memory>
-
-#include "MambaCore.h"
-
 #include "BoundNode.h"
+#include "Constant.h"
+#include "TypeSymbol.h"
 
 namespace Mamba
 {
@@ -13,9 +11,9 @@ namespace Mamba
     public:
         using Super = BoundNode;
 
-        [[nodiscard]] BoundExpression(const std::shared_ptr<const class SyntaxNode> Syntax) noexcept;
+        [[nodiscard]] BoundExpression(const SyntaxNode* Syntax) noexcept;
 
-        virtual std::shared_ptr<const class TypeSymbol> Type() const noexcept = 0;
-        virtual NullableSharedPtr<const class BoundConstant> ConstantValue() const noexcept;
+        virtual const TypeSymbol* Type() const noexcept = 0;
+        virtual Constant ConstantValue() const noexcept;
     };
 } // namespace Mamba

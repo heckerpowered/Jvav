@@ -2,8 +2,8 @@
 
 #include "BoundExpression.h"
 #include "BoundNodeKind.h"
+#include "FunctionSymbol.h"
 
-#include <memory>
 #include <vector>
 
 namespace Mamba
@@ -14,21 +14,17 @@ namespace Mamba
         using Super = BoundExpression;
 
         [[nodiscard]] BoundCallExpression(
-            const std::shared_ptr<const class SyntaxNode> Syntax,
-            const std::shared_ptr<const class FunctionSymbol> Function,
-            const std::span<const std::shared_ptr<const class BoundExpression>> Arguments
+            const SyntaxNode* Syntax,
+            const FunctionSymbol* Function,
+            std::vector<const BoundExpression*>&& Arguments
         ) noexcept;
 
-        [[nodiscard]] BoundCallExpression(
-            const std::shared_ptr<const class SyntaxNode> Syntax,
-            const std::shared_ptr<const class FunctionSymbol> Function,
-            std::vector<std::shared_ptr<const class BoundExpression>>&& Arguments
-        ) noexcept;
+        ~BoundCallExpression() noexcept override;
 
         BoundNodeKind Kind() const noexcept override;
-        std::shared_ptr<const class TypeSymbol> Type() const noexcept override;
+        const TypeSymbol* Type() const noexcept override;
 
-        const std::shared_ptr<const class FunctionSymbol> Function;
-        const std::vector<std::shared_ptr<const class BoundExpression>> Arguments;
+        const FunctionSymbol* Function;
+        const std::vector<const BoundExpression*> Arguments;
     };
 } // namespace Mamba

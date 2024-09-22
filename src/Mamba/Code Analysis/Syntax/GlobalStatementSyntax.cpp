@@ -2,22 +2,37 @@
 
 #include "StatementSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+GlobalStatementSyntax::GlobalStatementSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const StatementSyntax* Statement
+) noexcept :
+    Super(SyntaxTree), Statement(Statement)
 {
-    GlobalStatementSyntax::GlobalStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                                 const std::shared_ptr<const class StatementSyntax> Statement) noexcept
-        :
-        Super(SyntaxTree), Statement(Statement)
+}
+
+GlobalStatementSyntax::~GlobalStatementSyntax() noexcept
+{
+    delete Statement;
+}
+
+SyntaxKind GlobalStatementSyntax::Kind() const noexcept
+{
+    return SyntaxKind::GlobalStatement;
+}
+
+std::size_t GlobalStatementSyntax::ChildrenCount() const noexcept
+{
+    return 1;
+}
+
+const SyntaxNode* GlobalStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index != 0)
     {
+        ReportChildrenAccessOutOfBounds(Index);
     }
 
-    SyntaxKind GlobalStatementSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::GlobalStatement;
-    }
-
-    std::vector<std::shared_ptr<const class SyntaxNode>> GlobalStatementSyntax::Children() const noexcept
-    {
-        return { Statement };
-    }
-} // namespace Mamba
+    return Statement;
+}

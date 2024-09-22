@@ -1,44 +1,58 @@
 #include "CallExpressionSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+CallExpressionSyntax::CallExpressionSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* Identifier,
+    const SyntaxToken* OpenParenthesisToken,
+    SeperatedSyntaxList<const ExpressionSyntax*> Arguments,
+    const SyntaxToken* CloseParenthesisToken
+) noexcept :
+    Super(SyntaxTree),
+    Identifier(Identifier),
+    OpenParenthesisToken(OpenParenthesisToken),
+    Arguments(Arguments),
+    CloseParenthesisToken(CloseParenthesisToken)
 {
-    CallExpressionSyntax::CallExpressionSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> Identifier,
-        const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-        const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>> Arguments,
-        const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken) noexcept :
-        Super(SyntaxTree),
-        Identifier(Identifier),
-        OpenParenthesisToken(OpenParenthesisToken),
-        Arguments(Arguments),
-        CloseParenthesisToken(CloseParenthesisToken)
+}
+
+CallExpressionSyntax::~CallExpressionSyntax() noexcept
+{
+    for (auto Argument : Arguments.Nodes())
     {
+        delete Argument;
+    }
+}
+
+SyntaxKind CallExpressionSyntax::Kind() const noexcept
+{
+    return SyntaxKind::CallExpression;
+}
+
+std::size_t CallExpressionSyntax::ChildrenCount() const noexcept
+{
+    return 2 + Arguments.size();
+}
+
+const SyntaxNode* CallExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index == 0)
+    {
+        return Identifier;
+    }
+    else if (Index == 1)
+    {
+        return OpenParenthesisToken;
+    }
+    else if (Index < Arguments.size() + 2)
+    {
+        return Arguments[Index - 2];
+    }
+    else if (Index == Arguments.size() + 2)
+    {
+        return CloseParenthesisToken;
     }
 
-    SyntaxKind CallExpressionSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::CallExpression;
-    }
-
-    std::vector<std::shared_ptr<const class SyntaxNode>> CallExpressionSyntax::Children() const noexcept
-    {
-        auto Result = std::vector<std::shared_ptr<const class SyntaxNode>>();
-
-        // Arguments->Count() returns nodes count, so multiply by 2 to count with separators
-        Result.reserve(2 + Arguments->Count() * 2);
-        Result.emplace_back(Identifier);
-        Result.emplace_back(OpenParenthesisToken);
-#if __cpp_lib_containers_ranges == 202202L
-        Result.append_range(Arguments->WithSeperators());
-#else
-        for (auto&& Argument : Arguments->WithSeperators())
-        {
-            Result.emplace_back(std::forward<decltype(Argument)>(Argument));
-        }
-#endif
-        Result.emplace_back(CloseParenthesisToken);
-
-        return Result;
-    }
-} // namespace Mamba
+    ReportChildrenAccessOutOfBounds(Index);
+}

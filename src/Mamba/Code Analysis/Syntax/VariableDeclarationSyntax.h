@@ -1,8 +1,9 @@
 #pragma once
 
-#include <memory>
-
+#include "ExpressionSyntax.h"
 #include "StatementSyntax.h"
+#include "SyntaxToken.h"
+#include "TypeClauseSyntax.h"
 
 namespace Mamba
 {
@@ -12,21 +13,26 @@ namespace Mamba
         using Super = StatementSyntax;
 
         [[nodiscard]] VariableDeclarationSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> Keyword,
-            const std::shared_ptr<const class SyntaxToken> Identifier,
-            const NullableSharedPtr<const class TypeClauseSyntax> TypeClause,
-            const std::shared_ptr<const class SyntaxToken> EqualsToken,
-            const std::shared_ptr<const class ExpressionSyntax> Initializer
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* Keyword,
+            const SyntaxToken* Identifier,
+            NullablePointer<const TypeClauseSyntax> TypeClause,
+            const SyntaxToken* EqualsToken,
+            const ExpressionSyntax* Initializer
         ) noexcept;
 
-        SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        ~VariableDeclarationSyntax() noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> Keyword;
-        const std::shared_ptr<const class SyntaxToken> Identifier;
-        const NullableSharedPtr<const class TypeClauseSyntax> TypeClause;
-        const std::shared_ptr<const class SyntaxToken> EqualsToken;
-        const std::shared_ptr<const class ExpressionSyntax> Initializer;
+        SyntaxKind Kind() const noexcept override;
+
+        const SyntaxToken* Keyword;
+        const SyntaxToken* Identifier;
+        NullablePointer<const TypeClauseSyntax> TypeClause;
+        const SyntaxToken* EqualsToken;
+        const ExpressionSyntax* Initializer;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

@@ -36,32 +36,32 @@ namespace Mamba
 
     void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept
     {
-        ReportError(Location, TEXT("Invalid character '"), Character, TEXT("'."));
+        ReportError(Location, TEXT("无效字符 '"), fast_io::mnp::chvw(Character), TEXT("'."));
     }
 
     void DiagnosticBag::ReportUnterminatedString(const TextLocation Location) noexcept
     {
-        ReportError(Location, TEXT("Unterminated string literal."));
+        ReportError(Location, TEXT("未结束的字符串字面量"));
     }
 
     void DiagnosticBag::ReportInvalidDecimal(const TextLocation Location, const StringView Literal) noexcept
     {
-        ReportError(Location, Concat(TEXT("Invalid decimal number '"), Literal, TEXT("'.")));
+        ReportError(Location, Concat(TEXT("无效十进制字面量 '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportInvalidHexadecimal(const TextLocation Location, const StringView Literal) noexcept
     {
-        ReportError(Location, Concat(TEXT("Invalid hexadecimal number '"), Literal, TEXT("'.")));
+        ReportError(Location, Concat(TEXT("无效十六进制字面量 '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportInvalidBinary(const TextLocation Location, const StringView Literal) noexcept
     {
-        ReportError(Location, Concat(TEXT("Invalid binary number '"), Literal, TEXT("'.")));
+        ReportError(Location, Concat(TEXT("无效二进制字面量 '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportInvalidOctal(const TextLocation Location, const StringView Literal) noexcept
     {
-        ReportError(Location, Concat(TEXT("Invalid octal number '"), Literal, TEXT("'.")));
+        ReportError(Location, Concat(TEXT("无效八进制字面量 '"), Literal, TEXT("'.")));
     }
 
     void DiagnosticBag::ReportUnexpectedToken(
@@ -71,50 +71,57 @@ namespace Mamba
     ) noexcept
     {
         // Unexpected token 'Kind', Expected: 'ExpectedKind'.
-        ReportError(
-            Location,
-            TEXT("Unexpected token '"),
-            SyntaxFacts::GetText(Kind),
-            TEXT("'"),
-            TEXT("Expected: '"),
-            SyntaxFacts::ToString(ExpectedKind),
-            TEXT("'.")
-        );
+        if (ExpectedKind == SyntaxKind::IdentifierToken)
+        {
+            ReportError(Location, TEXT("此处应有标识符"));
+        }
+        else
+        {
+            ReportError(
+                Location,
+                TEXT("Unexpected token '"),
+                SyntaxFacts::ToString(Kind),
+                TEXT("' "),
+                TEXT("Expected: '"),
+                SyntaxFacts::ToString(ExpectedKind),
+                TEXT("'.")
+            );
+        }
     }
 
     void DiagnosticBag::ReportDiscardExpressionValue(const TextLocation Location) noexcept
     {
-        ReportWarning(Location, TEXT("The result of the expression is discarded."));
+        ReportWarning(Location, TEXT("表达式的结果被忽略"));
     }
 
-    void DiagnosticBag::ReportVariableAlreadyDeclared(const TextLocation Location, const StringView Name) noexcept
+    void DiagnosticBag::ReportVariableAlreadyDeclared(const TextLocation Location, StringView Name) noexcept
     {
         // Variable 'Name' is already declared, previous declaration at FileName:StartLine:StartCharacter.
         ReportError(
             Location,
-            TEXT("Variable '"),
+            TEXT("变量 '"),
             Name,
-            TEXT("' is already declared, previous declaration at "),
-            *Location.FileName(),
+            TEXT("' 已在此处声明过: "),
+            Location.FileName(),
             TEXT(":"),
             Location.StartLine(),
             TEXT(":"),
-            Location.StartCharacter()
+            Location.RelativeStartCharacter()
         );
     }
 
     void DiagnosticBag::ReportUnreachableCode(const TextLocation Location) noexcept
     {
-        ReportWarning(Location, TEXT("Unreachable code."));
+        ReportWarning(Location, TEXT("此处永远不会被执行"));
     }
 
-    void DiagnosticBag::ReportUnreachableCode(const std::shared_ptr<const SyntaxNode> Node) noexcept
+    void DiagnosticBag::ReportUnreachableCode(const SyntaxNode* Node) noexcept
     {
         switch (Node->Kind())
         {
             case SyntaxKind::BlockStatement:
             {
-                const auto Statements = std::static_pointer_cast<const BlockStatementSyntax>(Node)->Statements;
+                auto Statements = static_cast<const BlockStatementSyntax*>(Node)->Statements;
                 if (!Statements.empty())
                 {
                     ReportUnreachableCode(Statements.front());
@@ -123,37 +130,47 @@ namespace Mamba
             }
 
             case SyntaxKind::VariableDeclaration:
-                ReportUnreachableCode(std::static_pointer_cast<const VariableDeclarationSyntax>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const VariableDeclarationSyntax*>(Node)->Keyword->Location());
                 return;
             case SyntaxKind::IfStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const IfStatementSyntax>(Node)->IfKeyword->Location());
+                ReportUnreachableCode(static_cast<const IfStatementSyntax*>(Node)->IfKeyword->Location());
                 return;
             case SyntaxKind::WhileStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const WhileStatementSyntax>(Node)->WhileKeyword->Location());
+                ReportUnreachableCode(static_cast<const WhileStatementSyntax*>(Node)->WhileKeyword->Location());
                 return;
             case SyntaxKind::DoWhileStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const DoWhileStatementSyntax>(Node)->WhileKeyword->Location());
+                ReportUnreachableCode(static_cast<const DoWhileStatementSyntax*>(Node)->WhileKeyword->Location());
                 return;
             case SyntaxKind::ForStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const ForStatementSyntax>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const ForStatementSyntax*>(Node)->Keyword->Location());
                 return;
             case SyntaxKind::BreakStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const BreakStatementSyntax>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const BreakStatementSyntax*>(Node)->Keyword->Location());
                 return;
             case SyntaxKind::ContinueStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const ContinueStatementSyntax>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const ContinueStatementSyntax*>(Node)->Keyword->Location());
                 return;
             case SyntaxKind::ReturnStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const ReturnStatementSyntax>(Node)->ReturnKeyword->Location());
+                ReportUnreachableCode(static_cast<const ReturnStatementSyntax*>(Node)->ReturnKeyword->Location());
                 return;
             case SyntaxKind::ExpressionStatement:
-                ReportUnreachableCode(std::static_pointer_cast<const ExpressionStatementSyntax>(Node)->Expression->Location());
+                ReportUnreachableCode(static_cast<const ExpressionStatementSyntax*>(Node)->Expression->Location());
                 return;
             case SyntaxKind::CallExpression:
-                ReportUnreachableCode(std::static_pointer_cast<const CallExpressionSyntax>(Node)->Identifier->Location());
+                ReportUnreachableCode(static_cast<const CallExpressionSyntax*>(Node)->Identifier->Location());
                 return;
             default:
                 break;
         }
+    }
+
+    void DiagnosticBag::ReportUndeclaredIdentifier(TextLocation Location, StringView Name) noexcept
+    {
+        ReportError(Location, TEXT("未声明的标识符 '"), Name, TEXT("'."));
+    }
+
+    void DiagnosticBag::ReportAmbiguousIdentifier(TextLocation Location, StringView Name) noexcept
+    {
+        ReportError(Location, TEXT("标识符有歧义 '"), Name, TEXT("'."));
     }
 } // namespace Mamba

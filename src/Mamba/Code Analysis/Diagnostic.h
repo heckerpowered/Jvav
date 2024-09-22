@@ -3,7 +3,6 @@
 #include "MambaCore.h"
 
 #include "TextLocation.h"
-#include <memory>
 
 namespace Mamba
 {
@@ -19,5 +18,11 @@ namespace Mamba
         DiagnosticSeverity Severity;
         TextLocation Location;
         String Message;
+
+        std::size_t LineNumber() const noexcept;
+        const TextLine& Line() const noexcept;
+        StringView LineView() const noexcept;
+
+        StringView FileName() const noexcept;
     };
 } // namespace Mamba

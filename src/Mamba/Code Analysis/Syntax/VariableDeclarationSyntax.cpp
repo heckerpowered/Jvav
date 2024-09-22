@@ -1,35 +1,72 @@
 #include "VariableDeclarationSyntax.h"
 
-#include "ExpressionSyntax.h"
-#include "SyntaxToken.h"
-#include "TypeClauseSyntax.h"
+using namespace Mamba;
 
-namespace Mamba
+VariableDeclarationSyntax::VariableDeclarationSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* Keyword,
+    const SyntaxToken* Identifier,
+    NullablePointer<const class TypeClauseSyntax> TypeClause,
+    const SyntaxToken* EqualsToken,
+    const ExpressionSyntax* Initializer
+) noexcept :
+    Super(SyntaxTree),
+    Keyword(Keyword),
+    Identifier(Identifier),
+    TypeClause(TypeClause),
+    EqualsToken(EqualsToken),
+    Initializer(Initializer)
 {
-    VariableDeclarationSyntax::VariableDeclarationSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> Keyword,
-        const std::shared_ptr<const class SyntaxToken> Identifier,
-        const NullableSharedPtr<const class TypeClauseSyntax> TypeClause,
-        const std::shared_ptr<const class SyntaxToken> EqualsToken,
-        const std::shared_ptr<const class ExpressionSyntax> Initializer
-    ) noexcept :
-        Super(SyntaxTree),
-        Keyword(Keyword),
-        Identifier(Identifier),
-        TypeClause(TypeClause),
-        EqualsToken(EqualsToken),
-        Initializer(Initializer)
+}
+
+VariableDeclarationSyntax::~VariableDeclarationSyntax() noexcept
+{
+    delete TypeClause;
+    delete Initializer;
+}
+
+SyntaxKind VariableDeclarationSyntax::Kind() const noexcept
+{
+    return SyntaxKind::VariableDeclaration;
+}
+
+std::size_t VariableDeclarationSyntax::ChildrenCount() const noexcept
+{
+    return TypeClause ? 5 : 4;
+}
+
+const SyntaxNode* VariableDeclarationSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (TypeClause)
     {
+        switch (Index)
+        {
+            case 0:
+                return Keyword;
+            case 1:
+                return Identifier;
+            case 2:
+                return TypeClause;
+            case 3:
+                return EqualsToken;
+            case 4:
+                return Initializer;
+            default:
+                ReportChildrenAccessOutOfBounds(Index);
+        }
     }
 
-    SyntaxKind VariableDeclarationSyntax::Kind() const noexcept
+    switch (Index)
     {
-        return SyntaxKind::VariableDeclaration;
+        case 0:
+            return Keyword;
+        case 1:
+            return Identifier;
+        case 2:
+            return EqualsToken;
+        case 3:
+            return Initializer;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
     }
-
-    std::vector<std::shared_ptr<const class SyntaxNode>> VariableDeclarationSyntax::Children() const noexcept
-    {
-        return { Keyword, Identifier, TypeClause, EqualsToken, Initializer };
-    }
-} // namespace Mamba
+}

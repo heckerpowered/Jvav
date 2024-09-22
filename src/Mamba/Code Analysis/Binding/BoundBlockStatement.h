@@ -2,7 +2,6 @@
 
 #include "BoundNodeKind.h"
 #include "BoundStatement.h"
-#include <memory>
 
 namespace Mamba
 {
@@ -11,18 +10,11 @@ namespace Mamba
     public:
         using Super = BoundStatement;
 
-        [[nodiscard]] BoundBlockStatement(
-            const std::shared_ptr<const class SyntaxNode> Syntax,
-            const std::span<const std::shared_ptr<const class BoundStatement>> Statements
-        ) noexcept;
-
-        [[nodiscard]] BoundBlockStatement(
-            const std::shared_ptr<const class SyntaxNode> Syntax,
-            std::vector<std::shared_ptr<const class BoundStatement>>&& Statements
-        ) noexcept;
+        [[nodiscard]] BoundBlockStatement(const SyntaxNode* Syntax, std::vector<const BoundStatement*>&& Statements) noexcept;
+        ~BoundBlockStatement() noexcept override;
 
         BoundNodeKind Kind() const noexcept override;
 
-        const std::vector<std::shared_ptr<const class BoundStatement>> Statements;
+        std::vector<const BoundStatement*> Statements;
     };
 }; // namespace Mamba

@@ -1,10 +1,12 @@
 #pragma once
 
+#include "BlockStatementSyntax.h"
 #include "MemberSyntax.h"
+#include "ParameterSyntax.h"
 #include "SeperatedSyntaxList.h"
 #include "SyntaxKind.h"
-
-#include <memory>
+#include "SyntaxToken.h"
+#include "TypeClauseSyntax.h"
 
 namespace Mamba
 {
@@ -14,25 +16,30 @@ namespace Mamba
         using Super = MemberSyntax;
 
         [[nodiscard]] FunctionDeclarationSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> FunctionKeyword,
-            const std::shared_ptr<const class SyntaxToken> Identifier,
-            const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-            const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>> Parameters,
-            const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
-            const NullableSharedPtr<const class TypeClauseSyntax> Type,
-            const std::shared_ptr<const class BlockStatementSyntax> Body
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* FunctionKeyword,
+            const SyntaxToken* Identifier,
+            const SyntaxToken* OpenParenthesisToken,
+            SeperatedSyntaxList<const ParameterSyntax*>&& Parameters,
+            const SyntaxToken* CloseParenthesisToken,
+            NullablePointer<const TypeClauseSyntax> Type,
+            const BlockStatementSyntax* Body
         ) noexcept;
 
-        SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        ~FunctionDeclarationSyntax() noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> FunctionKeyword;
-        const std::shared_ptr<const class SyntaxToken> Identifier;
-        const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken;
-        const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>> Parameters;
-        const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken;
-        const NullableSharedPtr<const class TypeClauseSyntax> Type;
-        const std::shared_ptr<const class BlockStatementSyntax> Body;
+        SyntaxKind Kind() const noexcept override;
+
+        const SyntaxToken* FunctionKeyword;
+        const SyntaxToken* Identifier;
+        const SyntaxToken* OpenParenthesisToken;
+        SeperatedSyntaxList<const ParameterSyntax*> Parameters;
+        const SyntaxToken* CloseParenthesisToken;
+        NullablePointer<const TypeClauseSyntax> Type;
+        const BlockStatementSyntax* Body;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

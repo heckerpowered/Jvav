@@ -2,24 +2,41 @@
 
 #include "TypeClauseSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+ParameterSyntax::ParameterSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* Identifier,
+    const TypeClauseSyntax* Type
+) noexcept :
+    Super(SyntaxTree), Identifier(Identifier), Type(Type)
 {
-    ParameterSyntax::ParameterSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> Identifier,
-        const std::shared_ptr<const class TypeClauseSyntax> Type
-    ) noexcept :
-        Super(SyntaxTree), Identifier(Identifier), Type(Type)
-    {
-    }
+}
 
-    SyntaxKind ParameterSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::Parameter;
-    }
+ParameterSyntax::~ParameterSyntax() noexcept
+{
+    delete Type;
+}
 
-    std::vector<std::shared_ptr<const class SyntaxNode>> ParameterSyntax::Children() const noexcept
+SyntaxKind ParameterSyntax::Kind() const noexcept
+{
+    return SyntaxKind::Parameter;
+}
+
+std::size_t ParameterSyntax::ChildrenCount() const noexcept
+{
+    return 2;
+}
+
+const SyntaxNode* ParameterSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
     {
-        return { Identifier, Type };
+        case 0:
+            return Identifier;
+        case 1:
+            return Type;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
     }
-} // namespace Mamba
+}

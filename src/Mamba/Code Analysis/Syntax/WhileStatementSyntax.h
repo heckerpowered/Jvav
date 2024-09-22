@@ -1,8 +1,8 @@
 #pragma once
 
+#include "ExpressionSyntax.h"
 #include "StatementSyntax.h"
-
-#include <memory>
+#include "SyntaxToken.h"
 
 namespace Mamba
 {
@@ -12,17 +12,22 @@ namespace Mamba
         using Super = StatementSyntax;
 
         [[nodiscard]] WhileStatementSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> WhileKeyword,
-            const std::shared_ptr<const class ExpressionSyntax> Condition,
-            const std::shared_ptr<const class StatementSyntax> Body
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* WhileKeyword,
+            const ExpressionSyntax* Condition,
+            const StatementSyntax* Body
         ) noexcept;
 
-        SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        ~WhileStatementSyntax() noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> WhileKeyword;
-        const std::shared_ptr<const class ExpressionSyntax> Condition;
-        const std::shared_ptr<const class StatementSyntax> Body;
+        SyntaxKind Kind() const noexcept override;
+
+        const SyntaxToken* WhileKeyword;
+        const ExpressionSyntax* Condition;
+        const StatementSyntax* Body;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

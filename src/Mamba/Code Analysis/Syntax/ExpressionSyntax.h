@@ -10,6 +10,6 @@ namespace Mamba
         using Super = SyntaxNode;
 
     protected:
-        [[nodiscard]] ExpressionSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
+        [[nodiscard]] ExpressionSyntax(const class SyntaxTree* SyntaxTree) noexcept;
     };
 } // namespace Mamba

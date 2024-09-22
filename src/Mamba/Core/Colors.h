@@ -81,26 +81,24 @@ namespace Mamba
                 .Color = Color
             };
         }
+
+        template<std::integral char_type, typename T>
+        constexpr void print_define(fast_io::io_reserve_type_t<char_type, ::Mamba::ColorT<T>>, auto out [[maybe_unused]], const ::Mamba::ColorT<T>& color) noexcept
+        {
+            // \033[<n>m<TEXT>\033[0m
+            if (color.IsForeground())
+            {
+                ::fast_io::io::print(out, "\033[", static_cast<std::uint8_t>(color.Color), "m", color.Reference, "\033[39m");
+                return;
+            }
+            else if (color.IsBackground())
+            {
+                ::fast_io::io::print(out, "\033[", static_cast<std::uint8_t>(color.Color), "m", color.Reference, "\033[49m");
+                return;
+            }
+
+            std::unreachable();
+        }
     } // namespace FastIO
+
 } // namespace Mamba
-
-namespace fast_io
-{
-    template<std::integral char_type, typename T>
-    constexpr void print_define(io_reserve_type_t<char_type, ::Mamba::ColorT<T>>, auto out [[maybe_unused]], const ::Mamba::ColorT<T>& color) noexcept
-    {
-        // \033[<n>m<TEXT>\033[0m
-        if (color.IsForeground())
-        {
-            io::print("\033[", static_cast<std::uint8_t>(color.Color), "m", color.Reference, "\033[39m");
-            return;
-        }
-        else if (color.IsBackground())
-        {
-            io::print("\033[", static_cast<std::uint8_t>(color.Color), "m", color.Reference, "\033[49m");
-            return;
-        }
-
-        std::unreachable();
-    }
-} // namespace fast_io

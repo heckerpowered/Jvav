@@ -3,11 +3,16 @@
 using namespace Mamba;
 
 BoundExpressionStatement::BoundExpressionStatement(
-    const std::shared_ptr<const class SyntaxNode> Syntax,
-    const std::shared_ptr<const class BoundExpression> Expression
+    const SyntaxNode* Syntax,
+    const BoundExpression* Expression
 ) noexcept :
     Super(Syntax), Expression(Expression)
 {
+}
+
+BoundExpressionStatement::~BoundExpressionStatement() noexcept
+{
+    delete Expression;
 }
 
 BoundNodeKind BoundExpressionStatement::Kind() const noexcept

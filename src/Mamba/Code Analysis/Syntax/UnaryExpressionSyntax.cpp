@@ -1,23 +1,40 @@
 #include "UnaryExpressionSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+UnaryExpressionSyntax::UnaryExpressionSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* OperatorToken,
+    const ExpressionSyntax* Operand
+) noexcept :
+    Super(SyntaxTree), OperatorToken(OperatorToken), Operand(Operand)
 {
-    UnaryExpressionSyntax::UnaryExpressionSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> OperatorToken,
-        const std::shared_ptr<const class ExpressionSyntax> Operand
-    ) noexcept :
-        Super(SyntaxTree), OperatorToken(OperatorToken), Operand(Operand)
-    {
-    }
+}
 
-    SyntaxKind UnaryExpressionSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::UnaryExpression;
-    }
+UnaryExpressionSyntax::~UnaryExpressionSyntax() noexcept
+{
+    delete Operand;
+}
 
-    std::vector<std::shared_ptr<const class SyntaxNode>> UnaryExpressionSyntax::Children() const noexcept
+SyntaxKind UnaryExpressionSyntax::Kind() const noexcept
+{
+    return SyntaxKind::UnaryExpression;
+}
+
+std::size_t UnaryExpressionSyntax::ChildrenCount() const noexcept
+{
+    return 2;
+}
+
+const SyntaxNode* UnaryExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
     {
-        return { OperatorToken, Operand };
+        case 0:
+            return OperatorToken;
+        case 1:
+            return Operand;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
     }
-} // namespace Mamba
+}

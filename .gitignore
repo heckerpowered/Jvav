@@ -13,6 +13,10 @@ compile_commands.json
 
 # XCode files
 Jvav.xcodeproj/
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+CMakeCache.txt
 
 src/.NET Linker/bin
 src/.NET Linker/obj

@@ -2,8 +2,6 @@
 
 #include "SyntaxNode.h"
 
-#include <memory>
-
 namespace Mamba
 {
     class StatementSyntax : public SyntaxNode
@@ -12,6 +10,6 @@ namespace Mamba
         using Super = SyntaxNode;
 
     protected:
-        [[nodiscard]] StatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree) noexcept;
+        [[nodiscard]] StatementSyntax(const class SyntaxTree* SyntaxTree) noexcept;
     };
 } // namespace Mamba

@@ -1,22 +1,31 @@
 #include "NameExpressionSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+NameExpressionSyntax::NameExpressionSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* IdentifierToken
+) noexcept :
+    Super(SyntaxTree), IdentifierToken(IdentifierToken)
 {
-    NameExpressionSyntax::NameExpressionSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> IdentifierToken
-    ) noexcept :
-        Super(SyntaxTree), IdentifierToken(IdentifierToken)
+}
+
+SyntaxKind NameExpressionSyntax::Kind() const noexcept
+{
+    return SyntaxKind::NameExpression;
+}
+
+std::size_t NameExpressionSyntax::ChildrenCount() const noexcept
+{
+    return 1;
+}
+
+const SyntaxNode* NameExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index != 0)
     {
+        ReportChildrenAccessOutOfBounds(Index);
     }
 
-    SyntaxKind NameExpressionSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::NameExpression;
-    }
-
-    std::vector<std::shared_ptr<const class SyntaxNode>> NameExpressionSyntax::Children() const noexcept
-    {
-        return { IdentifierToken };
-    }
-} // namespace Mamba
+    return IdentifierToken;
+}

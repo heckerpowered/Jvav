@@ -1,45 +1,38 @@
 #include "Lexer.h"
 
 #include "DiagnosticBag.h"
+#include "fast_io.h"
 #include "Literal.h"
 #include "SourceText.h"
 #include "SyntaxFacts.h"
 #include "SyntaxKind.h"
 #include "SyntaxToken.h"
 #include "SyntaxTree.h"
-#include "TextLocation.h"
-#include "TextSpan.h"
-
-#include <cstdint>
-#include <limits>
-#include <memory>
 
 namespace Mamba
 {
-    Lexer::Lexer(const std::shared_ptr<const class SyntaxTree> SyntaxTree) :
-        SyntaxTree(SyntaxTree), Text(SyntaxTree->Text), Position(), Start(), Kind(SyntaxKind::BadToken)
+    Lexer::Lexer(const class SyntaxTree* SyntaxTree) :
+        SyntaxTree(SyntaxTree), Position(), Start(), Kind(SyntaxKind::BadToken)
     {
     }
 
-    std::shared_ptr<const SyntaxToken> Lexer::Lex() noexcept
+    SyntaxToken Lexer::Lex() noexcept
     {
-        const auto TokenStart = Position;
+        auto TokenStart = Position;
 
         ReadToken();
 
-        const auto TokenKind = Kind;
-        const auto TokenValue = Value;
-        const auto TokenLength = Position - Start;
+        auto TokenValue = Value;
+        auto TokenLength = Position - Start;
 
-        auto TokenText =
-            std::make_shared<const String>(Hatcher([&]
-                                                   { return String(SyntaxFacts::GetText(TokenKind)); }));
-        if (TokenText->empty())
-        {
-            TokenText = Text->ToString(TokenStart, TokenLength);
-        }
+        auto TokenText = Text().SubView(TokenStart, TokenLength);
 
-        return std::make_shared<const SyntaxToken>(SyntaxTree, Kind, TokenStart, TokenText, TokenValue);
+        return SyntaxToken(SyntaxTree, Kind, TokenText, TokenValue);
+    }
+
+    const SourceText& Lexer::Text() const noexcept
+    {
+        return SyntaxTree->Text();
     }
 
     Char Lexer::Current() const noexcept
@@ -52,22 +45,22 @@ namespace Mamba
         return Peek(1);
     }
 
-    Char Lexer::Peek(const std::size_t Offset) const noexcept
+    Char Lexer::Peek(std::size_t Offset) const noexcept
     {
-        const auto Index = Position + Offset;
-        if (Index >= Text->Length())
+        auto Index = Position + Offset;
+        if (Index >= Text().Length())
         {
             return '\0';
         }
 
-        return (*Text)[Index];
+        return Text()[Index];
     }
 
     void Lexer::ReadToken() noexcept
     {
         Start = Position;
         Kind = SyntaxKind::BadToken;
-        Value = nullptr;
+        Value = {};
 
         switch (Current())
         {
@@ -275,8 +268,9 @@ namespace Mamba
                 }
                 else
                 {
-                    const auto Span = TextSpan(Position, 1);
-                    const auto Location = TextLocation(Text, Span);
+                    auto View = Text().SubView(Position, 1);
+                    auto Location = TextLocation(Text(), View);
+
                     Diagnostics.ReportInvalidCharacter(Location, Current());
                     ++Position;
                 }
@@ -298,8 +292,8 @@ namespace Mamba
                 case TEXT('\r'):
                 case TEXT('\n'):
                 {
-                    const auto Span = TextSpan(Start, 1);
-                    const auto Location = TextLocation(Text, Span);
+                    auto View = Text().SubView(Position, 1);
+                    auto Location = TextLocation(Text(), View);
                     Diagnostics.ReportUnterminatedString(Location);
                     Done = true;
                     break;
@@ -321,10 +315,10 @@ namespace Mamba
             }
         }
 
-        const auto Length = Position - Start;
+        auto Length = Position - Start;
 
         Kind = SyntaxKind::StringToken;
-        Value = std::make_shared<Literal>(Literal(Text->ToString(Start + 1, Length - 2)));
+        Value = Text().SubView(Start + 1, Length - 2);
     }
 
     void Lexer::ReadIdentifierOrKeyword() noexcept
@@ -334,15 +328,17 @@ namespace Mamba
             ++Position;
         }
 
-        const auto Length = Position - Start;
-        const auto Span = TextSpan(Start, Length);
-        const auto Text = this->Text->ToView(Span);
+        auto Length = Position - Start;
+        auto Text = this->Text().SubView(Start, Length);
         Kind = SyntaxFacts::GetKeywordKind(Text);
     }
 
     void Lexer::ReadWhitespace() noexcept
     {
-        while (Current() == TEXT(' ') || Current() == TEXT('\n') || Current() == TEXT('\t') || Current() == TEXT('\r'))
+        while (Current() == TEXT(' ') ||
+               Current() == TEXT('\n') ||
+               Current() == TEXT('\t') ||
+               Current() == TEXT('\r'))
         {
             ++Position;
         }
@@ -384,10 +380,9 @@ namespace Mamba
             ++Position;
         }
 
-        const auto Length = Position - Start;
-        const auto Span = TextSpan(Start, Length);
-        const auto Number = ParseNumber<10>(Span);
-        NarrowNumber(Number);
+        auto Length = Position - Start;
+        auto View = Text().SubView(Start, Length);
+        Value = ParseNumber<10>(View);
     }
 
     void Lexer::ReadHexadecimal() noexcept
@@ -398,10 +393,9 @@ namespace Mamba
         }
 
         // Skip the '0x' or '0X' character sequence
-        const auto Length = Position - Start;
-        const auto Span = TextSpan(Start + 2, Length);
-        const auto Number = ParseNumber<16>(Span);
-        NarrowNumber(Number);
+        auto Length = Position - Start;
+        auto View = Text().SubView(Start + 2, Length);
+        Value = ParseNumber<16>(View);
     }
 
     void Lexer::ReadBinary() noexcept
@@ -412,10 +406,9 @@ namespace Mamba
         }
 
         // Skip the '0b' or '0B' character sequence
-        const auto Length = Position - Start;
-        const auto Span = TextSpan(Start + 2, Length);
-        const auto Number = ParseNumber<2>(Span);
-        NarrowNumber(Number);
+        auto Length = Position - Start;
+        auto View = Text().SubView(Start + 2, Length);
+        Value = ParseNumber<2>(View);
     }
 
     void Lexer::ReadOctal() noexcept
@@ -426,56 +419,41 @@ namespace Mamba
         }
 
         // Skip the 0 prefix
-        const auto Length = Position - Start;
-        const auto Span = TextSpan(Start + 1, Length);
-        const auto Number = ParseNumber<8>(Span);
-        NarrowNumber(Number);
+        auto Length = Position - Start;
+        auto View = Text().SubView(Start + 1, Length);
+        Value = ParseNumber<8>(View);
     }
 
-    bool Lexer::IsLetter(const Char Character) noexcept
+    bool Lexer::IsLetter(Char Character) noexcept
     {
-        return (Character >= TEXT('a') && Character <= TEXT('z')) || (Character >= TEXT('A') && Character <= TEXT('Z'));
+        return (Character >= TEXT('a') && Character <= TEXT('z')) ||
+               (Character >= TEXT('A') && Character <= TEXT('Z'));
     }
 
-    bool Lexer::IsLetterOrDigit(const Char Character) noexcept
+    bool Lexer::IsLetterOrDigit(Char Character) noexcept
     {
         return IsLetter(Character) || IsDecimalDigit(Character);
     }
 
-    bool Lexer::IsDecimalDigit(const Char Character) noexcept
+    bool Lexer::IsDecimalDigit(Char Character) noexcept
     {
         return Character >= TEXT('0') && Character <= TEXT('9');
     }
 
-    bool Lexer::IsHexadecimalDigit(const Char Character) noexcept
+    bool Lexer::IsHexadecimalDigit(Char Character) noexcept
     {
-        return (Character >= TEXT('0') && Character <= TEXT('9')) || (Character >= TEXT('a') && Character <= TEXT('f')) || (Character >= TEXT('A') && Character <= TEXT('F'));
+        return (Character >= TEXT('0') && Character <= TEXT('9')) ||
+               (Character >= TEXT('a') && Character <= TEXT('f')) ||
+               (Character >= TEXT('A') && Character <= TEXT('F'));
     }
 
-    bool Lexer::IsBinaryDigit(const Char Character) noexcept
+    bool Lexer::IsBinaryDigit(Char Character) noexcept
     {
         return Character == TEXT('0') || Character == TEXT('1');
     }
 
-    bool Lexer::IsOctalDigit(const Char Character) noexcept
+    bool Lexer::IsOctalDigit(Char Character) noexcept
     {
         return Character >= TEXT('0') && Character <= TEXT('7');
-    }
-
-    void Lexer::NarrowNumber(const std::uint64_t Value) noexcept
-    {
-        // Literals can be represented by int32 if they are capable of being represented by int32,
-        // otherwise they are int64. If the literal represents a value outside the range of int64,
-        // it is represented by unsigned int64, otherwise diagnostics are required.
-        if (Value <= std::numeric_limits<std::int32_t>::max())
-        {
-            this->Value = std::make_shared<Literal>(static_cast<std::int32_t>(Value));
-        }
-        else if (Value <= std::numeric_limits<std::int64_t>::max())
-        {
-            this->Value = std::make_shared<Literal>(static_cast<std::int64_t>(Value));
-        }
-
-        this->Value = std::make_shared<Literal>(Value);
     }
 } // namespace Mamba

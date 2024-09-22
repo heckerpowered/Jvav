@@ -1,54 +1,52 @@
 #include "BlockStatementSyntax.h"
 
-#include "SyntaxNode.h"
-#include "SyntaxToken.h"
+using namespace Mamba;
 
-#include <memory>
-
-namespace Mamba
+BlockStatementSyntax::BlockStatementSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* OpenBraceToken,
+    std::vector<StatementSyntax*>&& Statements,
+    const SyntaxToken* CloseBraceToken
+) noexcept :
+    Super(SyntaxTree),
+    OpenBraceToken(OpenBraceToken),
+    Statements(std::move(Statements)),
+    CloseBraceToken(CloseBraceToken)
 {
-    BlockStatementSyntax::BlockStatementSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> OpenBraceToken,
-        const std::vector<std::shared_ptr<const class StatementSyntax>>& Statements,
-        const std::shared_ptr<const class SyntaxToken> CloseBraceToken) noexcept :
-        Super(SyntaxTree), OpenBraceToken(OpenBraceToken), Statements(Statements), CloseBraceToken(CloseBraceToken)
+}
+
+BlockStatementSyntax::~BlockStatementSyntax() noexcept
+{
+    for (auto&& Statement : Statements)
     {
+        delete Statement;
+    }
+}
+
+SyntaxKind BlockStatementSyntax::Kind() const noexcept
+{
+    return SyntaxKind::BlockStatement;
+}
+
+std::size_t BlockStatementSyntax::ChildrenCount() const noexcept
+{
+    return Statements.size() + 2;
+}
+
+const SyntaxNode* BlockStatementSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    if (Index == 0)
+    {
+        return OpenBraceToken;
+    }
+    else if (Index < Statements.size() + 1)
+    {
+        return Statements[Index - 1];
+    }
+    else if (Index == Statements.size() + 1)
+    {
+        return CloseBraceToken;
     }
 
-    BlockStatementSyntax::BlockStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                               const std::shared_ptr<const class SyntaxToken> OpenBraceToken,
-                                               std::vector<std::shared_ptr<const class StatementSyntax>>&& Statements,
-                                               const std::shared_ptr<const class SyntaxToken> CloseBraceToken) noexcept
-        :
-        Super(SyntaxTree),
-        OpenBraceToken(OpenBraceToken),
-        Statements(std::move(Statements)),
-        CloseBraceToken(CloseBraceToken)
-    {
-    }
-
-    SyntaxKind BlockStatementSyntax::Kind() const noexcept
-    {
-        return SyntaxKind::BlockStatement;
-    }
-
-    std::vector<std::shared_ptr<const class SyntaxNode>> BlockStatementSyntax::Children() const noexcept
-    {
-        auto Result = std::vector<std::shared_ptr<const class SyntaxNode>>();
-        Result.reserve(Statements.size() + 2);
-
-        Result.emplace_back(OpenBraceToken);
-#if __cpp_lib_containers_ranges == 202202L
-        Result.append_range(Statements);
-#else
-        for (auto&& Statement : Statements)
-        {
-            Result.emplace_back(std::forward<decltype(Statement)>(Statement));
-        }
-#endif
-        Result.emplace_back(CloseBraceToken);
-
-        return Result;
-    }
-} // namespace Mamba
+    ReportChildrenAccessOutOfBounds(Index);
+}

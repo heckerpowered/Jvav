@@ -1,36 +1,26 @@
 #pragma once
 
-#include "TextSpan.h"
-
-#include <memory>
+#include "SourceText.h"
 
 namespace Mamba
 {
     struct TextLocation
     {
-        std::shared_ptr<const class SourceText> Text;
-        TextSpan Span;
+        const SourceText& Text;
+        StringView View;
 
-        std::shared_ptr<const String> FileName() const noexcept;
+        template<typename SelfT>
+        [[nodiscard]] decltype(auto) FileName(this SelfT&& Self) noexcept
+        {
+            return std::forward_like<SelfT>(Self.Text).Info().FileName;
+        }
 
-        /**
-         * Get the line index of the start line
-         */
-        std::size_t StartLine() const noexcept;
+        [[nodiscard]] std::size_t StartLine() const noexcept;
+        [[nodiscard]] std::size_t AbsoluteStartCharacter() const noexcept;
+        [[nodiscard]] std::size_t RelativeStartCharacter() const noexcept;
 
-        /**
-         * Get position of the start character
-         */
-        std::size_t StartCharacter() const noexcept;
-
-        /**
-         * Get the end line
-         */
-        std::size_t EndLine() const noexcept;
-
-        /**
-         * Get the end position of the character
-         */
-        std::size_t EndCharacter() const noexcept;
+        [[nodiscard]] std::size_t EndLine() const noexcept;
+        [[nodiscard]] std::size_t AbsoluteEndCharacter() const noexcept;
+        [[nodiscard]] std::size_t RelativeEndCharacter() const noexcept;
     };
 } // namespace Mamba

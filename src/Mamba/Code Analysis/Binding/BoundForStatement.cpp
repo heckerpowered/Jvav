@@ -1,16 +1,15 @@
 #include "BoundForStatement.h"
 
 #include "BoundExpression.h"
-#include "BoundExpressionStatement.h"
 
 using namespace Mamba;
 
 BoundForStatement::BoundForStatement(
-    const std::shared_ptr<const class SyntaxNode> Syntax,
-    const std::shared_ptr<const class BoundStatement> InitStatement,
-    const std::shared_ptr<const class BoundExpression> Condition,
-    const std::shared_ptr<const class BoundExpression> Expression,
-    const std::shared_ptr<const class BoundStatement> Body
+    const SyntaxNode* Syntax,
+    const BoundStatement* InitStatement,
+    const BoundExpression* Condition,
+    const BoundExpression* Expression,
+    const BoundStatement* Body
 ) noexcept :
     Super(Syntax),
     InitStatement(InitStatement),
@@ -20,7 +19,15 @@ BoundForStatement::BoundForStatement(
 {
 }
 
-BoundNodeKind Mamba::BoundForStatement::Kind() const noexcept
+BoundForStatement::~BoundForStatement() noexcept
+{
+    delete InitStatement;
+    delete Condition;
+    delete Expression;
+    delete Body;
+}
+
+BoundNodeKind BoundForStatement::Kind() const noexcept
 {
     return BoundNodeKind::ForStatement;
 }

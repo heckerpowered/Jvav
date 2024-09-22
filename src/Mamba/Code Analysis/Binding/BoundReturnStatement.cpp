@@ -3,8 +3,8 @@
 using namespace Mamba;
 
 BoundReturnStatement::BoundReturnStatement(
-    const std::shared_ptr<const class SyntaxNode> Syntax,
-    const std::shared_ptr<const class BoundExpression> Expression
+    const SyntaxNode* Syntax,
+    const BoundExpression* Expression
 ) noexcept :
     Super(Syntax), Expression(Expression)
 {
@@ -13,4 +13,9 @@ BoundReturnStatement::BoundReturnStatement(
 BoundNodeKind BoundReturnStatement::Kind() const noexcept
 {
     return BoundNodeKind::ReturnStatement;
+}
+
+BoundReturnStatement::~BoundReturnStatement() noexcept
+{
+    delete Expression;
 }

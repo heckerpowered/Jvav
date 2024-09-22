@@ -1,9 +1,9 @@
 #pragma once
 
+#include "ExpressionSyntax.h"
 #include "StatementSyntax.h"
 #include "SyntaxToken.h"
 #include "SyntaxTree.h"
-#include <memory>
 
 namespace Mamba
 {
@@ -14,28 +14,35 @@ namespace Mamba
     public:
         using Super = StatementSyntax;
 
-        [[nodiscard]] ForStatementSyntax(const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-                                         const std::shared_ptr<const class SyntaxToken> Keyword,
-                                         const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-                                         const std::shared_ptr<const class StatementSyntax> InitStatement,
-                                         const std::shared_ptr<const class SyntaxToken> InitStatementColonToken,
-                                         const std::shared_ptr<const class ExpressionSyntax> Condition,
-                                         const std::shared_ptr<const class SyntaxToken> ConditionColonToken,
-                                         const std::shared_ptr<const class ExpressionSyntax> Expression,
-                                         const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken,
-                                         const std::shared_ptr<const class StatementSyntax> Body) noexcept;
+        [[nodiscard]] ForStatementSyntax(
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* Keyword,
+            const SyntaxToken* OpenParenthesisToken,
+            const StatementSyntax* InitStatement,
+            const SyntaxToken* InitStatementColonToken,
+            const ExpressionSyntax* Condition,
+            const SyntaxToken* ConditionColonToken,
+            const ExpressionSyntax* Expression,
+            const SyntaxToken* CloseParenthesisToken,
+            const StatementSyntax* Body
+        ) noexcept;
+
+        ~ForStatementSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> Keyword;
-        const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken;
-        const std::shared_ptr<const class StatementSyntax> InitStatement;
-        const std::shared_ptr<const class SyntaxToken> InitStatementColonToken;
-        const std::shared_ptr<const class ExpressionSyntax> Condition;
-        const std::shared_ptr<const class SyntaxToken> ConditionColonToken;
-        const std::shared_ptr<const class ExpressionSyntax> Expression;
-        const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken;
-        const std::shared_ptr<const class StatementSyntax> Body;
+        const SyntaxToken* Keyword;
+        const SyntaxToken* OpenParenthesisToken;
+        const StatementSyntax* InitStatement;
+        const SyntaxToken* InitStatementColonToken;
+        const ExpressionSyntax* Condition;
+        const SyntaxToken* ConditionColonToken;
+        const ExpressionSyntax* Expression;
+        const SyntaxToken* CloseParenthesisToken;
+        const StatementSyntax* Body;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

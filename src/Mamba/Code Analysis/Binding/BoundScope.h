@@ -1,10 +1,14 @@
 #pragma once
 
-#include <memory>
 #include <unordered_map>
 #include <vector>
 
+#include "FunctionSymbol.h"
 #include "MambaCore.h"
+#include "ParameterSymbol.h"
+#include "Symbol.h"
+#include "TypeSymbol.h"
+#include "VariableSymbol.h"
 
 namespace Mamba
 {
@@ -12,33 +16,30 @@ namespace Mamba
     // Function symbols with the same name form an overload set. However, when the multi non-function symbols with the
     // same name were found during name lookup, the name is ambiguous and the program is ill-formed, diagnostics are
     // required.
-    class BoundScope : public std::enable_shared_from_this<BoundScope>
+    class BoundScope
     {
-        std::unordered_map<String, std::vector<std::shared_ptr<const class Symbol>>> Symbols;
+        std::unordered_map<StringView, std::vector<const Symbol*>> Symbols;
 
     public:
-        [[nodiscard]] BoundScope(const NullableSharedPtr<const BoundScope> Parent) noexcept;
+        [[nodiscard]] BoundScope(NullablePointer<const BoundScope> Parent) noexcept;
+        ~BoundScope() noexcept;
 
-        void Declare(const std::shared_ptr<const class Symbol> Symbol) noexcept;
-        std::shared_ptr<BoundScope> DeclareScope() noexcept;
+        void Declare(const Symbol* Symbol) noexcept;
+        BoundScope* DeclareScope() noexcept;
 
-        std::vector<std::shared_ptr<const class VariableSymbol>> LookupVariable(const std::shared_ptr<const String> Name) const noexcept;
-        std::vector<std::shared_ptr<const class FunctionSymbol>> LookupFunction(const std::shared_ptr<const String> Name
-        ) const noexcept;
-        std::vector<std::shared_ptr<const class TypeSymbol>> LookupType(const std::shared_ptr<const String> Name
-        ) const noexcept;
-        std::vector<std::shared_ptr<const class TypeSymbol>> LookupParameter(const std::shared_ptr<const String> Name
-        ) const noexcept;
-        std::vector<std::shared_ptr<const class Symbol>> Lookup(const std::shared_ptr<const String> Name
-        ) const noexcept;
+        std::vector<const VariableSymbol*> LookupVariable(StringView Name) const noexcept;
+        std::vector<const FunctionSymbol*> LookupFunction(StringView Name) const noexcept;
+        std::vector<const TypeSymbol*> LookupType(StringView Name) const noexcept;
+        std::vector<const ParameterSymbol*> LookupParameter(StringView Name) const noexcept;
+        std::vector<const Symbol*> Lookup(const StringView) const noexcept;
 
-        std::vector<std::shared_ptr<const class VariableSymbol>> DeclaredVariables() const noexcept;
-        std::vector<std::shared_ptr<const class FunctionSymbol>> DeclaredFunctions() const noexcept;
-        std::vector<std::shared_ptr<const class TypeSymbol>> DeclaredTypes() const noexcept;
-        std::vector<std::shared_ptr<const class ParameterSymbol>> DeclaredParameters() const noexcept;
-        std::vector<std::shared_ptr<const class Symbol>> DeclaredSymbols() const noexcept;
+        std::vector<const VariableSymbol*> DeclaredVariables() const noexcept;
+        std::vector<const FunctionSymbol*> DeclaredFunctions() const noexcept;
+        std::vector<const TypeSymbol*> DeclaredTypes() const noexcept;
+        std::vector<const ParameterSymbol*> DeclaredParameters() const noexcept;
+        std::vector<const Symbol*> DeclaredSymbols() const noexcept;
 
-        NullableSharedPtr<const BoundScope> Parent;
-        std::vector<std::shared_ptr<const BoundScope>> Children;
+        NullablePointer<const BoundScope> Parent;
+        std::vector<const BoundScope*> Children;
     };
 }; // namespace Mamba

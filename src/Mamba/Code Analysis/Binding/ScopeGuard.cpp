@@ -1,12 +1,12 @@
 #include "ScopeGuard.h"
 
-#include "BoundScope.h"
-
 using namespace Mamba;
 
-ScopeGuard::ScopeGuard(std::shared_ptr<class BoundScope>& Scope) noexcept :
+ScopeGuard::ScopeGuard(BoundScope*& Scope) noexcept :
     Scope(Scope), Leaved()
 {
+    // The result of Scope.DeclareScope() is the child scope of the current scope,
+    // which is deleted when the parent scope is deconstructed.
     Scope = Scope->DeclareScope();
 }
 
@@ -24,6 +24,7 @@ void ScopeGuard::PreLeave() noexcept
 {
     // The parent of the scope is constructed in the constructor,
     // which is guaranteed to be non-const here.
-    Scope = std::const_pointer_cast<BoundScope>(Scope->Parent);
+    Scope = const_cast<BoundScope*>(Scope->Parent);
+
     Leaved = true;
 }

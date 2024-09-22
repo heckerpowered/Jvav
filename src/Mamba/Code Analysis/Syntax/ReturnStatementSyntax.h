@@ -1,8 +1,8 @@
 #pragma once
 
+#include "ExpressionSyntax.h"
 #include "StatementSyntax.h"
-
-#include <memory>
+#include "SyntaxToken.h"
 
 namespace Mamba
 {
@@ -12,15 +12,20 @@ namespace Mamba
         using Super = StatementSyntax;
 
         [[nodiscard]] ReturnStatementSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> ReturnKeyword,
-            const NullableSharedPtr<const class ExpressionSyntax> Expression
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* ReturnKeyword,
+            NullablePointer<const ExpressionSyntax> Expression
         ) noexcept;
 
-        SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        ~ReturnStatementSyntax() noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> ReturnKeyword;
-        const NullableSharedPtr<const class ExpressionSyntax> Expression;
+        SyntaxKind Kind() const noexcept override;
+
+        const SyntaxToken* ReturnKeyword;
+        NullablePointer<const ExpressionSyntax> Expression;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

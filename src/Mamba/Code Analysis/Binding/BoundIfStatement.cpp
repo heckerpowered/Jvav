@@ -2,14 +2,16 @@
 
 using namespace Mamba;
 
-BoundIfStatement::BoundIfStatement(
-    const std::shared_ptr<const SyntaxNode> Syntax,
-    const std::shared_ptr<const BoundExpression> Condition,
-    const std::shared_ptr<const BoundStatement> ThenStatement,
-    const NullableSharedPtr<const BoundStatement> ElseStatement
-) noexcept :
+BoundIfStatement::BoundIfStatement(const SyntaxNode* Syntax, const BoundExpression* Condition, const BoundStatement* ThenStatement, NullablePointer<const BoundStatement> ElseStatement) noexcept :
     Super(Syntax), Condition(Condition), ThenStatement(ThenStatement), ElseStatement(ElseStatement)
 {
+}
+
+BoundIfStatement::~BoundIfStatement() noexcept
+{
+    delete Condition;
+    delete ThenStatement;
+    delete ElseStatement;
 }
 
 BoundNodeKind BoundIfStatement::Kind() const noexcept

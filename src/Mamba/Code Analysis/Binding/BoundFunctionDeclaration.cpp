@@ -2,13 +2,17 @@
 
 using namespace Mamba;
 
-Mamba::BoundFunctionDeclaration::BoundFunctionDeclaration(
-    const std::shared_ptr<const class SyntaxNode> Syntax,
-    const std::shared_ptr<const class BoundStatement> Body,
-    const std::shared_ptr<const class BoundScope> Scope
+BoundFunctionDeclaration::BoundFunctionDeclaration(
+    const SyntaxNode* Syntax,
+    const BoundStatement* Body
 ) noexcept :
-    Super(Syntax), Body(Body), Scope(Scope)
+    Super(Syntax), Body(Body)
 {
+}
+
+BoundFunctionDeclaration::~BoundFunctionDeclaration() noexcept
+{
+    delete Body;
 }
 
 BoundNodeKind BoundFunctionDeclaration::Kind() const noexcept

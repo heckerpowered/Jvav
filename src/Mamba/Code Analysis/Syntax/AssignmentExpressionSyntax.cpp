@@ -1,24 +1,43 @@
 #include "AssignmentExpressionSyntax.h"
 
-namespace Mamba
+using namespace Mamba;
+
+AssignmentExpressionSyntax::AssignmentExpressionSyntax(
+    const class SyntaxTree* SyntaxTree,
+    const SyntaxToken* IdentifierToken,
+    const SyntaxToken* AssignmentToken,
+    const ExpressionSyntax* Expression
+) noexcept :
+    Super(SyntaxTree), IdentifierToken(IdentifierToken), AssignmentToken(AssignmentToken), Expression(Expression)
 {
-    AssignmentExpressionSyntax::AssignmentExpressionSyntax(
-        const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-        const std::shared_ptr<const class SyntaxToken> IdentifierToken,
-        const std::shared_ptr<const class SyntaxToken> AssignmentToken,
-        const std::shared_ptr<const ExpressionSyntax> Expression
-    ) noexcept :
-        Super(SyntaxTree), IdentifierToken(IdentifierToken), AssignmentToken(AssignmentToken), Expression(Expression)
-    {
-    }
+}
 
-    std::vector<std::shared_ptr<const SyntaxNode>> AssignmentExpressionSyntax::Children() const noexcept
-    {
-        return { IdentifierToken, AssignmentToken, Expression };
-    }
+AssignmentExpressionSyntax::~AssignmentExpressionSyntax() noexcept
+{
+    delete Expression;
+}
 
-    SyntaxKind AssignmentExpressionSyntax::Kind() const noexcept
+SyntaxKind AssignmentExpressionSyntax::Kind() const noexcept
+{
+    return SyntaxKind::AssignmentExpression;
+}
+
+std::size_t AssignmentExpressionSyntax::ChildrenCount() const noexcept
+{
+    return 3;
+}
+
+const SyntaxNode* AssignmentExpressionSyntax::ChildAt(std::size_t Index) const noexcept
+{
+    switch (Index)
     {
-        return SyntaxKind::AssignmentExpression;
+        case 0:
+            return IdentifierToken;
+        case 1:
+            return AssignmentToken;
+        case 2:
+            return Expression;
+        default:
+            ReportChildrenAccessOutOfBounds(Index);
     }
-} // namespace Mamba
+}

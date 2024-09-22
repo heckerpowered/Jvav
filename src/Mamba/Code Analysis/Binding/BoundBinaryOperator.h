@@ -1,36 +1,18 @@
 #pragma once
 
-#include <memory>
-
 #include "MambaCore.h"
 
 #include "BoundBinaryOperatorKind.h"
 #include "SyntaxKind.h"
+#include "TypeSymbol.h"
 
 namespace Mamba
 {
     class BoundBinaryOperator
     {
-        [[nodiscard]] BoundBinaryOperator(
-            const SyntaxKind SyntaxKind,
-            const BoundBinaryOperatorKind Kind,
-            const std::shared_ptr<const class TypeSymbol> Type
-        ) noexcept;
-
-        [[nodiscard]] BoundBinaryOperator(
-            const SyntaxKind SyntaxKind,
-            const BoundBinaryOperatorKind Kind,
-            const std::shared_ptr<const class TypeSymbol> OperandType,
-            const std::shared_ptr<const class TypeSymbol> ResultType
-        ) noexcept;
-
-        [[nodiscard]] BoundBinaryOperator(
-            const SyntaxKind SyntaxKind,
-            const BoundBinaryOperatorKind Kind,
-            const std::shared_ptr<const class TypeSymbol> LeftType,
-            const std::shared_ptr<const class TypeSymbol> RightType,
-            const std::shared_ptr<const class TypeSymbol> ResultType
-        ) noexcept;
+        [[nodiscard]] BoundBinaryOperator(SyntaxKind SyntaxKind, BoundBinaryOperatorKind Kind, const TypeSymbol* Type) noexcept;
+        [[nodiscard]] BoundBinaryOperator(SyntaxKind SyntaxKind, BoundBinaryOperatorKind Kind, const TypeSymbol* OperandType, const TypeSymbol* ResultType) noexcept;
+        [[nodiscard]] BoundBinaryOperator(SyntaxKind SyntaxKind, BoundBinaryOperatorKind Kind, const TypeSymbol* LeftType, const TypeSymbol* RightType, const TypeSymbol* ResultType) noexcept;
 
         BoundBinaryOperator(const BoundBinaryOperator&) = delete;
         BoundBinaryOperator(BoundBinaryOperator&&) = delete;
@@ -39,20 +21,20 @@ namespace Mamba
         BoundBinaryOperator& operator=(BoundBinaryOperator&&) = delete;
 
     public:
-        const enum SyntaxKind SyntaxKind;
-        const BoundBinaryOperatorKind Kind;
-        const std::shared_ptr<const class TypeSymbol> LeftType;
-        const std::shared_ptr<const class TypeSymbol> RightType;
-        const std::shared_ptr<const class TypeSymbol> Type;
+        enum SyntaxKind Kind;
+        BoundBinaryOperatorKind BoundKind;
+        const TypeSymbol* LeftType;
+        const TypeSymbol* RightType;
+        const TypeSymbol* Type;
 
     private:
         static BoundBinaryOperator Operators[];
 
     public:
         static NullablePointer<const BoundBinaryOperator> Bind(
-            const enum SyntaxKind SyntaxKind,
-            const std::shared_ptr<const class TypeSymbol> LeftType,
-            const std::shared_ptr<const class TypeSymbol> RightType
+            SyntaxKind Kind,
+            const TypeSymbol* LeftType,
+            const TypeSymbol* RightType
         ) noexcept;
     };
 } // namespace Mamba

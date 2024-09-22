@@ -3,7 +3,6 @@
 #include "ExpressionSyntax.h"
 #include "SyntaxToken.h"
 #include "SyntaxTree.h"
-#include <memory>
 
 namespace Mamba
 {
@@ -13,17 +12,22 @@ namespace Mamba
         using Super = ExpressionSyntax;
 
         [[nodiscard]] ParenthesizedExpressionSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-            const std::shared_ptr<const class ExpressionSyntax> Expression,
-            const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* OpenParenthesisToken,
+            const ExpressionSyntax* Expression,
+            const SyntaxToken* CloseParenthesisToken
         ) noexcept;
 
-        SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
+        ~ParenthesizedExpressionSyntax() noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken;
-        const std::shared_ptr<const class ExpressionSyntax> Expression;
-        const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken;
+        SyntaxKind Kind() const noexcept override;
+
+        const SyntaxToken* OpenParenthesisToken;
+        const ExpressionSyntax* Expression;
+        const SyntaxToken* CloseParenthesisToken;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba

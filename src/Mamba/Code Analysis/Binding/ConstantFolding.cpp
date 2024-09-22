@@ -1,41 +1,36 @@
 #include "ConstantFolding.h"
 
-#include "BoundBinaryOperatorKind.h"
-#include "BoundConstant.h"
-#include "Literal.h"
-#include "TypeSymbol.h"
-
 using namespace Mamba;
 
-NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
+Constant ConstantFolding::Fold(
     const BoundUnaryOperator& Operator,
-    const std::shared_ptr<const class BoundExpression> Operand
+    const BoundExpression* Operand
 )
 {
-    if (!Operand->ConstantValue())
+    if (!Operand->ConstantValue().IsValid())
     {
         return {};
     }
 
-    switch (Operator.Kind)
+    switch (Operator.BoundKind)
     {
         case BoundUnaryOperatorKind::Identity:
             return Operand->ConstantValue();
         case BoundUnaryOperatorKind::Negation:
-            return std::make_shared<const BoundConstant>(Literal::Negative(*Operand->ConstantValue()->Value));
+            return -Operand->ConstantValue();
         case BoundUnaryOperatorKind::LogicalNegation:
-            return std::make_shared<const BoundConstant>(Literal::LogicalNegative(*Operand->ConstantValue()->Value));
+            return !Operand->ConstantValue();
         case BoundUnaryOperatorKind::OnesComplement:
-            return std::make_shared<const BoundConstant>(Literal::OnesComplement(*Operand->ConstantValue()->Value));
+            return ~Operand->ConstantValue();
         default:
             return {};
     }
 }
 
-NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
-    const std::shared_ptr<const class BoundExpression>& Left,
+Constant ConstantFolding::Fold(
+    const BoundExpression* Left,
     const BoundBinaryOperator& Operator,
-    const std::shared_ptr<const class BoundExpression> Right
+    const BoundExpression* Right
 ) noexcept
 {
     const auto LeftConstant = Left->ConstantValue();
@@ -44,82 +39,62 @@ NullableSharedPtr<const class BoundConstant> ConstantFolding::Fold(
     // Special case && and || because there are cases where only one
     // side needs to be known.
 
-    if (Operator.Kind == BoundBinaryOperatorKind::LogicalAnd)
+    if (Operator.BoundKind == BoundBinaryOperatorKind::LogicalAnd)
     {
-        if ((LeftConstant && !(*LeftConstant)->GetValue<LiteralType::Boolean>()) // Wrap
-            || (RightConstant && !(*RightConstant)->GetValue<LiteralType::Boolean>()))
+        if ((LeftConstant.IsValid() && !LeftConstant.Get<bool>()) ||
+            (RightConstant.IsValid() && !RightConstant.Get<bool>()))
         {
-            return std::make_shared<const BoundConstant>(std::make_shared<const Literal>(false));
+            return false;
         }
     }
 
-    if (Operator.Kind == BoundBinaryOperatorKind::LogicalOr)
+    if (Operator.BoundKind == BoundBinaryOperatorKind::LogicalOr)
     {
-        if ((LeftConstant && (*LeftConstant)->GetValue<LiteralType::Boolean>()) // Wrap
-            || (RightConstant && (*RightConstant)->GetValue<LiteralType::Boolean>()))
+        if ((LeftConstant.IsValid() && LeftConstant.Get<bool>()) ||
+            (RightConstant.IsValid() && RightConstant.Get<bool>()))
         {
-            return std::make_shared<const BoundConstant>(std::make_shared<const Literal>(true));
+            return true;
         }
     }
 
-    if (!LeftConstant || !RightConstant)
+    if (!LeftConstant.IsValid() || !RightConstant.IsValid())
     {
         return {};
     }
 
-    const auto LeftValue = LeftConstant->Value;
-    const auto RightValue = RightConstant->Value;
-
-    switch (Operator.Kind)
+    switch (Operator.BoundKind)
     {
         case BoundBinaryOperatorKind::Addition:
-            if (Left->Type() == TypeSymbol::Int || Left->Type() == TypeSymbol::String)
-            {
-                return std::make_shared<const BoundConstant>(*LeftValue + *RightValue);
-            }
-            [[fallthrough]];
+            return LeftConstant + RightConstant;
         case BoundBinaryOperatorKind::Subtraction:
-            if (Left->Type() == TypeSymbol::Int)
-            {
-                return std::make_shared<const BoundConstant>(*LeftValue - *RightValue);
-            }
-            [[fallthrough]];
+            return LeftConstant - RightConstant;
         case BoundBinaryOperatorKind::Multiplication:
-            if (Left->Type() == TypeSymbol::Int)
-            {
-                return std::make_shared<const BoundConstant>(*LeftValue * *RightValue);
-            }
-            [[fallthrough]];
+            return LeftConstant * RightConstant;
         case BoundBinaryOperatorKind::Division:
-            if (Left->Type() == TypeSymbol::Int)
-            {
-                return std::make_shared<const BoundConstant>(*LeftValue / *RightValue);
-            }
-            [[fallthrough]];
+            return LeftConstant / RightConstant;
         case BoundBinaryOperatorKind::LogicalAnd:
-            return std::make_shared<const BoundConstant>(*LeftValue && *RightValue);
+            return LeftConstant && RightConstant;
         case BoundBinaryOperatorKind::LogicalOr:
-            return std::make_shared<const BoundConstant>(*LeftValue || *RightValue);
+            return LeftConstant || RightConstant;
         case BoundBinaryOperatorKind::BitwiseAnd:
-            return std::make_shared<const BoundConstant>(*LeftValue & *RightValue);
+            return LeftConstant & RightConstant;
         case BoundBinaryOperatorKind::BitwiseOr:
-            return std::make_shared<const BoundConstant>(*LeftValue | *RightValue);
+            return LeftConstant | RightConstant;
         case BoundBinaryOperatorKind::BitwiseXor:
-            return std::make_shared<const BoundConstant>(*LeftValue ^ *RightValue);
+            return LeftConstant ^ RightConstant;
         case BoundBinaryOperatorKind::Equals:
-            return std::make_shared<const BoundConstant>(*LeftValue == *RightValue);
+            return LeftConstant == RightConstant;
         case BoundBinaryOperatorKind::NotEquals:
-            return std::make_shared<const BoundConstant>(*LeftValue != *RightValue);
+            return LeftConstant != RightConstant;
         case BoundBinaryOperatorKind::Less:
-            return std::make_shared<const BoundConstant>(*LeftValue < *RightValue);
+            return LeftConstant < RightConstant;
         case BoundBinaryOperatorKind::LessOrEquals:
-            return std::make_shared<const BoundConstant>(*LeftValue <= *RightValue);
+            return LeftConstant <= RightConstant;
         case BoundBinaryOperatorKind::Greater:
-            return std::make_shared<const BoundConstant>(*LeftValue > *RightValue);
+            return LeftConstant > RightConstant;
         case BoundBinaryOperatorKind::GreaterOrEquals:
-            return std::make_shared<const BoundConstant>(*LeftValue >= *RightValue);
+            return LeftConstant >= RightConstant;
     }
 
-    std::unreachable();
     return {};
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "MambaCore.h"
 #include "VariableSymbol.h"
 
@@ -12,14 +10,11 @@ namespace Mamba
     public:
         using Super = VariableSymbol;
 
-        [[nodiscard]] ParameterSymbol(
-            const std::shared_ptr<const String> Name,
-            const std::shared_ptr<const class TypeSymbol> Type,
-            const std::size_t Oridinal
-        ) noexcept;
-
-        const std::size_t Oridinal;
+        [[nodiscard]] ParameterSymbol(StringView Name, const TypeSymbol* Type, std::size_t Oridinal) noexcept;
+        ~ParameterSymbol() noexcept override;
 
         SymbolKind Kind() const noexcept override;
+
+        std::size_t Oridinal;
     };
 } // namespace Mamba

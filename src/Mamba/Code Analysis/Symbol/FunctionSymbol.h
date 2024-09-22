@@ -2,9 +2,8 @@
 
 #include "BoundFunctionDeclaration.h"
 #include "MambaCore.h"
+#include "ParameterSymbol.h"
 #include "Symbol.h"
-#include <memory>
-#include <vector>
 
 namespace Mamba
 {
@@ -13,24 +12,13 @@ namespace Mamba
     public:
         using Super = Symbol;
 
-        [[nodiscard]] FunctionSymbol(
-            const std::shared_ptr<const String> Name,
-            const std::span<std::shared_ptr<const class ParameterSymbol>> Parameters,
-            const std::shared_ptr<const class TypeSymbol> Type,
-            const std::shared_ptr<const class BoundFunctionDeclaration> BoundDeclaration
-        ) noexcept;
-
-        [[nodiscard]] FunctionSymbol(
-            const std::shared_ptr<const String> Name,
-            std::vector<std::shared_ptr<const class ParameterSymbol>>&& Parameters,
-            const std::shared_ptr<const class TypeSymbol> Type,
-            const std::shared_ptr<const class BoundFunctionDeclaration> BoundDeclaration
-        ) noexcept;
-
-        std::vector<std::shared_ptr<const class ParameterSymbol>> Parameters;
-        std::shared_ptr<const class BoundFunctionDeclaration> BoundDeclaration;
-        std::shared_ptr<const class TypeSymbol> Type;
+        [[nodiscard]] FunctionSymbol(StringView Name, std::vector<const ParameterSymbol*>&& Parameters, const TypeSymbol* Type, const BoundFunctionDeclaration* BoundDeclaration) noexcept;
+        ~FunctionSymbol() noexcept override;
 
         SymbolKind Kind() const noexcept override;
+
+        std::vector<const ParameterSymbol*> Parameters;
+        const BoundFunctionDeclaration* BoundDeclaration;
+        const TypeSymbol* Type;
     };
 } // namespace Mamba

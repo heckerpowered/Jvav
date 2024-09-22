@@ -4,7 +4,6 @@
 #include "SeperatedSyntaxList.h"
 #include "SyntaxNode.h"
 #include "SyntaxToken.h"
-#include <memory>
 
 namespace Mamba
 {
@@ -14,18 +13,24 @@ namespace Mamba
         using Super = ExpressionSyntax;
 
         [[nodiscard]] CallExpressionSyntax(
-            const std::shared_ptr<const class SyntaxTree> SyntaxTree,
-            const std::shared_ptr<const class SyntaxToken> Identifier,
-            const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken,
-            const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>> Arguments,
-            const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken) noexcept;
+            const class SyntaxTree* SyntaxTree,
+            const SyntaxToken* Identifier,
+            const SyntaxToken* OpenParenthesisToken,
+            SeperatedSyntaxList<const ExpressionSyntax*> Arguments,
+            const SyntaxToken* CloseParenthesisToken
+        ) noexcept;
+
+        ~CallExpressionSyntax() noexcept override;
 
         SyntaxKind Kind() const noexcept override;
-        std::vector<std::shared_ptr<const class SyntaxNode>> Children() const noexcept override;
 
-        const std::shared_ptr<const class SyntaxToken> Identifier;
-        const std::shared_ptr<const class SyntaxToken> OpenParenthesisToken;
-        const std::shared_ptr<const SeperatedSyntaxList<std::shared_ptr<const class SyntaxNode>>> Arguments;
-        const std::shared_ptr<const class SyntaxToken> CloseParenthesisToken;
+        const SyntaxToken* Identifier;
+        const SyntaxToken* OpenParenthesisToken;
+        SeperatedSyntaxList<const ExpressionSyntax*> Arguments;
+        const SyntaxToken* CloseParenthesisToken;
+
+    private:
+        std::size_t ChildrenCount() const noexcept override;
+        const SyntaxNode* ChildAt(std::size_t Index) const noexcept override;
     };
 } // namespace Mamba
