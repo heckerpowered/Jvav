@@ -4,18 +4,18 @@
 
 using namespace Mamba;
 
-BoundBinaryOperator::BoundBinaryOperator(SyntaxKind Kind, BoundBinaryOperatorKind BoundKind, const TypeSymbol* Type) noexcept :
-    BoundBinaryOperator(Kind, BoundKind, Type, Type, Type)
+BoundBinaryOperator::BoundBinaryOperator(SyntaxKind Kind, BoundBinaryOperatorKind OperatorKind, const TypeSymbol* Type) noexcept :
+    BoundBinaryOperator(Kind, OperatorKind, Type, Type, Type)
 {
 }
 
-BoundBinaryOperator::BoundBinaryOperator(SyntaxKind Kind, BoundBinaryOperatorKind BoundKind, const TypeSymbol* OperandType, const TypeSymbol* ResultType) noexcept :
-    BoundBinaryOperator(Kind, BoundKind, OperandType, OperandType, ResultType)
+BoundBinaryOperator::BoundBinaryOperator(SyntaxKind Kind, BoundBinaryOperatorKind OperatorKind, const TypeSymbol* OperandType, const TypeSymbol* ResultType) noexcept :
+    BoundBinaryOperator(Kind, OperatorKind, OperandType, OperandType, ResultType)
 {
 }
 
-BoundBinaryOperator::BoundBinaryOperator(SyntaxKind Kind, BoundBinaryOperatorKind BoundKind, const TypeSymbol* LeftType, const TypeSymbol* RightType, const TypeSymbol* ResultType) noexcept :
-    Kind(Kind), BoundKind(BoundKind), LeftType(LeftType), RightType(RightType), Type(ResultType)
+BoundBinaryOperator::BoundBinaryOperator(SyntaxKind Kind, BoundBinaryOperatorKind OperatorKind, const TypeSymbol* LeftType, const TypeSymbol* RightType, const TypeSymbol* ResultType) noexcept :
+    Kind(Kind), OperatorKind(OperatorKind), LeftType(LeftType), RightType(RightType), Type(ResultType)
 {
 }
 

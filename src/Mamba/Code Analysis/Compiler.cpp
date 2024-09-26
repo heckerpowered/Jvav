@@ -107,10 +107,10 @@ void Compiler::Compile() noexcept
         PrintDiagnostics(Binder.Diagnostics);
     }
 
+    LLVMBackend::GenerateCode(BoundCompilationUnits, "Main");
+
     for (auto&& BoundCompilationUnit : BoundCompilationUnits)
     {
         delete BoundCompilationUnit;
     }
-
-    LLVMBackend::GenerateCode(BoundCompilationUnits, "Main");
 }

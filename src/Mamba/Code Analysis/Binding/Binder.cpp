@@ -4,6 +4,7 @@
 #include "BoundExpressionStatement.h"
 #include "MambaCore.h"
 #include "SyntaxFacts.h"
+#include "TypeSymbol.h"
 #include <source_location>
 
 using namespace Mamba;
@@ -464,7 +465,7 @@ NullablePointer<const TypeSymbol> Binder::BindTypeClause(NullablePointer<const T
     auto Types = Scope->LookupType(TypeClause->Identifier->Text());
     if (Types.empty())
     {
-        // TODO: Diagnostics - undeclaraed type
+        Diagnostics.ReportUndeclaredIdentifier(TypeClause->Identifier->Location(), TypeClause->Identifier->Text());
         return {};
     }
 
@@ -480,7 +481,17 @@ void Binder::DeclareBuiltinFunctions() noexcept
 {
 }
 
+void Binder::DeclareBuiltinTypes() noexcept
+{
+    Scope->Declare(&TypeSymbol::Int);
+    Scope->Declare(&TypeSymbol::Bool);
+    Scope->Declare(&TypeSymbol::String);
+    Scope->Declare(&TypeSymbol::Void);
+    Scope->Declare(&TypeSymbol::Double);
+}
+
 Binder::Binder(const class SyntaxTree* SyntaxTree) noexcept :
     Scope(new BoundScope(nullptr)), SyntaxTree(SyntaxTree)
 {
+    DeclareBuiltinTypes();
 }

@@ -355,9 +355,9 @@ namespace Mamba
         // one or more binary digits (0, 1)
 
         // The current character is guaranteed to be a digit
-        if (Current() != TEXT('0'))
+        if (Current() == TEXT('0') && IsOctalDigit(Lookahead()))
         {
-            ReadDecimal();
+            ReadOctal();
         }
         else if (Lookahead() == TEXT('x') || Lookahead() == TEXT('X'))
         {
@@ -367,8 +367,10 @@ namespace Mamba
         {
             ReadBinary();
         }
-
-        ReadOctal();
+        else
+        {
+            ReadDecimal();
+        }
 
         Kind = SyntaxKind::NumberToken;
     }
@@ -413,7 +415,7 @@ namespace Mamba
 
     void Lexer::ReadOctal() noexcept
     {
-        while (IsHexadecimalDigit(Current()))
+        while (IsOctalDigit(Current()))
         {
             ++Position;
         }

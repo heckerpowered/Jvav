@@ -39,7 +39,7 @@ Constant ConstantFolding::Fold(
     // Special case && and || because there are cases where only one
     // side needs to be known.
 
-    if (Operator.BoundKind == BoundBinaryOperatorKind::LogicalAnd)
+    if (Operator.OperatorKind == BoundBinaryOperatorKind::LogicalAnd)
     {
         if ((LeftConstant.IsValid() && !LeftConstant.Get<bool>()) ||
             (RightConstant.IsValid() && !RightConstant.Get<bool>()))
@@ -48,7 +48,7 @@ Constant ConstantFolding::Fold(
         }
     }
 
-    if (Operator.BoundKind == BoundBinaryOperatorKind::LogicalOr)
+    if (Operator.OperatorKind == BoundBinaryOperatorKind::LogicalOr)
     {
         if ((LeftConstant.IsValid() && LeftConstant.Get<bool>()) ||
             (RightConstant.IsValid() && RightConstant.Get<bool>()))
@@ -62,7 +62,7 @@ Constant ConstantFolding::Fold(
         return {};
     }
 
-    switch (Operator.BoundKind)
+    switch (Operator.OperatorKind)
     {
         case BoundBinaryOperatorKind::Addition:
             return LeftConstant + RightConstant;

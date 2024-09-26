@@ -26,6 +26,11 @@ std::size_t TextLocation::EndLine() const noexcept
 
 std::size_t TextLocation::AbsoluteEndCharacter() const noexcept
 {
+    return Text.RelativeEnd(View);
+}
+
+std::size_t TextLocation::RelativeEndCharacter() const noexcept
+{
     auto Line = Text.Lines()[EndLine()];
     return AbsoluteEndCharacter() - Line.End();
 }

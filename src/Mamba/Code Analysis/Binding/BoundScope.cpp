@@ -1,4 +1,5 @@
 #include "BoundScope.h"
+#include "TypeSymbol.h"
 
 using namespace Mamba;
 
@@ -7,6 +8,16 @@ BoundScope::BoundScope(NullablePointer<const BoundScope> Parent) noexcept :
 
 BoundScope::~BoundScope() noexcept
 {
+    for (auto Symbol : DeclaredSymbols())
+    {
+        if (TypeSymbol::IsBuiltInType(static_cast<const TypeSymbol*>(Symbol)))
+        {
+            continue;
+        }
+
+        delete Symbol;
+    }
+
     for (auto Child : Children)
     {
         delete Child;
