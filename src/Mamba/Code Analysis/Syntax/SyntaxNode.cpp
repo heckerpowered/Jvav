@@ -22,8 +22,8 @@ const SyntaxTree* Mamba::SyntaxNode::Tree() const noexcept
 
 StringView SyntaxNode::Text() const noexcept
 {
-    const auto First = Children().front()->Text();
-    const auto Last = Children().back()->Text();
+    auto First = Children().front()->Text();
+    auto Last = Children().back()->Text();
     return { First.begin(), Last.end() };
 }
 

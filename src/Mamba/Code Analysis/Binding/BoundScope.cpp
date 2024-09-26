@@ -20,7 +20,7 @@ void BoundScope::Declare(const Symbol* Symbol) noexcept
 
 BoundScope* BoundScope::DeclareScope() noexcept
 {
-    const auto ChildScope = new BoundScope(this);
+    auto ChildScope = new BoundScope(this);
     Children.emplace_back(ChildScope);
     return ChildScope;
 }
@@ -59,7 +59,7 @@ std::vector<const ParameterSymbol*> BoundScope::LookupParameter(StringView Name)
 
 std::vector<const Symbol*> BoundScope::Lookup(StringView Name) const noexcept
 {
-    const auto Result = Symbols.find(Name);
+    auto Result = Symbols.find(Name);
     if (Result != Symbols.end()) [[unlikely]]
     {
         return Result->second;

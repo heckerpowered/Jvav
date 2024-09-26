@@ -30,9 +30,9 @@ void Compiler::PrivateAddSourceFile(const std::string_view FileName) noexcept
 {
     try
     {
-        const auto FileLoader = fast_io::native_file_loader(FileName);
+        auto FileLoader = fast_io::native_file_loader(FileName);
 
-        const auto Info = SourceTextInfo{
+        auto Info = SourceTextInfo{
             .FileName = Concat(fast_io::mnp::code_cvt(FileName)),
             .Text = String(FileLoader.begin(), FileLoader.end())
         };

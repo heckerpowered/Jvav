@@ -108,7 +108,7 @@ std::vector<TextLine> SourceText::SplitLines(const SourceTextInfo& Info)
     auto LineStart = std::size_t();
 #endif
 
-    const auto& Text = Info.Text;
+    auto& Text = Info.Text;
 
     while (Position < Text.length())
     {

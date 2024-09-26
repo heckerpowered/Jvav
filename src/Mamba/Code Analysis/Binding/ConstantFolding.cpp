@@ -33,8 +33,8 @@ Constant ConstantFolding::Fold(
     const BoundExpression* Right
 ) noexcept
 {
-    const auto LeftConstant = Left->ConstantValue();
-    const auto RightConstant = Right->ConstantValue();
+    auto LeftConstant = Left->ConstantValue();
+    auto RightConstant = Right->ConstantValue();
 
     // Special case && and || because there are cases where only one
     // side needs to be known.

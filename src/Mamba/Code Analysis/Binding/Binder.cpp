@@ -65,9 +65,9 @@ std::vector<const ParameterSymbol*> Binder::BindParameter(
          Parameters |
              std::views::transform([](auto&& Node) { return dynamic_cast<const ParameterSyntax*>(Node); }) | std::views::enumerate)
     {
-        const auto Name = Parameter->Identifier->Text();
-        const auto Type = new TypeSymbol(Parameter->Type->Identifier->Text());
-        const auto ParameterSymbol = new class ParameterSymbol(Name, Type, Index);
+        auto Name = Parameter->Identifier->Text();
+        auto Type = new TypeSymbol(Parameter->Type->Identifier->Text());
+        auto ParameterSymbol = new class ParameterSymbol(Name, Type, Index);
         Scope->Declare(ParameterSymbol);
     }
 #else
@@ -77,9 +77,9 @@ std::vector<const ParameterSymbol*> Binder::BindParameter(
     {
         ++Index;
 
-        const auto Name = Parameter->Identifier->Text();
-        const auto Type = new TypeSymbol(Parameter->Type->Identifier->Text());
-        const auto ParameterSymbol = new class ParameterSymbol(Name, Type, Index);
+        auto Name = Parameter->Identifier->Text();
+        auto Type = new TypeSymbol(Parameter->Type->Identifier->Text());
+        auto ParameterSymbol = new class ParameterSymbol(Name, Type, Index);
         Scope->Declare(ParameterSymbol);
     }
 
@@ -298,7 +298,7 @@ BoundStatement* Binder::BindContinueStatement(const ContinueStatementSyntax* Con
 BoundReturnStatement* Binder::BindReturnStatement(const ReturnStatementSyntax* ReturnStatement) noexcept
 {
     // TODO: Diagnostics
-    const auto Expression = BindExpression(ReturnStatement->Expression);
+    auto Expression = BindExpression(ReturnStatement->Expression);
     return new BoundReturnStatement(ReturnStatement, Expression);
 }
 
@@ -354,12 +354,12 @@ BoundUnaryExpression* Binder::BindUnaryExpression(const UnaryExpressionSyntax* U
 
 BoundBinaryExpression* Binder::BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept
 {
-    const auto BoundLeft = BindExpression(BinaryExpression->Left);
-    const auto BoundRight = BindExpression(BinaryExpression->Right);
+    auto BoundLeft = BindExpression(BinaryExpression->Left);
+    auto BoundRight = BindExpression(BinaryExpression->Right);
 
     // TODO: Check operand types
 
-    const auto BoundOperator = BoundBinaryOperator::Bind(
+    auto BoundOperator = BoundBinaryOperator::Bind(
         BinaryExpression->OperatorToken->Kind(),
         BoundLeft->Type(),
         BoundRight->Type()
@@ -422,7 +422,7 @@ BoundCallExpression* Binder::BindCallExpression(const CallExpressionSyntax* Call
     for (auto&& Argument : CallExpression->Arguments.Nodes())
     {
         // Argument is guaranteed to be a expression by the parser.
-        const auto BoundArgument = BindExpression(static_cast<const ExpressionSyntax*>(Argument));
+        auto BoundArgument = BindExpression(static_cast<const ExpressionSyntax*>(Argument));
 
         // TODO: Use hatcher to avoid copy
         BoundArguments.emplace_back(BoundArgument);
@@ -431,7 +431,7 @@ BoundCallExpression* Binder::BindCallExpression(const CallExpressionSyntax* Call
     // TODO: Refinement Jvav standard
     // [basic.lookup]/? : If the declarations found by name lookup all denote functions,
     //                    the declarations are said to form an overload set.
-    const auto FunctionSet = Scope->LookupFunction(CallExpression->Identifier->Text());
+    auto FunctionSet = Scope->LookupFunction(CallExpression->Identifier->Text());
     if (FunctionSet.empty())
     {
         // TODO: Diagnostics - undeclaraed function
@@ -440,7 +440,7 @@ BoundCallExpression* Binder::BindCallExpression(const CallExpressionSyntax* Call
     }
 
     // TODO: Overload resolution. Before overload resolution is avaiable, function override is not permitted.
-    const auto Function = FunctionSet.front();
+    auto Function = FunctionSet.front();
 
     if (CallExpression->Arguments.Count() != Function->Parameters.size())
     {
@@ -461,7 +461,7 @@ NullablePointer<const TypeSymbol> Binder::BindTypeClause(NullablePointer<const T
         return {};
     }
 
-    const auto Types = Scope->LookupType(TypeClause->Identifier->Text());
+    auto Types = Scope->LookupType(TypeClause->Identifier->Text());
     if (Types.empty())
     {
         // TODO: Diagnostics - undeclaraed type
