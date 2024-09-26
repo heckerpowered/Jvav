@@ -14,8 +14,6 @@ namespace Mamba
     public:
         using Super = std::vector<struct Diagnostic>;
 
-        void AddRange(const std::vector<struct Diagnostic>& Diagnostics) noexcept;
-
     private:
         template<typename... T>
         void ReportError(const TextLocation Location, T&&... Args) noexcept

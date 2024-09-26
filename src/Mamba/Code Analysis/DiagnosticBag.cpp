@@ -22,18 +22,6 @@
 
 namespace Mamba
 {
-    void DiagnosticBag::AddRange(const std::vector<Diagnostic>& Diagnostics) noexcept
-    {
-#if __cpp_lib_containers_ranges == 202202L
-        append_range(Diagnostics);
-#else
-        for (auto&& Diagnostic : Diagnostics)
-        {
-            emplace_back(std::forward<decltype(Diagnostic)>(Diagnostic));
-        }
-#endif
-    }
-
     void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept
     {
         ReportError(Location, TEXT("无效字符 '"), fast_io::mnp::chvw(Character), TEXT("'."));
