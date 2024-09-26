@@ -89,7 +89,8 @@ namespace Mamba
         ScopeGuard EnterScope() noexcept;
 
         void DeclareBuiltinFunctions() noexcept;
-        void DeclareBuiltinFunction();
+        void DeclareBuiltinFunction() noexcept;
+        void DeclareBuiltinTypes() noexcept;
 
     public:
         DiagnosticBag Diagnostics;

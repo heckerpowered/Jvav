@@ -12,9 +12,10 @@ namespace Mamba
 
     protected:
         [[nodiscard]] Symbol(StringView Name) noexcept;
-        virtual ~Symbol() = default;
 
     public:
+        virtual ~Symbol() = default;
+
         [[nodiscard]] StringView Name() const noexcept;
         [[nodiscard]] virtual SymbolKind Kind() const noexcept = 0;
         [[nodiscard]] bool IsFunction() const noexcept;

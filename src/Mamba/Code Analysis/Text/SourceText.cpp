@@ -108,24 +108,22 @@ std::vector<TextLine> SourceText::SplitLines(const SourceTextInfo& Info)
     auto LineStart = std::size_t();
 #endif
 
-    const auto& Text = Info.Text;
+    auto& Text = Info.Text;
 
     while (Position < Text.length())
     {
-        auto LineBreakWidth = GetLineBreakWidth(Text, Position);
+        auto LineBreakWidth = GetLineBreakWidth(Text, Position++);
         if (LineBreakWidth == 0)
         {
-            ++Position;
+            continue;
         }
-        else
-        {
-            auto LineLength = Position - LineStart;
-            auto LineLengthIncludingLineBreak = LineLength + LineBreakWidth;
-            Lines.emplace_back(LineStart + 1, LineLength, LineLengthIncludingLineBreak);
 
-            Position += LineBreakWidth;
-            LineStart = Position;
-        }
+        auto LineLength = Position - LineStart;
+        auto LineLengthIncludingLineBreak = LineLength + LineBreakWidth;
+        Lines.emplace_back(LineStart, LineLength, LineLengthIncludingLineBreak);
+
+        Position += LineBreakWidth;
+        LineStart = Position;
     }
 
     if (Position >= LineStart)

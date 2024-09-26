@@ -75,7 +75,7 @@ namespace Mamba
         void ReportInvalidNumber(StringView LiteralText)
             requires(Base == 2 || Base == 8 || Base == 10 || Base == 16)
         {
-            const auto Location = TextLocation(Text(), LiteralText);
+            auto Location = TextLocation(Text(), LiteralText);
             if constexpr (Base == 10)
             {
                 Diagnostics.ReportInvalidDecimal(Location, LiteralText);

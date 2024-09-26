@@ -47,7 +47,7 @@ const SyntaxToken* Parser::Current() noexcept
 
 const SyntaxToken* Parser::NextToken() noexcept
 {
-    const auto Current = this->Current();
+    auto Current = this->Current();
     ++Position;
     return Current;
 }
@@ -161,7 +161,7 @@ ParameterSyntax* Parser::ParseParameter() noexcept
 
 MemberSyntax* Parser::ParseGlobalStatement() noexcept
 {
-    const auto Statement = ParseStatement();
+    auto Statement = ParseStatement();
     return new GlobalStatementSyntax(SyntaxTree, Statement);
 }
 
@@ -369,9 +369,9 @@ ExpressionSyntax* Parser::ParseAssignmentExpression() noexcept
         case SyntaxKind::HatEqualsToken:
         case SyntaxKind::EqualsToken:
         {
-            const auto IdentifierToken = NextToken();
-            const auto OperatorToken = NextToken();
-            const auto Right = ParseAssignmentExpression();
+            auto IdentifierToken = NextToken();
+            auto OperatorToken = NextToken();
+            auto Right = ParseAssignmentExpression();
             return new AssignmentExpressionSyntax(SyntaxTree, IdentifierToken, OperatorToken, Right);
         }
         default:
@@ -516,6 +516,6 @@ SeperatedSyntaxList<ExpressionSyntax*> Parser::ParseArguments() noexcept
 
 NameExpressionSyntax* Parser::ParseNameExpression() noexcept
 {
-    const auto IdentifierToken = MatchToken(SyntaxKind::IdentifierToken);
+    auto IdentifierToken = MatchToken(SyntaxKind::IdentifierToken);
     return new NameExpressionSyntax(SyntaxTree, IdentifierToken);
 }

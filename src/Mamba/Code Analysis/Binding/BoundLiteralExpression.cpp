@@ -2,7 +2,9 @@
 #include "MambaCore.h"
 #include "TypeSymbol.h"
 
+#include <cstdint>
 #include <fast_io.h>
+#include <limits>
 #include <source_location>
 #include <utility>
 
@@ -55,5 +57,18 @@ const TypeSymbol* BoundLiteralExpression::Type() const noexcept
 
 Constant BoundLiteralExpression::ConstantValue() const noexcept
 {
-    return std::visit([](auto Value) -> Constant { return Value; }, Value.Value);
+    return std::visit(
+        []<typename T>(T&& Value) -> Constant {
+            if constexpr (std::is_same_v<std::decay_t<T>, LiteralType::Number>)
+            {
+                if (Value <= static_cast<std::uint64_t>(std::numeric_limits<std::int32_t>::max()))
+                {
+                    return static_cast<std::int32_t>(Value);
+                }
+            }
+
+            return Value;
+        },
+        Value.Value
+    );
 }

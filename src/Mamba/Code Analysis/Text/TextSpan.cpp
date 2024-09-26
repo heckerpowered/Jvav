@@ -9,7 +9,7 @@ std::size_t TextSpan::End() const noexcept
 
 TextSpan TextSpan::FromBounds(const std::size_t Start, const std::size_t End) noexcept
 {
-    const auto Length = End - Start;
+    auto Length = End - Start;
     return TextSpan(Start, Length);
 }
 

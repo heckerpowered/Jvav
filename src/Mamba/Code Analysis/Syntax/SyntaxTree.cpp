@@ -22,7 +22,7 @@ SyntaxTree::~SyntaxTree() noexcept
 
 NullablePointer<const SyntaxNode> SyntaxTree::Parent(const SyntaxNode& Node) const noexcept
 {
-    const auto Iterator = ParentsMap.find(&Node);
+    auto Iterator = ParentsMap.find(&Node);
     if (Iterator == ParentsMap.end())
     {
         return {};

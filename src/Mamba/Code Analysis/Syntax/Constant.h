@@ -46,6 +46,11 @@ namespace Mamba
             return std::get<T>(Value);
         }
 
+        [[nodiscard]] constexpr ValueType& GetValue() noexcept
+        {
+            return Value;
+        }
+
         [[nodiscard]] constexpr bool IsValid() const noexcept
         {
             return !Value.valueless_by_exception();

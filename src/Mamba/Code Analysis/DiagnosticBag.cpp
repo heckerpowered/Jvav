@@ -3,7 +3,6 @@
 #include "BreakStatementSyntax.h"
 #include "CallExpressionSyntax.h"
 #include "ContinueStatementSyntax.h"
-#include "Diagnostic.h"
 #include "DoWhileStatementSyntax.h"
 #include "ExpressionStatementSyntax.h"
 #include "ForStatementSyntax.h"
@@ -22,53 +21,37 @@
 
 namespace Mamba
 {
-    void DiagnosticBag::AddRange(const std::vector<Diagnostic>& Diagnostics) noexcept
-    {
-#if __cpp_lib_containers_ranges == 202202L
-        append_range(Diagnostics);
-#else
-        for (auto&& Diagnostic : Diagnostics)
-        {
-            emplace_back(std::forward<decltype(Diagnostic)>(Diagnostic));
-        }
-#endif
-    }
-
-    void DiagnosticBag::ReportInvalidCharacter(const TextLocation Location, const Char Character) noexcept
+    void DiagnosticBag::ReportInvalidCharacter(TextLocation Location, Char Character) noexcept
     {
         ReportError(Location, TEXT("无效字符 '"), fast_io::mnp::chvw(Character), TEXT("'."));
     }
 
-    void DiagnosticBag::ReportUnterminatedString(const TextLocation Location) noexcept
+    void DiagnosticBag::ReportUnterminatedString(TextLocation Location) noexcept
     {
         ReportError(Location, TEXT("未结束的字符串字面量"));
     }
 
-    void DiagnosticBag::ReportInvalidDecimal(const TextLocation Location, const StringView Literal) noexcept
+    void DiagnosticBag::ReportInvalidDecimal(TextLocation Location, StringView Literal) noexcept
     {
         ReportError(Location, Concat(TEXT("无效十进制字面量 '"), Literal, TEXT("'.")));
     }
 
-    void DiagnosticBag::ReportInvalidHexadecimal(const TextLocation Location, const StringView Literal) noexcept
+    void DiagnosticBag::ReportInvalidHexadecimal(TextLocation Location, StringView Literal) noexcept
     {
         ReportError(Location, Concat(TEXT("无效十六进制字面量 '"), Literal, TEXT("'.")));
     }
 
-    void DiagnosticBag::ReportInvalidBinary(const TextLocation Location, const StringView Literal) noexcept
+    void DiagnosticBag::ReportInvalidBinary(TextLocation Location, StringView Literal) noexcept
     {
         ReportError(Location, Concat(TEXT("无效二进制字面量 '"), Literal, TEXT("'.")));
     }
 
-    void DiagnosticBag::ReportInvalidOctal(const TextLocation Location, const StringView Literal) noexcept
+    void DiagnosticBag::ReportInvalidOctal(TextLocation Location, StringView Literal) noexcept
     {
         ReportError(Location, Concat(TEXT("无效八进制字面量 '"), Literal, TEXT("'.")));
     }
 
-    void DiagnosticBag::ReportUnexpectedToken(
-        const TextLocation Location,
-        const SyntaxKind Kind,
-        const SyntaxKind ExpectedKind
-    ) noexcept
+    void DiagnosticBag::ReportUnexpectedToken(TextLocation Location, SyntaxKind Kind, SyntaxKind ExpectedKind) noexcept
     {
         // Unexpected token 'Kind', Expected: 'ExpectedKind'.
         if (ExpectedKind == SyntaxKind::IdentifierToken)
@@ -89,12 +72,12 @@ namespace Mamba
         }
     }
 
-    void DiagnosticBag::ReportDiscardExpressionValue(const TextLocation Location) noexcept
+    void DiagnosticBag::ReportDiscardExpressionValue(TextLocation Location) noexcept
     {
         ReportWarning(Location, TEXT("表达式的结果被忽略"));
     }
 
-    void DiagnosticBag::ReportVariableAlreadyDeclared(const TextLocation Location, StringView Name) noexcept
+    void DiagnosticBag::ReportVariableAlreadyDeclared(TextLocation Location, StringView Name) noexcept
     {
         // Variable 'Name' is already declared, previous declaration at FileName:StartLine:StartCharacter.
         ReportError(

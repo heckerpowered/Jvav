@@ -15,7 +15,8 @@ bool TypeSymbol::IsBuiltInType(const TypeSymbol* Type) noexcept
     return Type == &TypeSymbol::Int ||
            Type == &TypeSymbol::Bool ||
            Type == &TypeSymbol::String ||
-           Type == &TypeSymbol::Void;
+           Type == &TypeSymbol::Void ||
+           Type == &TypeSymbol::Double;
 }
 
 const TypeSymbol TypeSymbol::Int = TypeSymbol(TEXT("int"));

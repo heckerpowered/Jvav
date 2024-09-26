@@ -57,7 +57,7 @@ namespace Mamba
 
     SyntaxKind SyntaxFacts::GetKeywordKind(const StringView Text) noexcept
     {
-        static const auto KeywordsMap = std::unordered_map<StringView, SyntaxKind>{
+        static auto KeywordsMap = std::unordered_map<StringView, SyntaxKind>{
             std::make_pair(TEXT("if"), SyntaxKind::IfKeyword),
             std::make_pair(TEXT("else"), SyntaxKind::ElseKeyword),
 
@@ -79,7 +79,7 @@ namespace Mamba
             std::make_pair(TEXT("return"), SyntaxKind::ReturnKeyword),
         };
 
-        const auto Iterator = KeywordsMap.find(Text);
+        auto Iterator = KeywordsMap.find(Text);
         if (Iterator != KeywordsMap.end())
         {
             return Iterator->second;
@@ -405,7 +405,7 @@ namespace Mamba
                 return SyntaxKind::HatToken;
             default:
 #ifdef DEBUG
-                const auto Message =
+                auto Message =
                     Concat(TEXT("No binary operator for assignment operator: '"), GetText(Kind), TEXT("'"));
                 fast_io::io::perrln(fast_io::mnp::code_cvt(Message));
 #endif
