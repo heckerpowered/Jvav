@@ -246,7 +246,7 @@ BoundIfStatement* Binder::BindIfStatement(const IfStatementSyntax* IfStatement) 
     }
 
     auto ThenStatement = BindStatement(IfStatement->ThenStatement);
-    auto ElseStatement = IfStatement->ElseClause ? nullptr : BindStatement(IfStatement->ElseClause->ElseStatement);
+    auto ElseStatement = IfStatement->ElseClause ? BindStatement(IfStatement->ElseClause->ElseStatement) : nullptr;
     return new BoundIfStatement(IfStatement, Condition, ThenStatement, ElseStatement);
 }
 

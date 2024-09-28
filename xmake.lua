@@ -10,6 +10,7 @@ local includedirs = {
     "src/Mamba/Code Analysis/Binding", 
     "src/Mamba/Code Analysis/Symbol",
     "src/Mamba/Code Generation",
+    "src/Mamba/Code Generation/LLVM"
 }
 
 local llvm_config = "/opt/homebrew/opt/llvm/bin/llvm-config"

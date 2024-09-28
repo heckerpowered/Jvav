@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MambaCore.h"
+
 #include "StatementSyntax.h"
 #include "SyntaxNode.h"
 #include "SyntaxToken.h"
@@ -14,7 +16,7 @@ namespace Mamba
         [[nodiscard]] ElseClauseSyntax(
             const class SyntaxTree* SyntaxTree,
             const SyntaxToken* ElseKeyword,
-            const StatementSyntax* ElseStatement
+            NullablePointer<const StatementSyntax> ElseStatement
         ) noexcept;
 
         ~ElseClauseSyntax() noexcept override;
@@ -22,7 +24,7 @@ namespace Mamba
         SyntaxKind Kind() const noexcept override;
 
         const SyntaxToken* ElseKeyword;
-        const StatementSyntax* ElseStatement;
+        NullablePointer<const StatementSyntax> ElseStatement;
 
     private:
         std::size_t ChildrenCount() const noexcept override;

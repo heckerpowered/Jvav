@@ -15,12 +15,18 @@ using namespace Mamba;
 
 void PrintDiagnostics(std::span<const Diagnostic> Diagnostics) noexcept
 {
+    auto HasError = false;
     for (auto&& Diagnostic : Diagnostics)
     {
+        if (Diagnostic.Severity == DiagnosticSeverity::Error)
+        {
+            HasError = true;
+        }
+
         fast_io::io::println(Diagnostic);
     }
 
-    if (!Diagnostics.empty())
+    if (HasError)
     {
         exit(0);
     }
@@ -107,7 +113,7 @@ void Compiler::Compile() noexcept
         PrintDiagnostics(Binder.Diagnostics);
     }
 
-    LLVMBackend::GenerateCode(BoundCompilationUnits, "Main");
+    LLVMBackend::GenerateCode(BoundCompilationUnits, "main");
 
     for (auto&& BoundCompilationUnit : BoundCompilationUnits)
     {
