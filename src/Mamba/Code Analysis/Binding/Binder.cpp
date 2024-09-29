@@ -2,6 +2,7 @@
 #include "BoundCallExpression.h"
 #include "BoundCompoundAssignmentExpression.h"
 #include "BoundExpressionStatement.h"
+#include "Constant.h"
 #include "MambaCore.h"
 #include "SyntaxFacts.h"
 #include "TypeSymbol.h"
@@ -232,9 +233,9 @@ VariableSymbol* Binder::BindVariableDeclaration(const SyntaxToken* Identifier, b
 BoundIfStatement* Binder::BindIfStatement(const IfStatementSyntax* IfStatement) noexcept
 {
     auto Condition = BindExpression(IfStatement->Condition);
-    if (Condition->ConstantValue().IsValid())
+    if (Condition->ConstantValue().IsValid() && Condition->ConstantValue().HoldsAlternative<ConstantType::Boolean>())
     {
-        if (!Condition->ConstantValue().Get<bool>())
+        if (!Condition->ConstantValue().Get<ConstantType::Boolean>())
         {
             Diagnostics.ReportUnreachableCode(IfStatement->ElseClause->ElseStatement);
         }
@@ -243,6 +244,11 @@ BoundIfStatement* Binder::BindIfStatement(const IfStatementSyntax* IfStatement) 
             // The if condition always yields true and the else statement is unreachble.
             Diagnostics.ReportUnreachableCode(IfStatement->ElseClause->ElseStatement);
         }
+    }
+
+    if (Condition->Type() != &TypeSymbol::Bool)
+    {
+        Diagnostics.ReportTypeMismatch(IfStatement->Condition->Location(), TypeSymbol::Bool, *Condition->Type());
     }
 
     auto ThenStatement = BindStatement(IfStatement->ThenStatement);

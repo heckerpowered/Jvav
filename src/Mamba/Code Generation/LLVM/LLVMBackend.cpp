@@ -7,6 +7,7 @@
 
 #include "BoundExpressionStatement.h"
 #include "BoundIfStatement.h"
+#include "BoundWhileStatement.h"
 #include "fast_io.h"
 
 #include "LLVM/GenerationContext.h"
@@ -174,6 +175,10 @@ Value* GenerateLiteralExpression(GenerationContext& Context, const BoundLiteralE
         {
             return ConstantInt::get(Type::getInt1Ty(Context.Context), Value);
         }
+        else if constexpr (std::is_same_v<std::decay_t<T>, ConstantType::Double>)
+        {
+            return ConstantFP::get(Context.Context, APFloat(Value));
+        }
 
         return nullptr;
     });
@@ -223,8 +228,7 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
         return;
     }
 
-    // auto Zero = ConstantFP::get(Context.Context, APFloat(0.0));
-    // Condition = Context.Builder.CreateFCmpONE(Condition, Zero);
+    Condition = Context.Builder.CreateICmpNE(Condition, ConstantInt::getFalse(Context.Context));
 
     auto CurrentFunction = Context.Builder.GetInsertBlock()->getParent();
     auto ThenBlock = BasicBlock::Create(Context.Context, "then", CurrentFunction);
@@ -255,6 +259,10 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
     Context.Builder.SetInsertPoint(MergeBlock);
 }
 
+void GenerateWhileStatement(GenerationContext& Context, const BoundWhileStatement& Statement) noexcept
+{
+}
+
 void GenerateStatement(GenerationContext& Context, const BoundStatement& Statement) noexcept
 {
     switch (Statement.Kind())
@@ -277,6 +285,7 @@ void GenerateStatement(GenerationContext& Context, const BoundStatement& Stateme
             GenerateIfStatement(Context, dynamic_cast<const BoundIfStatement&>(Statement));
             break;
         case BoundNodeKind::WhileStatement:
+
         case BoundNodeKind::DoWhileStatement:
         case BoundNodeKind::ForStatement:
         case BoundNodeKind::LabelStatement:
@@ -346,7 +355,7 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
         GenerateCompilationUnit(Context, *CompilationUnit);
     }
 
-    auto TargetTriple = sys::getDefaultTargetTriple();
+    auto TargetTriple = Triple::normalize(sys::getDefaultTargetTriple());
     auto ErrorString = std::string();
     auto Target = TargetRegistry::lookupTarget(TargetTriple, ErrorString);
     if (!Target)
@@ -354,11 +363,11 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
         InternalCompilerError(std::source_location::current(), "无法找到请求的目标: ", ErrorString);
     }
 
-    constexpr auto CPU = "generic";
+    constexpr auto CPU = "";
     constexpr auto Features = "";
 
     auto Options = TargetOptions();
-    auto TargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, Options, Reloc::PIC_);
+    auto TargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, Options, std::nullopt);
 
     fast_io::io::println("目标: ", TargetTriple, "\n", "线程模型: ", Options.ThreadModel == ThreadModel::POSIX ? fast_io::mnp::os_c_str("POSIX") : fast_io::mnp::os_c_str("单线程环境"));
 
@@ -387,5 +396,6 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
 
     PassManager.run(LLVMModule);
     Out.flush();
+
     fast_io::io::println("编译成功: ", FileName);
 }

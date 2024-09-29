@@ -46,6 +46,12 @@ namespace Mamba
             return std::get<T>(Value);
         }
 
+        template<typename T>
+        [[nodiscard]] constexpr bool HoldsAlternative() const noexcept
+        {
+            return std::holds_alternative<T>(Value);
+        }
+
         [[nodiscard]] constexpr ValueType& GetValue() noexcept
         {
             return Value;

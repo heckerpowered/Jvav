@@ -152,7 +152,7 @@ namespace Mamba
             }
 
             case SyntaxKind::VariableDeclaration:
-                ReportUnreachableCode(static_cast<const VariableDeclarationSyntax*>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const VariableDeclarationSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::IfStatement:
                 ReportUnreachableCode(static_cast<const IfStatementSyntax*>(Node)->IfKeyword->Location());
@@ -194,5 +194,10 @@ namespace Mamba
     void DiagnosticBag::ReportAmbiguousIdentifier(TextLocation Location, StringView Name) noexcept
     {
         ReportError(Location, TEXT("标识符有歧义 '"), Name, TEXT("'."));
+    }
+
+    void DiagnosticBag::ReportTypeMismatch(TextLocation Location, const TypeSymbol& ExpectedType, const TypeSymbol& ActualType) noexcept
+    {
+        ReportError(Location, Concat(TEXT("此处需要"), ExpectedType.Name(), TEXT("类型，实际类型: '"), ActualType.Name(), TEXT(", 无法进行隐式转换")));
     }
 } // namespace Mamba

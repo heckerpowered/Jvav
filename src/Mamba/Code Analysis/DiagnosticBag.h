@@ -6,6 +6,7 @@
 #include "SyntaxKind.h"
 #include "SyntaxNode.h"
 #include "TextLocation.h"
+#include "TypeSymbol.h"
 
 namespace Mamba
 {
@@ -51,6 +52,8 @@ namespace Mamba
 
         void ReportUndeclaredIdentifier(TextLocation Location, StringView Name) noexcept;
         void ReportAmbiguousIdentifier(TextLocation Location, StringView Name) noexcept;
+
+        void ReportTypeMismatch(TextLocation Location, const TypeSymbol& ExpectedType, const TypeSymbol& ActualType) noexcept;
     };
 
 } // namespace Mamba
