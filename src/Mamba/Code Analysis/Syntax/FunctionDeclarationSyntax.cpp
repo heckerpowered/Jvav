@@ -40,7 +40,7 @@ SyntaxKind FunctionDeclarationSyntax::Kind() const noexcept
 
 std::size_t FunctionDeclarationSyntax::ChildrenCount() const noexcept
 {
-    return Type ? 6 : 5 + Parameters.size();
+    return (Type ? 6 : 5) + Parameters.size();
 }
 
 const SyntaxNode* FunctionDeclarationSyntax::ChildAt(std::size_t Index) const noexcept
@@ -59,7 +59,7 @@ const SyntaxNode* FunctionDeclarationSyntax::ChildAt(std::size_t Index) const no
     }
     else if (Index < Parameters.size() + 3)
     {
-        return Parameters[Index - 3];
+        return Parameters.at(Index - 3);
     }
     else if (Index == Parameters.size() + 3)
     {

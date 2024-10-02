@@ -36,6 +36,14 @@ BoundScope* BoundScope::DeclareScope() noexcept
     return ChildScope;
 }
 
+std::vector<const VariableSymbol*> BoundScope::LookupParameterOrVariable(StringView Name) const noexcept
+{
+    return Lookup(Name) |
+           std::views::filter([](auto Symbol) { return Symbol->IsVariable() || Symbol->IsParameter(); }) |
+           std::views::transform([](auto Symbol) { return static_cast<const VariableSymbol*>(Symbol); }) |
+           std::ranges::to<std::vector>();
+}
+
 std::vector<const VariableSymbol*> BoundScope::LookupVariable(StringView Name) const noexcept
 {
     return Lookup(Name) |

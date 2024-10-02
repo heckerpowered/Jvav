@@ -24,3 +24,4 @@ const TypeSymbol TypeSymbol::Bool = TypeSymbol(TEXT("bool"));
 const TypeSymbol TypeSymbol::String = TypeSymbol(TEXT("string"));
 const TypeSymbol TypeSymbol::Void = TypeSymbol(TEXT("void"));
 const TypeSymbol TypeSymbol::Double = TypeSymbol(TEXT("double"));
+const TypeSymbol TypeSymbol::Error = TypeSymbol(TEXT("error"));

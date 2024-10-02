@@ -56,10 +56,7 @@ namespace Mamba
         void BindMember(const MemberSyntax* Member) noexcept;
         void BindFunctionDeclaration(const FunctionDeclarationSyntax* FunctionDeclaration) noexcept;
 
-        void DeclareFunction(
-            const FunctionDeclarationSyntax* FunctionDeclaration,
-            const BoundFunctionDeclaration* BoundFunctionDeclaration
-        ) noexcept;
+        void DeclareFunction(const FunctionDeclarationSyntax* FunctionDeclaration, const BoundFunctionDeclaration* BoundFunctionDeclaration, std::vector<const ParameterSymbol*>&& Parameters) noexcept;
 
         VariableSymbol* BindVariableDeclaration(const SyntaxToken* Identifier, bool IsReadOnly, const TypeSymbol* Type, Constant Constant) noexcept;
         std::vector<const ParameterSymbol*> BindParameter(const FunctionDeclarationSyntax* FunctionDeclaration) noexcept;
@@ -68,18 +65,18 @@ namespace Mamba
         BoundExpression* BindParenthesizedExpression(const ParenthesizedExpressionSyntax* ParenthesizedExpression) noexcept;
         BoundExpressionStatement* BindExpressionStatement(const ExpressionStatementSyntax* ExpressionStatement) noexcept;
         BoundVariableDeclaration* BindVariableDeclaration(const VariableDeclarationSyntax* VariableDeclaration) noexcept;
-        BoundExpression* BindAssignmentExpression(const AssignmentExpressionSyntax* AssignmentExpression) noexcept;
         NullablePointer<const TypeSymbol> BindTypeClause(NullablePointer<const TypeClauseSyntax> TypeClause) noexcept;
+        BoundExpression* BindAssignmentExpression(const AssignmentExpressionSyntax* AssignmentExpression) noexcept;
         BoundLiteralExpression* BindLiteralExpression(const LiteralExpressionSyntax* LiteralExpression) noexcept;
         BoundDoWhileStatement* BindDoWhileStatement(const DoWhileStatementSyntax* DoWhileStatement) noexcept;
         BoundBinaryExpression* BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept;
         BoundUnaryExpression* BindUnaryExpression(const UnaryExpressionSyntax* UnaryExpression) noexcept;
         BoundReturnStatement* BindReturnStatement(const ReturnStatementSyntax* ReturnStatement) noexcept;
-        BoundVariableExpression* BindNameExpression(const NameExpressionSyntax* NameExpression) noexcept;
         BoundStatement* BindContinueStatement(const ContinueStatementSyntax* ContinueStatement) noexcept;
         BoundBlockStatement* BindBlockStatement(const BlockStatementSyntax* BlockStatement) noexcept;
         BoundWhileStatement* BindWhileStatement(const WhileStatementSyntax* WhileStatement) noexcept;
-        BoundCallExpression* BindCallExpression(const CallExpressionSyntax* CallExpression) noexcept;
+        BoundExpression* BindNameExpression(const NameExpressionSyntax* NameExpression) noexcept;
+        BoundExpression* BindCallExpression(const CallExpressionSyntax* CallExpression) noexcept;
         BoundForStatement* BindForStatement(const ForStatementSyntax* ForStatement) noexcept;
         BoundStatement* BindStatementInternal(const StatementSyntax* Statement) noexcept;
         BoundIfStatement* BindIfStatement(const IfStatementSyntax* IfStatement) noexcept;

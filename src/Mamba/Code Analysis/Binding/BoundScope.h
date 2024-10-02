@@ -27,10 +27,11 @@ namespace Mamba
         void Declare(const Symbol* Symbol) noexcept;
         BoundScope* DeclareScope() noexcept;
 
+        std::vector<const VariableSymbol*> LookupParameterOrVariable(StringView Name) const noexcept;
+        std::vector<const ParameterSymbol*> LookupParameter(StringView Name) const noexcept;
         std::vector<const VariableSymbol*> LookupVariable(StringView Name) const noexcept;
         std::vector<const FunctionSymbol*> LookupFunction(StringView Name) const noexcept;
         std::vector<const TypeSymbol*> LookupType(StringView Name) const noexcept;
-        std::vector<const ParameterSymbol*> LookupParameter(StringView Name) const noexcept;
         std::vector<const Symbol*> Lookup(const StringView) const noexcept;
 
         std::vector<const VariableSymbol*> DeclaredVariables() const noexcept;
