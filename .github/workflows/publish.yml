@@ -25,6 +25,9 @@ jobs:
             - name: Setup LLVM
               run: brew install llvm
 
+            - name: Setup Environment Variables
+              run: echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
+
             - name: Setup Build Script
               if: ${{ runner.os != 'Windows' }}
               run: chmod +x build.sh
@@ -63,5 +66,3 @@ jobs:
                 name: Mamba
                 path: |
                     build/windows/x64/release/mamba.exe
-
-
