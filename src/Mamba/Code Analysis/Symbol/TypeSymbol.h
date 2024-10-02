@@ -23,6 +23,7 @@ namespace Mamba
         static const TypeSymbol String;
         static const TypeSymbol Void;
         static const TypeSymbol Double;
+        static const TypeSymbol Error;
 
         static bool IsBuiltInType(const TypeSymbol* Type) noexcept;
     };

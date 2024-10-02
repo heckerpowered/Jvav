@@ -1,10 +1,16 @@
 #include "Binder.h"
 #include "BoundCallExpression.h"
 #include "BoundCompoundAssignmentExpression.h"
+#include "BoundErrorExpression.h"
+#include "BoundExpression.h"
 #include "BoundExpressionStatement.h"
+#include "BoundScope.h"
+#include "Constant.h"
+#include "fast_io.h"
 #include "MambaCore.h"
 #include "SyntaxFacts.h"
 #include "TypeSymbol.h"
+
 #include <source_location>
 
 using namespace Mamba;
@@ -31,22 +37,17 @@ void Binder::BindMember(const MemberSyntax* Member) noexcept
 void Binder::BindFunctionDeclaration(const FunctionDeclarationSyntax* FunctionDeclaration) noexcept
 {
     auto FunctionScope = EnterScope();
+    auto Parameters = BindParameter(FunctionDeclaration);
 
     auto Body = BindStatement(FunctionDeclaration->Body);
     auto BoundFunctionDeclaration = new class BoundFunctionDeclaration(FunctionDeclaration, Body);
 
-    FunctionScope.PreLeave();
-
-    DeclareFunction(FunctionDeclaration, BoundFunctionDeclaration);
+    DeclareFunction(FunctionDeclaration, BoundFunctionDeclaration, std::move(Parameters));
 }
 
-void Binder::DeclareFunction(
-    const FunctionDeclarationSyntax* FunctionDeclaration,
-    const BoundFunctionDeclaration* BoundFunctionDeclaration
-) noexcept
+void Binder::DeclareFunction(const FunctionDeclarationSyntax* FunctionDeclaration, const BoundFunctionDeclaration* BoundFunctionDeclaration, std::vector<const ParameterSymbol*>&& Parameters) noexcept
 {
     auto Name = FunctionDeclaration->Identifier->Text();
-    auto Parameters = BindParameter(FunctionDeclaration);
     auto Type = BindTypeClause(FunctionDeclaration->Type);
     auto FunctionSymbol = new class FunctionSymbol(Name, std::move(Parameters), Type ? Type : &TypeSymbol::Void, BoundFunctionDeclaration);
 
@@ -232,9 +233,9 @@ VariableSymbol* Binder::BindVariableDeclaration(const SyntaxToken* Identifier, b
 BoundIfStatement* Binder::BindIfStatement(const IfStatementSyntax* IfStatement) noexcept
 {
     auto Condition = BindExpression(IfStatement->Condition);
-    if (Condition->ConstantValue().IsValid())
+    if (Condition->ConstantValue().IsValid() && Condition->ConstantValue().HoldsAlternative<ConstantType::Boolean>())
     {
-        if (!Condition->ConstantValue().Get<bool>())
+        if (!Condition->ConstantValue().Get<ConstantType::Boolean>())
         {
             Diagnostics.ReportUnreachableCode(IfStatement->ElseClause->ElseStatement);
         }
@@ -245,8 +246,13 @@ BoundIfStatement* Binder::BindIfStatement(const IfStatementSyntax* IfStatement) 
         }
     }
 
+    if (Condition->Type() != &TypeSymbol::Bool)
+    {
+        Diagnostics.ReportTypeMismatch(IfStatement->Condition->Location(), TypeSymbol::Bool, *Condition->Type());
+    }
+
     auto ThenStatement = BindStatement(IfStatement->ThenStatement);
-    auto ElseStatement = IfStatement->ElseClause ? nullptr : BindStatement(IfStatement->ElseClause->ElseStatement);
+    auto ElseStatement = IfStatement->ElseClause ? BindStatement(IfStatement->ElseClause->ElseStatement) : nullptr;
     return new BoundIfStatement(IfStatement, Condition, ThenStatement, ElseStatement);
 }
 
@@ -308,22 +314,19 @@ BoundLiteralExpression* Binder::BindLiteralExpression(const LiteralExpressionSyn
     return new BoundLiteralExpression(LiteralExpression, LiteralExpression->Value);
 }
 
-BoundVariableExpression* Binder::BindNameExpression(const NameExpressionSyntax* NameExpression) noexcept
+BoundExpression* Binder::BindNameExpression(const NameExpressionSyntax* NameExpression) noexcept
 {
     auto Name = NameExpression->IdentifierToken->Text();
-    auto Variables = Scope->LookupVariable(Name);
+    auto Variables = Scope->LookupParameterOrVariable(Name);
     if (Variables.empty())
     {
-        auto ErrorVariable = new VariableSymbol(TEXT("<error>"), false, &TypeSymbol::Void, {});
-        Scope->Declare(ErrorVariable);
-
         Diagnostics.ReportUndeclaredIdentifier(NameExpression->Location(), Name);
-        return new BoundVariableExpression(NameExpression, ErrorVariable);
+        return new BoundErrorExpression(NameExpression);
     }
     else if (Variables.size() > 1)
     {
         Diagnostics.ReportAmbiguousIdentifier(NameExpression->Location(), Name);
-        return new BoundVariableExpression(NameExpression, Variables.front());
+        return new BoundErrorExpression(NameExpression);
     }
 
     return new BoundVariableExpression(NameExpression, Variables.front());
@@ -415,7 +418,7 @@ BoundExpression* Binder::BindAssignmentExpression(const AssignmentExpressionSynt
     return new BoundAssignmentExpression(AssignmentExpression, Variable, BoundExpression);
 }
 
-BoundCallExpression* Binder::BindCallExpression(const CallExpressionSyntax* CallExpression) noexcept
+BoundExpression* Binder::BindCallExpression(const CallExpressionSyntax* CallExpression) noexcept
 {
     auto BoundArguments = std::vector<const BoundExpression*>();
     BoundArguments.reserve(CallExpression->Arguments.Count());
@@ -435,9 +438,8 @@ BoundCallExpression* Binder::BindCallExpression(const CallExpressionSyntax* Call
     auto FunctionSet = Scope->LookupFunction(CallExpression->Identifier->Text());
     if (FunctionSet.empty())
     {
-        // TODO: Diagnostics - undeclaraed function
-        fast_io::io::perrln("Undeclaraed function '", fast_io::mnp::code_cvt(CallExpression->Identifier->Text()), "'");
-        return {};
+        Diagnostics.ReportUndeclaredIdentifier(CallExpression->Identifier->Location(), CallExpression->Identifier->Text());
+        return new BoundErrorExpression(CallExpression);
     }
 
     // TODO: Overload resolution. Before overload resolution is avaiable, function override is not permitted.
@@ -447,7 +449,7 @@ BoundCallExpression* Binder::BindCallExpression(const CallExpressionSyntax* Call
     {
         // TODO: Report argument count mismatch
         fast_io::io::perrln("Failed to bind call expression: argument count mismatch.");
-        return {};
+        return new BoundErrorExpression(CallExpression);
     }
 
     // TODO: implement conversion

@@ -31,7 +31,7 @@ SyntaxKind IfStatementSyntax::Kind() const noexcept
 
 std::size_t IfStatementSyntax::ChildrenCount() const noexcept
 {
-    return ElseClause ? 3 : 4;
+    return ElseClause ? 4 : 3;
 }
 
 const SyntaxNode* IfStatementSyntax::ChildAt(std::size_t Index) const noexcept

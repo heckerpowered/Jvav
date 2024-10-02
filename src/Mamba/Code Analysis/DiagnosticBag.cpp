@@ -17,6 +17,8 @@
 #include "VariableDeclarationSyntax.h"
 #include "WhileStatementSyntax.h"
 
+#include <random>
+#include <source_location>
 #include <vector>
 
 namespace Mamba
@@ -95,7 +97,44 @@ namespace Mamba
 
     void DiagnosticBag::ReportUnreachableCode(const TextLocation Location) noexcept
     {
-        ReportWarning(Location, TEXT("此处永远不会被执行"));
+        auto RandomDevice = std::random_device();
+        auto Distribution = std::uniform_int_distribution<int>(0, 6);
+
+        switch (Distribution(RandomDevice))
+        {
+            case 0:
+                ReportWarning(Location, TEXT("现在流行收无效代码税"));
+                break;
+            case 1:
+                ReportWarning(Location, TEXT("不可达的代码"));
+                break;
+            case 2:
+                ReportWarning(Location, TEXT("这段代码永远不会被执行"));
+                break;
+            case 3:
+                ReportWarning(Location, TEXT("关爱空巢代码"));
+                break;
+            case 4:
+                ReportWarning(Location, TEXT("你猜我会不会把这段代码优化掉"));
+                break;
+            case 5:
+                ReportWarning(Location, TEXT("b站搜索mq白, 问问他这段代码有什么问题"));
+                break;
+            case 6:
+                ReportWarning(Location, TEXT("b代码把👴气笑了"));
+                break;
+            default:
+            {
+                auto Distribution = std::uniform_int_distribution<int>(0, 1);
+                switch (Distribution(RandomDevice))
+                {
+                    case 0:
+                        InternalCompilerError(std::source_location::current(), "谁在用Intel? 害得我编译器ICE了");
+                    case 1:
+                        InternalCompilerError(std::source_location::current(), "谁在用AMD? 害得我编译器ICE了");
+                }
+            }
+        }
     }
 
     void DiagnosticBag::ReportUnreachableCode(const SyntaxNode* Node) noexcept
@@ -113,7 +152,7 @@ namespace Mamba
             }
 
             case SyntaxKind::VariableDeclaration:
-                ReportUnreachableCode(static_cast<const VariableDeclarationSyntax*>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const VariableDeclarationSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::IfStatement:
                 ReportUnreachableCode(static_cast<const IfStatementSyntax*>(Node)->IfKeyword->Location());
@@ -155,5 +194,10 @@ namespace Mamba
     void DiagnosticBag::ReportAmbiguousIdentifier(TextLocation Location, StringView Name) noexcept
     {
         ReportError(Location, TEXT("标识符有歧义 '"), Name, TEXT("'."));
+    }
+
+    void DiagnosticBag::ReportTypeMismatch(TextLocation Location, const TypeSymbol& ExpectedType, const TypeSymbol& ActualType) noexcept
+    {
+        ReportError(Location, Concat(TEXT("此处需要"), ExpectedType.Name(), TEXT("类型，实际类型: '"), ActualType.Name(), TEXT(", 无法进行隐式转换")));
     }
 } // namespace Mamba
