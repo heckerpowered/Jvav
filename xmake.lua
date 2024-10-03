@@ -55,7 +55,7 @@ target("Jvav")
     add_languages("clatest", "c++latest")
     set_warnings("all", "extra")
     add_includedirs(includedirs)
-    if is_os("macosx") then
+    if is_os("macosx") or is_os("linux") then
         add_linkdirs("/opt/homebrew/opt/llvm/lib/c++") -- macOS compability
         add_includedirs("/opt/homebrew/opt/llvm/include")
     end
