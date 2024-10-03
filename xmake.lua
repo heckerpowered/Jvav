@@ -2,15 +2,15 @@ add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate")
 
 local includedirs = {
-    "src/Mamba", 
-    "src/Mamba/Core", 
-    "src/Mamba/Code Analysis", 
-    "src/Mamba/Code Analysis/Syntax", 
-    "src/Mamba/Code Analysis/Text", 
-    "src/Mamba/Code Analysis/Binding", 
-    "src/Mamba/Code Analysis/Symbol",
-    "src/Mamba/Code Generation",
-    "src/Mamba/Code Generation/LLVM"
+    "Mamba/src", 
+    "Mamba/src/Core", 
+    "Mamba/src/Code Analysis", 
+    "Mamba/src/Code Analysis/Syntax", 
+    "Mamba/src/Code Analysis/Text", 
+    "Mamba/src/Code Analysis/Binding", 
+    "Mamba/src/Code Analysis/Symbol",
+    "Mamba/src/Code Generation",
+    "Mamba/src/Code Generation/LLVM"
 }
 
 local llvm_config = "/opt/homebrew/opt/llvm/bin/llvm-config"
@@ -45,10 +45,9 @@ rule_end()
 add_requires("fast_io")
 add_rules("libllvm")
 
-target("Jvav")
+target("mamba")
     set_kind("binary")
-    add_files("src/Mamba/**.cpp")
-    add_headerfiles("src/Mamba/**.h")
+    add_files("Mamba/src/**.cpp")
     add_packages("fast_io")
     set_toolchains("llvm")
     set_filename("mamba")
