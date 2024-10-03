@@ -1,0 +1,27 @@
+name: Publish to GitHub (Self Hosted)
+
+on: 
+    push:
+        branches: ["main", "github-action"]
+    pull_request:
+        branches: ["main"]
+
+jobs:
+    build-macOS:
+        runs-on: self-hosted
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Build
+              run: |
+                xmake f -p macosx -a arm64 -m release
+                xmake -y
+
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: Mamba
+                path: |
+                    build/macosx/arm64/release/mamba
