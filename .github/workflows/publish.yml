@@ -23,14 +23,14 @@ jobs:
               run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
             - name: Setup LLVM
-              run: brew install llvm
-
-            - name: Setup Build Script
-              if: ${{ runner.os != 'Windows' }}
-              run: chmod +x build.sh
+              run: |
+                brew install llvm
+                export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 
             - name: Build
-              run: ./build.sh
+              run: |
+                xmake f -p macosx -a arm64 -m release
+                xmake -y
 
             - name: Upload Artifacts
               uses: actions/upload-artifact@v4
