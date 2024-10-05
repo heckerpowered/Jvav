@@ -60,6 +60,11 @@ namespace Mamba
         WhileKeyword,
         DoKeyword,
 
+        // Function access modifiers
+        PureKeyword,
+        ConstKeyword,
+        MutKeyword,
+
         // Nodes
         CompilationUnit,
         FunctionDeclaration,
