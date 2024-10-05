@@ -21,7 +21,7 @@ include_directories("include" "src/Mamba" "src/Mamba/Core" "src/Mamba/Code Analy
 
 set(CMAKE_EXE_LINKER_FLAGS "-static")
 
-file(GLOB_RECURSE srcs "src/Mamba/**.cpp")
+file(GLOB_RECURSE srcs "Mamba/src/**.cpp")
 add_executable(mamba ${srcs})
 target_link_libraries(mamba PRIVATE FAST_IO)
 
