@@ -4,6 +4,8 @@ add_rules("plugin.compile_commands.autoupdate")
 local includedirs = {
     "Mamba/src", 
     "Mamba/src/Core", 
+    "Mamba/src/Core/Printer",
+    "Mamba/src/Core/International", 
     "Mamba/src/Code Analysis", 
     "Mamba/src/Code Analysis/Syntax", 
     "Mamba/src/Code Analysis/Text", 
