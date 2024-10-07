@@ -1,17 +1,25 @@
+#include <source_location>
+
+#include <fast_io.h>
+
 #include "Binder.h"
+
+#include "MambaCore.h"
+
+#include "BoundAssignmentExpression.h"
+#include "BoundBinaryExpression.h"
 #include "BoundCallExpression.h"
 #include "BoundCompoundAssignmentExpression.h"
 #include "BoundErrorExpression.h"
 #include "BoundExpression.h"
 #include "BoundExpressionStatement.h"
 #include "BoundScope.h"
+#include "BoundUnaryExpression.h"
+#include "BoundUnaryOperator.h"
+#include "BoundVariableExpression.h"
 #include "Constant.h"
-#include "fast_io.h"
-#include "MambaCore.h"
 #include "SyntaxFacts.h"
 #include "TypeSymbol.h"
-
-#include <source_location>
 
 using namespace Mamba;
 

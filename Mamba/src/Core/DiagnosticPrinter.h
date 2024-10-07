@@ -2,7 +2,6 @@
 
 #include <concepts>
 #include <fast_io.h>
-#include <source_location>
 
 #include "Colors.h"
 #include "Diagnostic.h"
