@@ -155,31 +155,31 @@ namespace Mamba
                 ReportUnreachableCode(static_cast<const VariableDeclarationSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::IfStatement:
-                ReportUnreachableCode(static_cast<const IfStatementSyntax*>(Node)->IfKeyword->Location());
+                ReportUnreachableCode(static_cast<const IfStatementSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::WhileStatement:
-                ReportUnreachableCode(static_cast<const WhileStatementSyntax*>(Node)->WhileKeyword->Location());
+                ReportUnreachableCode(static_cast<const WhileStatementSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::DoWhileStatement:
-                ReportUnreachableCode(static_cast<const DoWhileStatementSyntax*>(Node)->WhileKeyword->Location());
+                ReportUnreachableCode(static_cast<const DoWhileStatementSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::ForStatement:
-                ReportUnreachableCode(static_cast<const ForStatementSyntax*>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const ForStatementSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::BreakStatement:
-                ReportUnreachableCode(static_cast<const BreakStatementSyntax*>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const BreakStatementSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::ContinueStatement:
-                ReportUnreachableCode(static_cast<const ContinueStatementSyntax*>(Node)->Keyword->Location());
+                ReportUnreachableCode(static_cast<const ContinueStatementSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::ReturnStatement:
-                ReportUnreachableCode(static_cast<const ReturnStatementSyntax*>(Node)->ReturnKeyword->Location());
+                ReportUnreachableCode(static_cast<const ReturnStatementSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::ExpressionStatement:
-                ReportUnreachableCode(static_cast<const ExpressionStatementSyntax*>(Node)->Expression->Location());
+                ReportUnreachableCode(static_cast<const ExpressionStatementSyntax*>(Node)->Location());
                 return;
             case SyntaxKind::CallExpression:
-                ReportUnreachableCode(static_cast<const CallExpressionSyntax*>(Node)->Identifier->Location());
+                ReportUnreachableCode(static_cast<const CallExpressionSyntax*>(Node)->Location());
                 return;
             default:
                 break;
