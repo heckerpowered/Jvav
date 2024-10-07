@@ -2,15 +2,12 @@
 #include "Compiler.h"
 #include "MambaSignalHandler.h"
 
-#include "llvm/Support/InitLLVM.h"
-
 using namespace std::string_literals;
 using namespace Mamba;
 
 std::int32_t Mamba::InitMamba(int ArgumentCount, [[maybe_unused]] char* Arguments[]) noexcept
 {
     InitSignalHandler();
-    llvm::InitLLVM(ArgumentCount, Arguments);
 
     auto Begin = Arguments + 1;
     auto End = Arguments + ArgumentCount;
