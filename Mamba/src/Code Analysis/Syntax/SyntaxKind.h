@@ -43,6 +43,8 @@ namespace Mamba
         CommaToken,
         IdentifierToken,
         WhitespaceToken,
+        DotToken,
+        SemicolonToken,
 
         // Keywords
         BreakKeyword,
@@ -59,6 +61,11 @@ namespace Mamba
         TrueKeyword,
         WhileKeyword,
         DoKeyword,
+
+        // Function access modifiers
+        PureKeyword,
+        ConstKeyword,
+        MutKeyword,
 
         // Nodes
         CompilationUnit,

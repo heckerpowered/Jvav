@@ -2,10 +2,7 @@
 
 #include "AssignmentExpressionSyntax.h"
 #include "BinaryExpressionSyntax.h"
-#include "BoundAssignmentExpression.h"
-#include "BoundBinaryExpression.h"
 #include "BoundBlockStatement.h"
-#include "BoundCallExpression.h"
 #include "BoundCompilationUnit.h"
 #include "BoundDoWhileStatement.h"
 #include "BoundExpression.h"
@@ -17,13 +14,10 @@
 #include "BoundReturnStatement.h"
 #include "BoundScope.h"
 #include "BoundStatement.h"
-#include "BoundUnaryExpression.h"
 #include "BoundVariableDeclaration.h"
-#include "BoundVariableExpression.h"
 #include "BoundWhileStatement.h"
 #include "BreakStatementSyntax.h"
 #include "CallExpressionSyntax.h"
-#include "CompilationUnitSyntax.h"
 #include "Constant.h"
 #include "ContinueStatementSyntax.h"
 #include "DiagnosticBag.h"
@@ -69,12 +63,12 @@ namespace Mamba
         BoundExpression* BindAssignmentExpression(const AssignmentExpressionSyntax* AssignmentExpression) noexcept;
         BoundLiteralExpression* BindLiteralExpression(const LiteralExpressionSyntax* LiteralExpression) noexcept;
         BoundDoWhileStatement* BindDoWhileStatement(const DoWhileStatementSyntax* DoWhileStatement) noexcept;
-        BoundBinaryExpression* BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept;
-        BoundUnaryExpression* BindUnaryExpression(const UnaryExpressionSyntax* UnaryExpression) noexcept;
         BoundReturnStatement* BindReturnStatement(const ReturnStatementSyntax* ReturnStatement) noexcept;
         BoundStatement* BindContinueStatement(const ContinueStatementSyntax* ContinueStatement) noexcept;
+        BoundExpression* BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept;
         BoundBlockStatement* BindBlockStatement(const BlockStatementSyntax* BlockStatement) noexcept;
         BoundWhileStatement* BindWhileStatement(const WhileStatementSyntax* WhileStatement) noexcept;
+        BoundExpression* BindUnaryExpression(const UnaryExpressionSyntax* UnaryExpression) noexcept;
         BoundExpression* BindNameExpression(const NameExpressionSyntax* NameExpression) noexcept;
         BoundExpression* BindCallExpression(const CallExpressionSyntax* CallExpression) noexcept;
         BoundForStatement* BindForStatement(const ForStatementSyntax* ForStatement) noexcept;

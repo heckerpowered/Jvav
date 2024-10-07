@@ -1,7 +1,11 @@
 #include "Parser.h"
 
+#include "AssignmentExpressionSyntax.h"
+#include "BinaryExpressionSyntax.h"
+#include "GlobalStatementSyntax.h"
 #include "MambaCore.h"
 #include "SyntaxFacts.h"
+#include "SyntaxKind.h"
 #include "SyntaxTree.h"
 #include "UnaryExpressionSyntax.h"
 
@@ -10,13 +14,9 @@ using namespace Mamba;
 Parser::Parser(const class SyntaxTree* SyntaxTree, std::vector<SyntaxToken>&& Tokens) noexcept :
     SyntaxTree(SyntaxTree), Tokens(std::move(Tokens)), Position(0)
 {
-    if (this->Tokens.empty())
+    if (this->Tokens.empty() || this->Tokens.back().Kind() != SyntaxKind::EndOfFileToken)
     {
-        InternalCompilerError(std::source_location::current(), "No tokens provided to parser.");
-    }
-    else if (this->Tokens.back().Kind() != SyntaxKind::EndOfFileToken)
-    {
-        InternalCompilerError(std::source_location::current(), "Tokens do not end with EndOfFileToken.");
+        InternalCompilerError(std::source_location::current(), "不正常的结尾标记");
     }
 }
 
@@ -90,6 +90,11 @@ MemberSyntax* Parser::ParseMember() noexcept
     if (Current()->Kind() == SyntaxKind::FunctionKeyword)
     {
         Result = ParseFunctionDeclaration();
+    }
+    else if (Current()->Kind() == SyntaxKind::SemicolonToken)
+    {
+        // Discard semi-colon
+        NextToken();
     }
     else
     {

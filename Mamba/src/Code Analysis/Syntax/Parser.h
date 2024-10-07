@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include "AssignmentExpressionSyntax.h"
-#include "BinaryExpressionSyntax.h"
 #include "BreakStatementSyntax.h"
 #include "CallExpressionSyntax.h"
 #include "CompilationUnitSyntax.h"
@@ -14,7 +12,6 @@
 #include "ExpressionStatementSyntax.h"
 #include "ForStatementSyntax.h"
 #include "FunctionDeclarationSyntax.h"
-#include "GlobalStatementSyntax.h"
 #include "IfStatementSyntax.h"
 #include "LiteralExpressionSyntax.h"
 #include "NameExpressionSyntax.h"

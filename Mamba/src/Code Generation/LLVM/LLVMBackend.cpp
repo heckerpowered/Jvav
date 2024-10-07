@@ -1,33 +1,39 @@
-#include "LLVMBackend.h"
-
 #include <ranges>
 #include <source_location>
 #include <string>
 #include <string_view>
 
-#include "BoundExpressionStatement.h"
-#include "BoundIfStatement.h"
-#include "BoundWhileStatement.h"
-#include "fast_io.h"
+#include <fast_io.h>
 
-#include "LLVM/GenerationContext.h"
-#include "llvm/IR/BasicBlock.h"
-#include "llvm/IR/DerivedTypes.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/Instructions.h"
-#include "llvm/IR/IRBuilder.h"
-#include "llvm/IR/LegacyPassManager.h"
-#include "llvm/IR/LLVMContext.h"
-#include "llvm/IR/Module.h"
-#include "llvm/IR/Type.h"
-#include "llvm/IR/Verifier.h"
-#include "llvm/MC/TargetRegistry.h"
-#include "llvm/Support/FileSystem.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/Support/TargetSelect.h"
-#include "llvm/Target/TargetMachine.h"
-#include "llvm/Target/TargetOptions.h"
-#include "llvm/TargetParser/Host.h"
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Weverything"
+#endif
+
+#include <LLVM/GenerationContext.h>
+#include <llvm/IR/BasicBlock.h>
+#include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/Type.h>
+#include <llvm/IR/Verifier.h>
+#include <llvm/MC/TargetRegistry.h>
+#include <llvm/Support/FileSystem.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/Support/TargetSelect.h>
+#include <llvm/Target/TargetMachine.h>
+#include <llvm/Target/TargetOptions.h>
+#include <llvm/TargetParser/Host.h>
+
+#ifdef __clang__
+    #pragma clang diagnostic pop
+#endif
+
+#include "LLVMBackend.h"
 
 #include "MambaCore.h"
 
@@ -35,12 +41,15 @@
 #include "BoundBinaryOperatorKind.h"
 #include "BoundBlockStatement.h"
 #include "BoundExpression.h"
+#include "BoundExpressionStatement.h"
 #include "BoundFunctionDeclaration.h"
+#include "BoundIfStatement.h"
 #include "BoundLiteralExpression.h"
 #include "BoundNodeKind.h"
 #include "BoundReturnStatement.h"
 #include "BoundStatement.h"
 #include "BoundVariableDeclaration.h"
+#include "BoundWhileStatement.h"
 #include "Constant.h"
 #include "FunctionSymbol.h"
 #include "TypeSymbol.h"
@@ -162,26 +171,29 @@ Value* GenerateBinaryExpression(GenerationContext& Context, const BoundBinaryExp
 
 Value* GenerateLiteralExpression(GenerationContext& Context, const BoundLiteralExpression& Expression) noexcept
 {
-    return Expression.ConstantValue().GetValue().visit([&]<typename T>(T&& Value) -> ConstantData* {
-        if constexpr (std::is_same_v<std::decay_t<T>, ConstantType::Int>)
-        {
-            return ConstantInt::get(Type::getInt32Ty(Context.Context), Value);
-        }
-        else if constexpr (std::is_same_v<std::decay_t<T>, ConstantType::ULong>)
-        {
-            return ConstantInt::get(Type::getInt64Ty(Context.Context), Value);
-        }
-        else if constexpr (std::is_same_v<std::decay_t<T>, ConstantType::Boolean>)
-        {
-            return ConstantInt::get(Type::getInt1Ty(Context.Context), Value);
-        }
-        else if constexpr (std::is_same_v<std::decay_t<T>, ConstantType::Double>)
-        {
-            return ConstantFP::get(Context.Context, APFloat(Value));
-        }
+    return std::visit(
+        [&]<typename T>(T&& Value) -> ConstantData* {
+            if constexpr (std::is_same_v<std::decay_t<T>, ConstantType::Int>)
+            {
+                return ConstantInt::get(Type::getInt32Ty(Context.Context), Value);
+            }
+            else if constexpr (std::is_same_v<std::decay_t<T>, ConstantType::ULong>)
+            {
+                return ConstantInt::get(Type::getInt64Ty(Context.Context), Value);
+            }
+            else if constexpr (std::is_same_v<std::decay_t<T>, ConstantType::Boolean>)
+            {
+                return ConstantInt::get(Type::getInt1Ty(Context.Context), Value);
+            }
+            else if constexpr (std::is_same_v<std::decay_t<T>, ConstantType::Double>)
+            {
+                return ConstantFP::get(Context.Context, APFloat(Value));
+            }
 
-        return nullptr;
-    });
+            return nullptr;
+        },
+        Expression.ConstantValue().GetValue()
+    );
 }
 
 Value* GenerateExpression(GenerationContext& Context, const BoundExpression& Statement) noexcept
@@ -259,8 +271,9 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
     Context.Builder.SetInsertPoint(MergeBlock);
 }
 
-void GenerateWhileStatement(GenerationContext& Context, const BoundWhileStatement& Statement) noexcept
+void GenerateWhileStatement(GenerationContext& Context [[maybe_unused]], const BoundWhileStatement& Statement [[maybe_unused]]) noexcept
 {
+    // TODO
 }
 
 void GenerateStatement(GenerationContext& Context, const BoundStatement& Statement) noexcept

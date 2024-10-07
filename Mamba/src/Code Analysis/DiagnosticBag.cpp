@@ -198,6 +198,26 @@ namespace Mamba
 
     void DiagnosticBag::ReportTypeMismatch(TextLocation Location, const TypeSymbol& ExpectedType, const TypeSymbol& ActualType) noexcept
     {
-        ReportError(Location, Concat(TEXT("此处需要"), ExpectedType.Name(), TEXT("类型，实际类型: '"), ActualType.Name(), TEXT(", 无法进行隐式转换")));
+        ReportError(Location, TEXT("此处需要"), ExpectedType.Name(), TEXT("类型，实际类型: '"), ActualType.Name(), TEXT(", 无法进行隐式转换"));
+    }
+
+    void DiagnosticBag::ReportUndefinedUnaryOperator(TextLocation Location, const SyntaxToken* OperatorToken, const TypeSymbol& OperandType) noexcept
+    {
+        ReportError(Location, TEXT("未定义的运算符 '"), OperatorToken->Text(), TEXT("' 用于类型 '"), OperandType.Name(), TEXT("'"));
+    }
+
+    void DiagnosticBag::ReportUndefinedBinaryOperator(TextLocation Location, const TypeSymbol& LeftType, const SyntaxToken* OperatorToken, const TypeSymbol& RightType) noexcept
+    {
+        ReportError(Location, TEXT("未定义的运算符 '"), OperatorToken->Text(), TEXT("' 用于类型 '"), LeftType.Name(), TEXT("' 和 '"), RightType.Name(), TEXT("'"));
+    }
+
+    void DiagnosticBag::ReportVariableImmutable(TextLocation Location, StringView Name) noexcept
+    {
+        ReportError(Location, TEXT("无法赋值变量 '"), Name, TEXT("', 它是不可变的"));
+    }
+
+    void DiagnosticBag::ReportArgumentCountMismatch(TextLocation Location, std::size_t ExpectedCount, std::size_t ActualCount) noexcept
+    {
+        ReportError(Location, TEXT("参数数量不匹配, 需要"), ExpectedCount, TEXT("个参数，但实际上有"), ActualCount, TEXT("个参数"));
     }
 } // namespace Mamba

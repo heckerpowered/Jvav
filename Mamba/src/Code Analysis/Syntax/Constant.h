@@ -102,10 +102,14 @@ namespace Mamba
                 []<typename T>(T Value) -> Constant {
                     if constexpr (requires { ~Value; })
                     {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wbool-operation"
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wbool-operation"
                         return ~Value;
-#pragma clang diagnostic pop
+    #pragma clang diagnostic pop
+#else
+                        return ~Value;
+#endif
                     }
                     else
                     {
@@ -294,10 +298,14 @@ namespace Mamba
                 [](auto Left, auto Right) -> Constant {
                     if constexpr (requires { Left < Right; })
                     {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wsign-compare"
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wsign-compare"
                         return Left < Right;
-#pragma clang diagnostic pop
+    #pragma clang diagnostic pop
+#else
+                        return Left < Right;
+#endif
                     }
                     else
                     {
@@ -315,10 +323,14 @@ namespace Mamba
                 [](auto Left, auto Right) -> Constant {
                     if constexpr (requires { Left <= Right; })
                     {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wsign-compare"
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wsign-compare"
                         return Left < Right;
-#pragma clang diagnostic pop
+    #pragma clang diagnostic pop
+#else
+                        return Left < Right;
+#endif
                     }
                     else
                     {
@@ -336,10 +348,14 @@ namespace Mamba
                 [](auto Left, auto Right) -> Constant {
                     if constexpr (requires { Left > Right; })
                     {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wsign-compare"
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wsign-compare"
                         return Left > Right;
-#pragma clang diagnostic pop
+    #pragma clang diagnostic pop
+#else
+                        return Left > Right;
+#endif
                     }
                     else
                     {
@@ -357,10 +373,14 @@ namespace Mamba
                 [](auto Left, auto Right) -> Constant {
                     if constexpr (requires { Left >= Right; })
                     {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wsign-compare"
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wsign-compare"
                         return Left > Right;
-#pragma clang diagnostic pop
+    #pragma clang diagnostic pop
+#else
+                        return Left > Right;
+#endif
                     }
                     else
                     {

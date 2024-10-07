@@ -5,6 +5,7 @@
 #include "Diagnostic.h"
 #include "SyntaxKind.h"
 #include "SyntaxNode.h"
+#include "SyntaxToken.h"
 #include "TextLocation.h"
 #include "TypeSymbol.h"
 
@@ -54,6 +55,13 @@ namespace Mamba
         void ReportAmbiguousIdentifier(TextLocation Location, StringView Name) noexcept;
 
         void ReportTypeMismatch(TextLocation Location, const TypeSymbol& ExpectedType, const TypeSymbol& ActualType) noexcept;
+
+        void ReportUndefinedUnaryOperator(TextLocation Location, const SyntaxToken* OperatorToken, const TypeSymbol& OperandType) noexcept;
+        void ReportUndefinedBinaryOperator(TextLocation Location, const TypeSymbol& LeftType, const SyntaxToken* OperatorToken, const TypeSymbol& RightType) noexcept;
+
+        void ReportVariableImmutable(TextLocation Location, StringView Name) noexcept;
+
+        void ReportArgumentCountMismatch(TextLocation Location, std::size_t ExpectedCount, std::size_t ActualCount) noexcept;
     };
 
 } // namespace Mamba

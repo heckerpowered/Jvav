@@ -1,6 +1,5 @@
 #include "SourceText.h"
 
-#include "fast_io_core_impl/integers/impl.h"
 #include "TextLine.h"
 
 #include <cstddef>
@@ -17,7 +16,7 @@ using namespace Mamba;
         return 2;
     }
 
-    if (Character == TEXT('\r') || LineBreakCharacter == TEXT('\n'))
+    if (Character == TEXT('\r') || Character == TEXT('\n'))
     {
         return 1;
     }
@@ -112,9 +111,10 @@ std::vector<TextLine> SourceText::SplitLines(const SourceTextInfo& Info)
 
     while (Position < Text.length())
     {
-        auto LineBreakWidth = GetLineBreakWidth(Text, Position++);
+        auto LineBreakWidth = GetLineBreakWidth(Text, Position);
         if (LineBreakWidth == 0)
         {
+            ++Position;
             continue;
         }
 

@@ -11,8 +11,8 @@ namespace Mamba
 {
     template<typename T, template<typename...> typename Container = std::vector>
         requires requires {
-            std::is_pointer_v<T>;
-            std::derived_from<typename std::pointer_traits<T>::element_type, SyntaxNode>;
+            requires std::is_pointer_v<T>;
+            requires std::derived_from<typename std::pointer_traits<T>::element_type, SyntaxNode>;
         }
     class SeperatedSyntaxList : public Container<const SyntaxNode*>
     {
@@ -65,7 +65,6 @@ namespace Mamba
 
         // TODO: use ranges instead
         [[nodiscard]] constexpr T GetSeparator(const std::size_t Index) const noexcept
-
         {
             return (*this)[Index * 2 + 1];
         }

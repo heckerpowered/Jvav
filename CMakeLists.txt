@@ -17,11 +17,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(fastio)
 
-include_directories("include" "src/Mamba" "src/Mamba/Core" "src/Mamba/Code Analysis" "src/Mamba/Code Analysis/Syntax" "src/Mamba/Code Analysis/Text" "src/Mamba/Code Analysis/Binding" "src/Mamba/Code Analysis/Symbol" "src/Mamba/Code Generation")
+include_directories("include" "Mamba/src" "Mamba/src/Core" "Mamba/src/Core/Printer" "Mamba/src/Core/International" "Mamba/src/Code Analysis" "Mamba/src/Code Analysis/Syntax" "Mamba/src/Code Analysis/Text" "Mamba/src/Code Analysis/Binding" "Mamba/src/Code Analysis/Symbol" "Mamba/src/Code Generation" "Mamba/src/Code Generation/LLVM")
 
 set(CMAKE_EXE_LINKER_FLAGS "-static")
 
-file(GLOB_RECURSE srcs "src/Mamba/**.cpp")
+file(GLOB_RECURSE srcs "Mamba/src/**.cpp")
 add_executable(mamba ${srcs})
 target_link_libraries(mamba PRIVATE FAST_IO)
 

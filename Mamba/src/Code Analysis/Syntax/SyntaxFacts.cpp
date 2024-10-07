@@ -1,6 +1,7 @@
 #include "SyntaxFacts.h"
 #include "fast_io.h"
 #include "MambaCore.h"
+#include "SyntaxKind.h"
 
 #include <unordered_map>
 #include <utility>
@@ -77,6 +78,10 @@ namespace Mamba
             std::make_pair(TEXT("continue"), SyntaxKind::ContinueKeyword),
 
             std::make_pair(TEXT("return"), SyntaxKind::ReturnKeyword),
+
+            std::make_pair(TEXT("mut"), SyntaxKind::MutKeyword),
+            std::make_pair(TEXT("pure"), SyntaxKind::PureKeyword),
+            std::make_pair(TEXT("const"), SyntaxKind::ConstKeyword)
         };
 
         auto Iterator = KeywordsMap.find(Text);
