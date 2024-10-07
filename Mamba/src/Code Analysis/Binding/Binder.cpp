@@ -98,7 +98,8 @@ BoundStatement* Binder::BindStatement(const StatementSyntax* Statement) noexcept
         auto IsAllowedExpression =
             BoundExpressionStatement->Expression->Kind() == BoundNodeKind::AssignmentExpression ||
             BoundExpressionStatement->Expression->Kind() == BoundNodeKind::CallExpression ||
-            BoundExpressionStatement->Expression->Kind() == BoundNodeKind::CompoundAssignmentExpression;
+            BoundExpressionStatement->Expression->Kind() == BoundNodeKind::CompoundAssignmentExpression ||
+            BoundExpressionStatement->Expression->Kind() == BoundNodeKind::ErrorExpression;
         if (!IsAllowedExpression)
         {
             // Warning: The result of the expression is discarded.
@@ -134,12 +135,7 @@ BoundStatement* Binder::BindStatementInternal(const StatementSyntax* Statement) 
         case SyntaxKind::ExpressionStatement:
             return BindExpressionStatement(static_cast<const ExpressionStatementSyntax*>(Statement));
         default:
-#ifdef DEBUG
-            fast_io::io::perrln("Unexpected syntax: {}", fast_io::mnp::code_cvt(SyntaxFacts::ToString(Statement->Kind())));
-            fast_io::fast_terminate();
-#else
-            std::unreachable();
-#endif
+            InternalCompilerError(std::source_location::current(), "无法绑定语句，类型: ", fast_io::mnp::code_cvt(SyntaxFacts::ToString(Statement->Kind())));
     }
 }
 
@@ -214,12 +210,7 @@ VariableSymbol* Binder::BindVariableDeclaration(const SyntaxToken* Identifier, b
     auto Name = Identifier->Text();
     if (Name.empty())
     {
-#ifdef DEBUG
-        fast_io::io::perrln("Failed to bind variable declaration: empty identifier.");
-        fast_io::fast_terminate();
-#else
-        std::unreachable();
-#endif
+        InternalCompilerError(std::source_location::current(), "标识符无效");
     }
 
     if (!Scope->LookupVariable(Name).empty())
@@ -290,16 +281,16 @@ BoundForStatement* Binder::BindForStatement(const ForStatementSyntax* ForStateme
     return new BoundForStatement(ForStatement, InitStatement, Condition, Expression, Body);
 }
 
-BoundStatement* Binder::BindBreakStatement(const BreakStatementSyntax* BreakStatement) noexcept
+BoundStatement* Binder::BindBreakStatement(const BreakStatementSyntax* BreakStatement [[maybe_unused]]) noexcept
 {
-    fast_io::io::perrln("Failed to bind break statement: not implemented yet.");
-    return {};
+    // TODO
+    InternalCompilerError(std::source_location::current(), "无法绑定break语句: 尚未实现");
 }
 
-BoundStatement* Binder::BindContinueStatement(const ContinueStatementSyntax* ContinueStatement) noexcept
+BoundStatement* Binder::BindContinueStatement(const ContinueStatementSyntax* ContinueStatement [[maybe_unused]]) noexcept
 {
-    fast_io::io::perrln("Failed to bind continue statement: not implemented yet.");
-    return {};
+    // TODO
+    InternalCompilerError(std::source_location::current(), "无法绑定continue语句: 尚未实现");
 }
 
 BoundReturnStatement* Binder::BindReturnStatement(const ReturnStatementSyntax* ReturnStatement) noexcept
@@ -337,7 +328,7 @@ BoundExpression* Binder::BindParenthesizedExpression(const ParenthesizedExpressi
     return BindExpression(ParenthesizedExpression->Expression);
 }
 
-BoundUnaryExpression* Binder::BindUnaryExpression(const UnaryExpressionSyntax* UnaryExpression) noexcept
+BoundExpression* Binder::BindUnaryExpression(const UnaryExpressionSyntax* UnaryExpression) noexcept
 {
     auto BoundOperand = BindExpression(UnaryExpression->Operand);
 
@@ -350,13 +341,14 @@ BoundUnaryExpression* Binder::BindUnaryExpression(const UnaryExpressionSyntax* U
     if (!BoundOperand)
     {
         // TODO: Diagnostics - undefined unary operator
-        return {};
+        Diagnostics.ReportUndefinedUnaryOperator(UnaryExpression->Location(), UnaryExpression->OperatorToken, *BoundOperand->Type());
+        return new BoundErrorExpression(UnaryExpression);
     }
 
     return new BoundUnaryExpression(UnaryExpression, *BoundOperator, BoundOperand);
 }
 
-BoundBinaryExpression* Binder::BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept
+BoundExpression* Binder::BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept
 {
     auto BoundLeft = BindExpression(BinaryExpression->Left);
     auto BoundRight = BindExpression(BinaryExpression->Right);
@@ -371,7 +363,8 @@ BoundBinaryExpression* Binder::BindBinaryExpression(const BinaryExpressionSyntax
     if (!BoundOperator)
     {
         // TODO: Diagnostics - undefined binary operator
-        return {};
+        Diagnostics.ReportUndefinedBinaryOperator(BinaryExpression->Location(), *BoundLeft->Type(), BinaryExpression->OperatorToken, *BoundRight->Type());
+        return new BoundErrorExpression(BinaryExpression);
     }
 
     return new BoundBinaryExpression(BinaryExpression, BoundLeft, *BoundOperator, BoundRight);
@@ -385,19 +378,20 @@ BoundExpression* Binder::BindAssignmentExpression(const AssignmentExpressionSynt
     auto Variables = Scope->LookupVariable(Name);
     if (Variables.empty())
     {
-        // TODO: Diagnostics - undeclaraed identifier
-        return {};
+        Diagnostics.ReportUndeclaredIdentifier(AssignmentExpression->IdentifierToken->Location(), AssignmentExpression->IdentifierToken->Text());
+        return new BoundErrorExpression(AssignmentExpression);
     }
     else if (Variables.size() > 1)
     {
-        // TODO: Diagnostics - ambiguous identifier
-        return {};
+        Diagnostics.ReportAmbiguousIdentifier(AssignmentExpression->IdentifierToken->Location(), AssignmentExpression->IdentifierToken->Text());
+        return new BoundErrorExpression(AssignmentExpression);
     }
 
     auto Variable = Variables.front();
     if (Variable->IsConstant)
     {
-        // TODO: Diagnostics - constant variable cannot be assigned
+        Diagnostics.ReportVariableImmutable(AssignmentExpression->Location(), AssignmentExpression->IdentifierToken->Text());
+        return new BoundErrorExpression(AssignmentExpression);
     }
 
     if (AssignmentExpression->AssignmentToken->Kind() != SyntaxKind::EqualsToken)
@@ -407,8 +401,8 @@ BoundExpression* Binder::BindAssignmentExpression(const AssignmentExpressionSynt
 
         if (!BoundOperator)
         {
-            // TODO: Report undefined binary operator
-            return {};
+            Diagnostics.ReportUndefinedBinaryOperator(AssignmentExpression->AssignmentToken->Location(), *Variable->Type, AssignmentExpression->AssignmentToken, *BoundExpression->Type());
+            return new BoundErrorExpression(AssignmentExpression);
         }
 
         // TODO: implement conversion
@@ -449,6 +443,7 @@ BoundExpression* Binder::BindCallExpression(const CallExpressionSyntax* CallExpr
     {
         // TODO: Report argument count mismatch
         fast_io::io::perrln("Failed to bind call expression: argument count mismatch.");
+        Diagnostics.ReportArgumentCountMismatch(CallExpression->Location(), Function->Parameters.size(), CallExpression->Arguments.Count());
         return new BoundErrorExpression(CallExpression);
     }
 

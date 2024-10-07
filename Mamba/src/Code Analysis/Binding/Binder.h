@@ -69,12 +69,12 @@ namespace Mamba
         BoundExpression* BindAssignmentExpression(const AssignmentExpressionSyntax* AssignmentExpression) noexcept;
         BoundLiteralExpression* BindLiteralExpression(const LiteralExpressionSyntax* LiteralExpression) noexcept;
         BoundDoWhileStatement* BindDoWhileStatement(const DoWhileStatementSyntax* DoWhileStatement) noexcept;
-        BoundBinaryExpression* BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept;
-        BoundUnaryExpression* BindUnaryExpression(const UnaryExpressionSyntax* UnaryExpression) noexcept;
         BoundReturnStatement* BindReturnStatement(const ReturnStatementSyntax* ReturnStatement) noexcept;
         BoundStatement* BindContinueStatement(const ContinueStatementSyntax* ContinueStatement) noexcept;
+        BoundExpression* BindBinaryExpression(const BinaryExpressionSyntax* BinaryExpression) noexcept;
         BoundBlockStatement* BindBlockStatement(const BlockStatementSyntax* BlockStatement) noexcept;
         BoundWhileStatement* BindWhileStatement(const WhileStatementSyntax* WhileStatement) noexcept;
+        BoundExpression* BindUnaryExpression(const UnaryExpressionSyntax* UnaryExpression) noexcept;
         BoundExpression* BindNameExpression(const NameExpressionSyntax* NameExpression) noexcept;
         BoundExpression* BindCallExpression(const CallExpressionSyntax* CallExpression) noexcept;
         BoundForStatement* BindForStatement(const ForStatementSyntax* ForStatement) noexcept;
