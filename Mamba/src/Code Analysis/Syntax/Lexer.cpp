@@ -1,7 +1,6 @@
 #include "Lexer.h"
 
 #include "DiagnosticBag.h"
-#include "fast_io.h"
 #include "Literal.h"
 #include "SourceText.h"
 #include "SyntaxFacts.h"
@@ -236,6 +235,14 @@ namespace Mamba
                     Kind = SyntaxKind::GreaterOrEqualsToken;
                     ++Position;
                 }
+                break;
+            case TEXT('.'):
+                ++Position;
+                Kind = SyntaxKind::DotToken;
+                break;
+            case TEXT(';'):
+                Kind = SyntaxKind::SemicolonToken;
+                ++Position;
                 break;
             case TEXT('"'):
                 ReadString();
