@@ -15,8 +15,6 @@ local includedirs = {
     "Mamba/src/Code Generation/LLVM"
 }
 
-local llvm_config = "/opt/homebrew/opt/llvm/bin/llvm-config"
-
 rule("libllvm")
 do
     on_config(function (target)
