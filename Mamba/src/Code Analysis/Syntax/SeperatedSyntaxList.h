@@ -65,7 +65,6 @@ namespace Mamba
 
         // TODO: use ranges instead
         [[nodiscard]] constexpr T GetSeparator(const std::size_t Index) const noexcept
-
         {
             return (*this)[Index * 2 + 1];
         }

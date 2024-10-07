@@ -348,7 +348,6 @@ BoundExpression* Binder::BindUnaryExpression(const UnaryExpressionSyntax* UnaryE
     );
     if (!BoundOperand)
     {
-        // TODO: Diagnostics - undefined unary operator
         Diagnostics.ReportUndefinedUnaryOperator(UnaryExpression->Location(), UnaryExpression->OperatorToken, *BoundOperand->Type());
         return new BoundErrorExpression(UnaryExpression);
     }
@@ -370,7 +369,6 @@ BoundExpression* Binder::BindBinaryExpression(const BinaryExpressionSyntax* Bina
     );
     if (!BoundOperator)
     {
-        // TODO: Diagnostics - undefined binary operator
         Diagnostics.ReportUndefinedBinaryOperator(BinaryExpression->Location(), *BoundLeft->Type(), BinaryExpression->OperatorToken, *BoundRight->Type());
         return new BoundErrorExpression(BinaryExpression);
     }
@@ -429,8 +427,6 @@ BoundExpression* Binder::BindCallExpression(const CallExpressionSyntax* CallExpr
     {
         // Argument is guaranteed to be a expression by the parser.
         auto BoundArgument = BindExpression(static_cast<const ExpressionSyntax*>(Argument));
-
-        // TODO: Use hatcher to avoid copy
         BoundArguments.emplace_back(BoundArgument);
     }
 
@@ -449,8 +445,6 @@ BoundExpression* Binder::BindCallExpression(const CallExpressionSyntax* CallExpr
 
     if (CallExpression->Arguments.Count() != Function->Parameters.size())
     {
-        // TODO: Report argument count mismatch
-        fast_io::io::perrln("Failed to bind call expression: argument count mismatch.");
         Diagnostics.ReportArgumentCountMismatch(CallExpression->Location(), Function->Parameters.size(), CallExpression->Arguments.Count());
         return new BoundErrorExpression(CallExpression);
     }
