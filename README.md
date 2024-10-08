@@ -1,5 +1,8 @@
-## Jvav
+## Introduction
+
 Jvav is a programming language first purposed by Dr. Haoyang Zhang and implemented by [Heckerpowered](https://github.com/heckerpowered)
+
+## Language Standard
 
 [Working draft for Jvav](docs/draft/Jvav%2024.pdf)
 
@@ -8,6 +11,17 @@ Jvav is a programming language first purposed by Dr. Haoyang Zhang and implement
 Mamba is the compiler of the Jvav programming language, it can compile Jvav code into source code of other programming languages such as C++, C#, Java and more.
 
 ## Contributing
+
+### CMake 
+
+1. Clone the repository
+
+```
+git clone https://github.com/heckerpowered/Jvav.git
+```
+
+```
+```
 
 ### Generate IDE Project Files
 
