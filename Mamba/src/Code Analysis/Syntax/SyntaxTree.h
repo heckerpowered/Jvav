@@ -41,6 +41,8 @@ namespace Mamba
 
         NullablePointer<const SyntaxNode> Parent(const SyntaxNode& Node) const noexcept;
 
+        void BuildParentsMap() noexcept;
+
     private:
         void BuildParentsMap(const SyntaxNode& Root) noexcept;
         std::unordered_map<const SyntaxNode*, NullablePointer<const SyntaxNode>> ParentsMap;

@@ -35,8 +35,8 @@ do
 
         -- target:add("cflags", cflags)
         -- target:add("cxflags", cppflags)
-        target:add("cxxflags", cxxflags)
-        target:add("ldflags", ldflags)
+        target:add("cxxflags", cxxflags, { force = true })
+        target:add("ldflags", ldflags, { force = true })
         target:add("ldflags", libflags_raw, {force = true})
     end)
 end
@@ -44,6 +44,7 @@ rule_end()
 
 add_requires("fast_io")
 add_rules("libllvm")
+add_requires("gtest")
 
 target("mamba")
     set_kind("binary")
@@ -63,7 +64,7 @@ target("mamba")
     end
     if is_mode("debug") then
         -- add_cflags("-fsanitize=address")
-        -- add_ldflags("-fsanitize=address", "-fsanitize=undefined")
+        -- add_ldflags("-fsanitize=address")
         -- add_cxxflags("-fsanitize=address", "-fno-omit-frame-pointer", "-fno-optimize-sibling-calls")
         add_defines("DEBUG")
     end
@@ -77,17 +78,17 @@ target("mamba")
     
 target_end()
 
-
-for _, file in ipairs(os.files("src/Test/**.cpp")) do
-    local name = path.basename(file)
-    target(name)
-        set_kind("binary")
-        set_default(false)
-        add_files("src/Mamba/**.cpp")
-        add_headerfiles("src/Mamba/**.h")
-        set_languages("clatest", "c++latest")
-        add_includedirs(includedirs)
-        add_files("src/Test/" .. name .. ".cpp")
-        add_packages("fast_io")
-        add_tests("default")
-end
+target("test")
+    add_files("Mamba/test/**.cpp", "Mamba/src/**.cpp")
+    add_packages("gtest", "fast_io", "libllvm")
+    add_rules("libllvm")
+    set_toolchains("llvm")
+    set_warnings("all", "extra")
+    set_languages("c++latest")
+    add_includedirs(includedirs)
+    if is_os("macosx") or is_os("linux") then
+        add_linkdirs("/opt/homebrew/opt/llvm/lib/c++")
+        add_includedirs("/opt/homebrew/opt/llvm/include")
+    end
+    add_defines("MAMBA_TEST")
+target_end()

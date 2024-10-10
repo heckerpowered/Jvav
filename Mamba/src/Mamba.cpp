@@ -19,7 +19,7 @@ std::int32_t Mamba::InitMamba(int ArgumentCount, [[maybe_unused]] char* Argument
 
     InitMambaOptions(ArgumentRange);
 
-    if (Options::SkipCompile)
+    if (Options::SkipCompile && Options::SourceFiles.empty())
     {
         return 0;
     }
