@@ -1,4 +1,3 @@
-#include "MambaOptions.h"
 #include <ranges>
 #include <source_location>
 #include <string>
@@ -53,6 +52,7 @@
 #include "BoundWhileStatement.h"
 #include "Constant.h"
 #include "FunctionSymbol.h"
+#include "MambaOptions.h"
 #include "TypeSymbol.h"
 
 using namespace std::string_literals;
@@ -206,6 +206,7 @@ Value* GenerateExpression(GenerationContext& Context, const BoundExpression& Sta
         case BoundNodeKind::LiteralExpression:
             return GenerateLiteralExpression(Context, dynamic_cast<const BoundLiteralExpression&>(Statement));
         default:
+            InternalCompilerError(std::source_location::current(), "无法识别的表达式, 编号: ", fast_io::mnp::enum_int_view(Statement.Kind()));
             break;
     }
     return {};
