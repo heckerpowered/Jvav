@@ -71,6 +71,7 @@ namespace Mamba
         [[nodiscard]] WhileStatementSyntax* ParseWhileStatement() noexcept;
         [[nodiscard]] BreakStatementSyntax* ParseBreakStatement() noexcept;
         [[nodiscard]] NameExpressionSyntax* ParseNameExpression() noexcept;
+        [[nodiscard]] NullablePointer<MemberSyntax> ParseMember() noexcept;
         [[nodiscard]] ExpressionSyntax* ParsePrimaryExpression() noexcept;
         [[nodiscard]] std::vector<MemberSyntax*> ParseMembers() noexcept;
         [[nodiscard]] ForStatementSyntax* ParseForStatement() noexcept;
@@ -80,7 +81,6 @@ namespace Mamba
         [[nodiscard]] TypeClauseSyntax* ParseTypeClause() noexcept;
         [[nodiscard]] ParameterSyntax* ParseParameter() noexcept;
         [[nodiscard]] StatementSyntax* ParseStatement() noexcept;
-        [[nodiscard]] MemberSyntax* ParseMember() noexcept;
     };
 
 } // namespace Mamba
