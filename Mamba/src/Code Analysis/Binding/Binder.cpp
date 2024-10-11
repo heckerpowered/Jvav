@@ -50,6 +50,7 @@ void Binder::BindFunctionDeclaration(const FunctionDeclarationSyntax* FunctionDe
     auto Body = BindStatement(FunctionDeclaration->Body);
     auto BoundFunctionDeclaration = new class BoundFunctionDeclaration(FunctionDeclaration, Body);
 
+    FunctionScope.PreLeave();
     DeclareFunction(FunctionDeclaration, BoundFunctionDeclaration, std::move(Parameters));
 }
 
