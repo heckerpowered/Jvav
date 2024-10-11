@@ -10,6 +10,7 @@ namespace Mamba
     {
         extern bool SkipCompile;
         extern std::vector<std::string_view> SourceFiles;
+        extern bool EmitLLVM;
     } // namespace Options
 
     void InitMambaOptions(std::span<std::string_view> Arguments) noexcept;

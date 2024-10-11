@@ -14,6 +14,7 @@ namespace Mamba::Options
 {
     bool SkipCompile;
     std::vector<std::string_view> SourceFiles;
+    bool EmitLLVM;
 } // namespace Mamba::Options
 
 struct Command
@@ -28,6 +29,11 @@ template<typename T>
 void RegisterCommand(std::string_view Name, std::string_view ShortName, T&& Handler, std::string_view Description) noexcept
 {
     Commands.emplace(Name, Command{ Description, PackagedScanner{ std::forward<T>(Handler) } });
+
+    if (ShortName.empty())
+    {
+        return;
+    }
     Commands.emplace(ShortName, Command{ Description, PackagedScanner{ std::forward<T>(Handler) } });
 }
 
@@ -49,6 +55,15 @@ void Mamba::InitMambaOptions(std::span<std::string_view> Arguments) noexcept
                 std::filesystem::current_path().string()
             );
             Options::SkipCompile = true;
+        }),
+        "查看版本信息"sv
+    );
+
+    RegisterCommand(
+        "--emit-llvm"sv,
+        ""sv,
+        Scanner([] {
+            Options::EmitLLVM = true;
         }),
         ""sv
     );

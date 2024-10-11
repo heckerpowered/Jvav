@@ -52,6 +52,7 @@
 #include "BoundWhileStatement.h"
 #include "Constant.h"
 #include "FunctionSymbol.h"
+#include "MambaOptions.h"
 #include "TypeSymbol.h"
 
 using namespace std::string_literals;
@@ -205,6 +206,7 @@ Value* GenerateExpression(GenerationContext& Context, const BoundExpression& Sta
         case BoundNodeKind::LiteralExpression:
             return GenerateLiteralExpression(Context, dynamic_cast<const BoundLiteralExpression&>(Statement));
         default:
+            InternalCompilerError(std::source_location::current(), "无法识别的表达式, 编号: ", fast_io::mnp::enum_int_view(Statement.Kind()));
             break;
     }
     return {};
@@ -387,15 +389,22 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     LLVMModule.setDataLayout(TargetMachine->createDataLayout());
     LLVMModule.setTargetTriple(TargetTriple);
 
-    LLVMModule.print(errs(), nullptr);
-
-    auto FileName = fast_io::concat(ModuleName, ".o");
+    using namespace std::string_view_literals;
+    auto FileName = fast_io::concat(ModuleName, Options::EmitLLVM ? ".ll"sv : ".o"sv);
 
     auto error_code = std::error_code();
     raw_fd_ostream Out(FileName, error_code, sys::fs::OF_None);
     if (error_code)
     {
         Error("无法打开输出文件: ", error_code.message());
+        return;
+    }
+
+    if (Options::EmitLLVM)
+    {
+        LLVMModule.print(Out, nullptr);
+        Out.flush();
+        fast_io::io::println("编译成功: ", FileName);
         return;
     }
 

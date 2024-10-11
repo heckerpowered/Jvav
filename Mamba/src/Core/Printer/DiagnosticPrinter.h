@@ -53,7 +53,7 @@ namespace Mamba
                 ":",
                 Diagnostic.LineNumber(),
                 ":",
-                Diagnostic.Location.RelativeStartCharacter(),
+                Diagnostic.Location.RelativeStartCharacter() + 1, // 0-based to 1-based
                 ": ",
                 Color(Severity, SeverityColor),
                 Color(": ", SeverityColor),
@@ -67,7 +67,7 @@ namespace Mamba
             ":",
             Diagnostic.LineNumber(),
             ":",
-            Diagnostic.Location.RelativeStartCharacter(),
+            Diagnostic.Location.RelativeStartCharacter() + 1, // 0-based to 1-based
             ": ",
             Severity,
             ": ",

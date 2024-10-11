@@ -49,12 +49,12 @@ BoundBinaryOperator BoundBinaryOperator::Operators[]{
 
 NullablePointer<const BoundBinaryOperator> BoundBinaryOperator::Bind(SyntaxKind Kind, const TypeSymbol* LeftType, const TypeSymbol* RightType) noexcept
 {
-    auto Result = std::ranges::find_if(
-        std::ranges::begin(Operators),
-        std::ranges::end(Operators),
+    auto Result = std::find_if(
+        std::begin(Operators),
+        std::end(Operators),
         [=](const BoundBinaryOperator& Operator) { return Operator.Kind == Kind && Operator.LeftType == LeftType && Operator.RightType == RightType; }
     );
-    if (Result == std::ranges::end(Operators))
+    if (Result == std::end(Operators)) [[unlikely]]
     {
         return {};
     }

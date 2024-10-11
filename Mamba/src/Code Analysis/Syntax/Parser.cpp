@@ -77,13 +77,18 @@ std::vector<MemberSyntax*> Parser::ParseMembers() noexcept
     while (Current()->Kind() != SyntaxKind::EndOfFileToken)
     {
         auto Member = ParseMember();
+        if (!Member)
+        {
+            continue;
+        }
+
         Members.emplace_back(Member);
     }
 
     return Members;
 }
 
-MemberSyntax* Parser::ParseMember() noexcept
+NullablePointer<MemberSyntax> Parser::ParseMember() noexcept
 {
     auto StartToken = Current();
     auto Result = static_cast<MemberSyntax*>(nullptr);
