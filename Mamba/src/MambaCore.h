@@ -134,7 +134,7 @@ namespace Mamba
     [[noreturn]] void InternalCompilerError(std::source_location SourceLocation = std::source_location::current(), T&&... Args) noexcept
     {
         // <file-name>:<line>:<column>: internal compiler error: <message>
-        fast_io::io::perrln(
+        fast_io::io::panicln(
             fast_io::mnp::os_c_str(SourceLocation.file_name()),
             ":",
             SourceLocation.line(),
@@ -144,7 +144,6 @@ namespace Mamba
             Color("内部编译器错误: ", Colors::BrightForegroundRed),
             std::forward<T>(Args)...
         );
-        fast_io::fast_terminate();
     }
 
     template<typename... T>
