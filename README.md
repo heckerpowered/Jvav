@@ -99,6 +99,12 @@ xmake
 xmake run test
 ```
 
+### Debugging
+
+We've adapted VSCode, if you are using VSCode, just press F5 to build with CMake and use LLDB to debug.
+
+You can also use XMake for debugging, ou only need to install the XMake plug-in in VSCode and click the debug button below.
+
 ## Stats
 
 ![Alt](https://repobeats.axiom.co/api/embed/9d883f8bbbda01e4daecabafda78f2a9f7971d42.svg "Repobeats analytics image")
