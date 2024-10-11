@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.22)
 
 project(mamba)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(NOT MSVC)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
@@ -15,7 +16,13 @@ FetchContent_Declare(
         URL https://github.com/Adttil/fast_io/archive/refs/heads/master.zip
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
 FetchContent_MakeAvailable(fastio)
+FetchContent_MakeAvailable(googletest)
 
 include_directories("include" "Mamba/src" "Mamba/src/Core" "Mamba/src/Core/Printer" "Mamba/src/Core/International" "Mamba/src/Code Analysis" "Mamba/src/Code Analysis/Syntax" "Mamba/src/Code Analysis/Text" "Mamba/src/Code Analysis/Binding" "Mamba/src/Code Analysis/Symbol" "Mamba/src/Code Generation" "Mamba/src/Code Generation/LLVM")
 
@@ -24,6 +31,11 @@ include_directories("include" "Mamba/src" "Mamba/src/Core" "Mamba/src/Core/Print
 file(GLOB_RECURSE srcs "Mamba/src/**.cpp")
 add_executable(mamba ${srcs})
 target_link_libraries(mamba PRIVATE FAST_IO)
+
+file(GLOB test_srcs "Mamba/test/**.cpp")
+add_executable(mamba_tests ${srcs} ${test_srcs})
+target_link_libraries(mamba_tests PRIVATE FAST_IO GTest::gtest_main)
+target_compile_definitions(mamba_tests PRIVATE MAMBA_TEST)
 
 # LLVM Embedding
 find_package(LLVM REQUIRED CONFIG)
@@ -36,6 +48,7 @@ message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 # message(STATUS $"${llvm_libs}")
 
 target_link_libraries(mamba PRIVATE LLVM)# ${llvm_libs})
+target_link_libraries(mamba_tests PRIVATE LLVM)
 
 include_directories(${LLVM_INCLUDE_DIRS})
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
