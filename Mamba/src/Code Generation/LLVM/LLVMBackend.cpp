@@ -412,3 +412,13 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
 
     fast_io::io::println("编译成功: ", FileName);
 }
+
+std::string LLVMBackend::TargetTriple() noexcept
+{
+    return Triple::normalize(sys::getDefaultTargetTriple());
+}
+
+llvm::ThreadModel::Model LLVMBackend::ThreadModel() noexcept
+{
+    return TargetOptions().ThreadModel;
+}

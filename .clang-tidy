@@ -1,1 +1,1 @@
-Checks: 'darwin-*'
+Checks: 'clang-analyzer-*'
