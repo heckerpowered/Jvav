@@ -70,31 +70,23 @@ std::vector<const ParameterSymbol*> Binder::BindParameter(
     auto ParameterSymbols = std::vector<const ParameterSymbol*>();
     ParameterSymbols.reserve(Parameters.size());
 
-#if __cpp_lib_ranges_enumerate >= 202302L
-    for (auto [Index, Parameter] :
-         Parameters |
-             std::views::transform([](auto&& Node) { return dynamic_cast<const ParameterSyntax*>(Node); }) | std::views::enumerate)
-    {
-        auto Name = Parameter->Identifier->Text();
-        auto Type = new TypeSymbol(Parameter->Type->Identifier->Text());
-        auto ParameterSymbol = new class ParameterSymbol(Name, Type, Index);
-        Scope->Declare(ParameterSymbol);
-    }
-#else
     auto Index = 0;
-    for (auto&& Parameter :
-         Parameters | std::views::transform([](auto&& Node) { return dynamic_cast<const ParameterSyntax*>(Node); }))
+    for (auto&& Parameter : Parameters | std::views::transform([](auto&& Node) { return dynamic_cast<const ParameterSyntax*>(Node); }))
     {
         ++Index;
 
         auto Name = Parameter->Identifier->Text();
-        auto Type = new TypeSymbol(Parameter->Type->Identifier->Text());
+        auto Type = BindTypeClause(Parameter->Type);
+        if (!Type)
+        {
+            continue;
+        }
+
         auto ParameterSymbol = new class ParameterSymbol(Name, Type, Index);
         Scope->Declare(ParameterSymbol);
     }
 
     return ParameterSymbols;
-#endif
 }
 
 BoundStatement* Binder::BindStatement(const StatementSyntax* Statement) noexcept
@@ -465,6 +457,11 @@ NullablePointer<const TypeSymbol> Binder::BindTypeClause(NullablePointer<const T
     if (Types.empty())
     {
         Diagnostics.ReportUndeclaredIdentifier(TypeClause->Identifier->Location(), TypeClause->Identifier->Text());
+        return {};
+    }
+    else if (Types.size() > 1)
+    {
+        Diagnostics.ReportAmbiguousIdentifier(TypeClause->Identifier->Location(), TypeClause->Identifier->Text());
         return {};
     }
 
