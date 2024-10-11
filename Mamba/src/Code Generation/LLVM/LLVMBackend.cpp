@@ -1,3 +1,4 @@
+#include "MambaOptions.h"
 #include <ranges>
 #include <source_location>
 #include <string>
@@ -387,15 +388,22 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     LLVMModule.setDataLayout(TargetMachine->createDataLayout());
     LLVMModule.setTargetTriple(TargetTriple);
 
-    LLVMModule.print(errs(), nullptr);
-
-    auto FileName = fast_io::concat(ModuleName, ".o");
+    using namespace std::string_view_literals;
+    auto FileName = fast_io::concat(ModuleName, Options::EmitLLVM ? ".ll"sv : ".o"sv);
 
     auto error_code = std::error_code();
     raw_fd_ostream Out(FileName, error_code, sys::fs::OF_None);
     if (error_code)
     {
         Error("无法打开输出文件: ", error_code.message());
+        return;
+    }
+
+    if (Options::EmitLLVM)
+    {
+        LLVMModule.print(Out, nullptr);
+        Out.flush();
+        fast_io::io::println("编译成功: ", FileName);
         return;
     }
 
