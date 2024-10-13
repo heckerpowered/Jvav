@@ -23,7 +23,7 @@ void SignalHandler(int Signal) noexcept
             fast_io::io::perrln("正在中断");
             break;
         case SIGSEGV:
-            InternalCompilerError(std::source_location::current(), "谁在用", RandomSelect("Intel"sv, "AMD"sv, "Apple Silicon"sv, "辊斤拷辊斤拷辊斤拷辊斤拷辊斤拷辊斤拷"sv), "? 害得我内存炸了");
+            InternalCompilerError(std::source_location::current(), "谁在用"sv, RandomSelect("Intel"sv, "AMD"sv, "Apple Silicon"sv, "辊斤拷辊斤拷辊斤拷辊斤拷辊斤拷辊斤拷"sv), "? 害得我内存炸了"sv);
         case SIGTERM:
             InternalCompilerError(std::source_location::current(), "终止信号");
         default:
