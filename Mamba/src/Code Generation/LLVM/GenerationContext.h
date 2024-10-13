@@ -15,5 +15,8 @@ namespace Mamba
         llvm::IRBuilder<>& Builder;
 
         std::unordered_map<StringView, llvm::AllocaInst*> NamedValues;
+
+        llvm::AllocaInst* ReturnValue;
+        llvm::BasicBlock* ReturnBlock;
     };
 } // namespace Mamba
