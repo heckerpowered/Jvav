@@ -147,12 +147,9 @@ namespace Mamba
     }
 
     template<typename... T>
-    [[noreturn]] void Error(T&&... Args) noexcept
+    void Error(T&&... Args) noexcept
     {
-        fast_io::io::perrln(
-            Color("错误: ", Colors::BrightForegroundRed),
-            std::forward<T>(Args)...
-        );
+        fast_io::io::perrln(Color("错误: ", Colors::BrightForegroundRed), std::forward<T>(Args)...);
     }
 
     // Hatcher stores a callable object, so that the result of the call can be emplace constructed into a container by
