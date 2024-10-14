@@ -2,6 +2,7 @@
 #include "BoundCompoundAssignmentExpression.h"
 #include "BoundVariableExpression.h"
 #include "CompareKind.h"
+#include <optional>
 #include <ranges>
 #include <source_location>
 #include <string>
@@ -23,15 +24,19 @@
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
+#include <llvm/IR/PassManager.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/Verifier.h>
 #include <llvm/MC/TargetRegistry.h>
+#include <llvm/Passes/PassBuilder.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/Target/TargetMachine.h>
 #include <llvm/Target/TargetOptions.h>
 #include <llvm/TargetParser/Host.h>
+#include <llvm/Transforms/Scalar/LoopPassManager.h>
+#include <llvm/Transforms/Scalar/SimplifyCFG.h>
 
 #ifdef __clang__
     #pragma clang diagnostic pop
@@ -558,7 +563,6 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     auto LLVMContext = ::llvm::LLVMContext();
     auto LLVMModule = Module(ModuleName, LLVMContext);
     auto Builder = IRBuilder<>(LLVMContext);
-
     auto Context = GenerationContext{ LLVMContext, LLVMModule, Builder, {}, {}, {} };
 
     for (auto&& CompilationUnit : CompilationUnits)
@@ -578,7 +582,7 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     constexpr auto Features = "";
 
     auto Options = TargetOptions();
-    auto TargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, Options, std::nullopt);
+    auto TargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, Options, std::nullopt, std::nullopt, CodeGenOptLevel::None);
 
     fast_io::io::println("目标: ", TargetTriple, "\n", "线程模型: ", Options.ThreadModel == ThreadModel::POSIX ? fast_io::mnp::os_c_str("POSIX") : fast_io::mnp::os_c_str("单线程环境"));
 
@@ -603,6 +607,36 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
         fast_io::io::println("编译成功: ", FileName);
         return;
     }
+
+    // https://llvm.org/docs/NewPassManager.html
+
+    // Create the analysis managers.
+    // These must be declared in this order so that they are destroyed in the
+    // correct order due to inter-analysis-manager references.
+    auto LoopAnalysisManager = ::llvm::LoopAnalysisManager();
+    auto FunctionAnalysisManager = ::llvm::FunctionAnalysisManager();
+    auto CGSCCAnalysisManager = ::llvm::CGSCCAnalysisManager();
+    auto ModuleAnalysisManager = ::llvm::ModuleAnalysisManager();
+
+    // Create the new pass manager builder.
+    // Take a look at the PassBuilder constructor parameters for more
+    // customization, e.g. specifying a TargetMachine or various debugging
+    // options.
+    auto PassBuilder = ::llvm::PassBuilder();
+
+    // Register all the basic analyses with the managers.
+    PassBuilder.registerModuleAnalyses(ModuleAnalysisManager);
+    PassBuilder.registerCGSCCAnalyses(CGSCCAnalysisManager);
+    PassBuilder.registerFunctionAnalyses(FunctionAnalysisManager);
+    PassBuilder.registerLoopAnalyses(LoopAnalysisManager);
+    PassBuilder.crossRegisterProxies(LoopAnalysisManager, FunctionAnalysisManager, CGSCCAnalysisManager, ModuleAnalysisManager);
+
+    // Create the pass manager.
+    // This one corresponds to a typical -O3 optimization pipeline.
+    auto ModulePassManager = PassBuilder.buildPerModuleDefaultPipeline(OptimizationLevel::Os);
+
+    // Optimize the IR
+    ModulePassManager.run(LLVMModule, ModuleAnalysisManager);
 
     auto PassManager = legacy::PassManager();
     constexpr auto FileType = CodeGenFileType::ObjectFile;
