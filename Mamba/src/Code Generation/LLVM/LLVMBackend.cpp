@@ -1,3 +1,8 @@
+#include "BoundAssignmentExpression.h"
+#include "BoundCompoundAssignmentExpression.h"
+#include "BoundVariableExpression.h"
+#include "CompareKind.h"
+#include <optional>
 #include <ranges>
 #include <source_location>
 #include <string>
@@ -19,15 +24,19 @@
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
+#include <llvm/IR/PassManager.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/Verifier.h>
 #include <llvm/MC/TargetRegistry.h>
+#include <llvm/Passes/PassBuilder.h>
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/Target/TargetMachine.h>
 #include <llvm/Target/TargetOptions.h>
 #include <llvm/TargetParser/Host.h>
+#include <llvm/Transforms/Scalar/LoopPassManager.h>
+#include <llvm/Transforms/Scalar/SimplifyCFG.h>
 
 #ifdef __clang__
     #pragma clang diagnostic pop
@@ -120,23 +129,10 @@ Value* GenerateBinaryExpression(GenerationContext& Context, const BoundBinaryExp
     auto Left = GenerateExpression(Context, *BinaryExpression.Left);
     auto Right = GenerateExpression(Context, *BinaryExpression.Right);
 
-    if (!Left && !Right)
-    {
-        InternalCompilerError(std::source_location::current(), "二元表达式左右表达式均为空");
-    }
-    else if (!Left)
-    {
-        InternalCompilerError(std::source_location::current(), "二元表达式左表达式为空");
-    }
-    else if (!Right)
-    {
-        InternalCompilerError(std::source_location::current(), "二元表达式右表达式为空");
-    }
-
     switch (BinaryExpression.Operator.OperatorKind)
     {
         case BoundBinaryOperatorKind::Addition:
-            return Context.Builder.CreateAdd(Left, Right);
+            return Context.Builder.CreateAdd(Left, Right, "builtin-addition");
         case BoundBinaryOperatorKind::Subtraction:
             return Context.Builder.CreateSub(Left, Right);
         case BoundBinaryOperatorKind::Multiplication:
@@ -197,25 +193,216 @@ Value* GenerateLiteralExpression(GenerationContext& Context, const BoundLiteralE
     );
 }
 
+Value* GenerateVariableExpression(GenerationContext& Context, const BoundVariableExpression& Expression) noexcept
+{
+    auto Iterator = Context.NamedValues.find(Expression.Variable->Name());
+    if (Iterator == Context.NamedValues.end())
+    {
+        InternalCompilerError(std::source_location::current(), "无法生成变量表达式, 未找到变量: ", fast_io::mnp::code_cvt(Expression.Variable->Name()));
+    }
+
+    auto Alloca = Iterator->second;
+    return Context.Builder.CreateLoad(Alloca->getAllocatedType(), Alloca, fast_io::concat(fast_io::mnp::code_cvt(Expression.Variable->Name())));
+}
+
+Value* GenerateAsssignmentExpression(GenerationContext& Context, const BoundAssignmentExpression& Expression) noexcept
+{
+    auto Iterator = Context.NamedValues.find(Expression.Variable->Name());
+    if (Iterator == Context.NamedValues.end())
+    {
+        InternalCompilerError(std::source_location::current(), "无法生成赋值表达式, 未找到变量: ", fast_io::mnp::code_cvt(Expression.Variable->Name()));
+    }
+
+    auto Variable = Iterator->second;
+    auto Value = GenerateExpression(Context, *Expression.Expression);
+    return Context.Builder.CreateStore(Value, Variable);
+}
+
+Value* GenerateBinaryExpressionInternal(GenerationContext& Context, Value* Left, Value* Right, BoundBinaryOperatorKind Operator, CompareKind Kind = CompareKind::Signed) noexcept
+{
+    auto IsFloatingPoint = (Kind == CompareKind::Ordered || Kind == CompareKind::Unordered);
+    switch (Operator)
+    {
+        case BoundBinaryOperatorKind::Addition:
+            if (IsFloatingPoint)
+            {
+                return Context.Builder.CreateFAdd(Left, Right, "builtin-floating-addition");
+            }
+            return Context.Builder.CreateAdd(Left, Right);
+        case BoundBinaryOperatorKind::Subtraction:
+            if (IsFloatingPoint)
+            {
+                return Context.Builder.CreateFSub(Left, Right, "builtin-floating-subtraction");
+            }
+            return Context.Builder.CreateSub(Left, Right);
+        case BoundBinaryOperatorKind::Multiplication:
+            if (IsFloatingPoint)
+            {
+                return Context.Builder.CreateFMul(Left, Right, "builtin-floating-multiplication");
+            }
+            return Context.Builder.CreateMul(Left, Right);
+        case BoundBinaryOperatorKind::Division:
+            if (IsFloatingPoint)
+            {
+                return Context.Builder.CreateFDiv(Left, Right, "builtin-floating-division");
+            }
+            return Context.Builder.CreateSDiv(Left, Right);
+        case BoundBinaryOperatorKind::LogicalAnd:
+            return Context.Builder.CreateLogicalAnd(Left, Right, "builtin-logical-and");
+        case BoundBinaryOperatorKind::LogicalOr:
+            return Context.Builder.CreateLogicalOr(Left, Right, "builtin-logical-or");
+        case BoundBinaryOperatorKind::BitwiseAnd:
+            return Context.Builder.CreateAnd(Left, Right, "builtin-bitwise-and");
+        case BoundBinaryOperatorKind::BitwiseOr:
+            return Context.Builder.CreateOr(Left, Right, "builtin-bitwise-or");
+        case BoundBinaryOperatorKind::BitwiseXor:
+            return Context.Builder.CreateXor(Left, Right, "builtin-bitwise-xor");
+        case BoundBinaryOperatorKind::Equals:
+            if (Kind == CompareKind::Ordered)
+            {
+                return Context.Builder.CreateFCmpOEQ(Left, Right, "builtin-floating-ordered-equals");
+            }
+            else if (Kind == CompareKind::Unordered)
+            {
+                return Context.Builder.CreateFCmpUEQ(Left, Right, "builtin-floating-unordered-equals");
+            }
+
+            return Context.Builder.CreateICmpEQ(Left, Right, "builtin-integer-equals");
+        case BoundBinaryOperatorKind::NotEquals:
+            if (Kind == CompareKind::Ordered)
+            {
+                return Context.Builder.CreateFCmpONE(Left, Right, "builtin-floating-not-equals");
+            }
+            else if (Kind == CompareKind::Unordered)
+            {
+                return Context.Builder.CreateFCmpUNE(Left, Right, "builtin-floating-unordered-not-equals");
+            }
+
+            return Context.Builder.CreateICmpNE(Left, Right, "builtin-integer-not-equals");
+        case BoundBinaryOperatorKind::Less:
+            if (Kind == CompareKind::Ordered)
+            {
+                return Context.Builder.CreateFCmpOLT(Left, Right, "builtin-ordered-floating-less");
+            }
+            else if (Kind == CompareKind::Unordered)
+            {
+                return Context.Builder.CreateFCmpULT(Left, Right, "builtin-unordered-floating-less");
+            }
+            else if (Kind == CompareKind::Signed)
+            {
+                return Context.Builder.CreateICmpSLT(Left, Right, "builtin-signed-integer-less");
+            }
+            else if (Kind == CompareKind::Unsigned)
+            {
+                return Context.Builder.CreateICmpULT(Left, Right, "builtin-unsigned-integer-less");
+            }
+
+            InternalCompilerError(std::source_location::current(), "无法识别的比较类型，编号: ", fast_io::mnp::enum_int_view(Kind));
+        case BoundBinaryOperatorKind::LessOrEquals:
+            if (Kind == CompareKind::Ordered)
+            {
+                return Context.Builder.CreateFCmpOLE(Left, Right, "builtin-ordered-floating-less-or-equals");
+            }
+            else if (Kind == CompareKind::Unordered)
+            {
+                return Context.Builder.CreateFCmpULE(Left, Right, "builtin-unordered-floating-less-or-equals");
+            }
+            else if (Kind == CompareKind::Signed)
+            {
+                return Context.Builder.CreateICmpSLE(Left, Right, "builtin-signed-integer-less-or-equals");
+            }
+            else if (Kind == CompareKind::Unsigned)
+            {
+                return Context.Builder.CreateICmpULE(Left, Right, "builtin-unsigned-integer-less-or-equals");
+            }
+            InternalCompilerError(std::source_location::current(), "无法识别的比较类型，编号: ", fast_io::mnp::enum_int_view(Kind));
+
+        case BoundBinaryOperatorKind::Greater:
+            if (Kind == CompareKind::Ordered)
+            {
+                return Context.Builder.CreateFCmpOGT(Left, Right, "builtin-ordered-floating-greater");
+            }
+            else if (Kind == CompareKind::Unordered)
+            {
+                return Context.Builder.CreateFCmpOGT(Left, Right, "builtin-unordered-floating-greater");
+            }
+            else if (Kind == CompareKind::Signed)
+            {
+                return Context.Builder.CreateICmpSGT(Left, Right, "builtin-signed-integer-greater");
+            }
+            else if (Kind == CompareKind::Unsigned)
+            {
+                return Context.Builder.CreateICmpSGT(Left, Right, "builtin-signed-integer-greater");
+            }
+
+            InternalCompilerError(std::source_location::current(), "无法识别的比较类型，编号: ", fast_io::mnp::enum_int_view(Kind));
+
+        case BoundBinaryOperatorKind::GreaterOrEquals:
+            if (Kind == CompareKind::Ordered)
+            {
+                return Context.Builder.CreateFCmpOGE(Left, Right, "builtin-ordered-floating-greater-or-equals");
+            }
+            else if (Kind == CompareKind::Unordered)
+            {
+                return Context.Builder.CreateFCmpUGE(Left, Right, "builtin-unordered-floating-greater-or-equals");
+            }
+            else if (Kind == CompareKind::Signed)
+            {
+                return Context.Builder.CreateICmpSGE(Left, Right, "builtin-signed-integer-greater-or-equals");
+            }
+            else if (Kind == CompareKind::Unsigned)
+            {
+                return Context.Builder.CreateICmpUGE(Left, Right, "builtin-unsigned-integer-greater-or-equals");
+            }
+
+        default:
+            InternalCompilerError(std::source_location::current(), "无法识别的二元运算符: ", fast_io::mnp::enum_int_view(Operator));
+    }
+}
+
+Value* GenerateCompoundAssignmentExpression(GenerationContext& Context, const BoundCompoundAssignmentExpression& Expression) noexcept
+{
+    auto Iterator = Context.NamedValues.find(Expression.Variable->Name());
+    if (Iterator == Context.NamedValues.end())
+    {
+        InternalCompilerError(std::source_location::current(), "无法生成复合赋值表达式, 未找到变量: ", fast_io::mnp::code_cvt(Expression.Variable->Name()));
+    }
+
+    auto Variable = Iterator->second;
+    auto Value = GenerateExpression(Context, *Expression.Expression);
+    auto NewValue = GenerateBinaryExpressionInternal(Context, Variable, Value, Expression.Operator.OperatorKind);
+    return Context.Builder.CreateStore(Variable, NewValue);
+}
+
 Value* GenerateExpression(GenerationContext& Context, const BoundExpression& Statement) noexcept
 {
     switch (Statement.Kind())
     {
-        case BoundNodeKind::BinaryExpression:
-            return GenerateBinaryExpression(Context, dynamic_cast<const BoundBinaryExpression&>(Statement));
+        case BoundNodeKind::ErrorExpression:
+            InternalCompilerError(std::source_location::current(), "正在绑定错误表达式");
         case BoundNodeKind::LiteralExpression:
             return GenerateLiteralExpression(Context, dynamic_cast<const BoundLiteralExpression&>(Statement));
+        case BoundNodeKind::VariableExpression:
+            return GenerateVariableExpression(Context, dynamic_cast<const BoundVariableExpression&>(Statement));
+        case BoundNodeKind::AssignmentExpression:
+            return GenerateAsssignmentExpression(Context, dynamic_cast<const BoundAssignmentExpression&>(Statement));
+        case BoundNodeKind::CompoundAssignmentExpression:
+            return GenerateCompoundAssignmentExpression(Context, dynamic_cast<const BoundCompoundAssignmentExpression&>(Statement));
+        case BoundNodeKind::BinaryExpression:
+            return GenerateBinaryExpression(Context, dynamic_cast<const BoundBinaryExpression&>(Statement));
         default:
             InternalCompilerError(std::source_location::current(), "无法识别的表达式, 编号: ", fast_io::mnp::enum_int_view(Statement.Kind()));
-            break;
     }
     return {};
 }
 
 void GenerateReturnStatement(GenerationContext& Context, const BoundReturnStatement& Statement) noexcept
 {
+    Context.IsTerminating = true;
+
     auto Value = GenerateExpression(Context, *Statement.Expression);
-    Context.Builder.CreateRet(Value);
+    Context.Builder.CreateStore(Value, Context.ReturnValue);
+    Context.Builder.CreateBr(Context.ReturnBlock);
 }
 
 void GenerateVariableDeclaration(GenerationContext& Context, const BoundVariableDeclaration& Statement) noexcept
@@ -246,15 +433,22 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
 
     auto CurrentFunction = Context.Builder.GetInsertBlock()->getParent();
     auto ThenBlock = BasicBlock::Create(Context.Context, "then", CurrentFunction);
-    auto ElseBlock = BasicBlock::Create(Context.Context, "else", CurrentFunction);
-    auto MergeBlock = BasicBlock::Create(Context.Context, "merge", CurrentFunction);
+    auto ElseBlock = BasicBlock::Create(Context.Context, "else");
+    auto MergeBlock = static_cast<BasicBlock*>(nullptr);
+    auto MergeBlockContainsPredecessor = false;
 
     Context.Builder.CreateCondBr(Condition, ThenBlock, ElseBlock);
 
     Context.Builder.SetInsertPoint(ThenBlock);
     GenerateStatement(Context, *Statement.ThenStatement);
 
-    Context.Builder.CreateBr(MergeBlock);
+    if (!Context.IsTerminating)
+    {
+        MergeBlock = BasicBlock::Create(Context.Context, "merge");
+        Context.Builder.CreateBr(MergeBlock);
+        MergeBlockContainsPredecessor = true;
+    }
+
     ThenBlock = Context.Builder.GetInsertBlock();
 
     CurrentFunction->insert(CurrentFunction->end(), ElseBlock);
@@ -266,11 +460,23 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
 
     GenerateStatement(Context, *Statement.ElseStatement);
 
-    Context.Builder.CreateBr(MergeBlock);
-    ElseBlock = Context.Builder.GetInsertBlock();
+    if (!Context.IsTerminating)
+    {
+        if (!MergeBlock)
+        {
+            MergeBlock = BasicBlock::Create(Context.Context, "merge");
+        }
 
-    CurrentFunction->insert(CurrentFunction->end(), MergeBlock);
-    Context.Builder.SetInsertPoint(MergeBlock);
+        Context.Builder.CreateBr(MergeBlock);
+        MergeBlockContainsPredecessor = true;
+    }
+
+    if (MergeBlock)
+    {
+        ElseBlock = Context.Builder.GetInsertBlock();
+        CurrentFunction->insert(CurrentFunction->end(), MergeBlock);
+        Context.Builder.SetInsertPoint(MergeBlock);
+    }
 }
 
 void GenerateWhileStatement(GenerationContext& Context [[maybe_unused]], const BoundWhileStatement& Statement [[maybe_unused]]) noexcept
@@ -280,6 +486,7 @@ void GenerateWhileStatement(GenerationContext& Context [[maybe_unused]], const B
 
 void GenerateStatement(GenerationContext& Context, const BoundStatement& Statement) noexcept
 {
+    Context.IsTerminating = false;
     switch (Statement.Kind())
     {
         case BoundNodeKind::BlockStatement:
@@ -300,7 +507,6 @@ void GenerateStatement(GenerationContext& Context, const BoundStatement& Stateme
             GenerateIfStatement(Context, dynamic_cast<const BoundIfStatement&>(Statement));
             break;
         case BoundNodeKind::WhileStatement:
-
         case BoundNodeKind::DoWhileStatement:
         case BoundNodeKind::ForStatement:
         case BoundNodeKind::LabelStatement:
@@ -340,8 +546,25 @@ void GenerateFunction(GenerationContext& Context, const FunctionSymbol& Function
         Argument.setName(fast_io::concat(fast_io::mnp::code_cvt(FunctionDeclaration.Parameters[Index++]->Name())));
     }
 
-    auto Block = BasicBlock::Create(Context.Context, "entry", Function);
-    Context.Builder.SetInsertPoint(Block);
+    auto EntryBlock = BasicBlock::Create(Context.Context, "entry", Function);
+    Context.Builder.SetInsertPoint(EntryBlock);
+
+    if (FunctionDeclaration.Type != &TypeSymbol::Void)
+    {
+        auto Alloca = Context.Builder.CreateAlloca(GetLLVMType(Context, FunctionDeclaration.Type), nullptr, "return-value");
+
+        auto ReturnBlock = BasicBlock::Create(Context.Context, "return", Function);
+        Context.ReturnBlock = ReturnBlock;
+
+        Context.Builder.SetInsertPoint(ReturnBlock);
+
+        auto ReturnValue = Context.Builder.CreateLoad(Alloca->getAllocatedType(), Alloca, "return-value");
+        Context.Builder.CreateRet(ReturnValue);
+        Context.ReturnValue = Alloca;
+    }
+
+    Context.Builder.SetInsertPoint(EntryBlock);
+
     GenerateFunctionBody(Context, *FunctionDeclaration.BoundDeclaration);
 
     verifyFunction(*Function);
@@ -362,8 +585,7 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     auto LLVMContext = ::llvm::LLVMContext();
     auto LLVMModule = Module(ModuleName, LLVMContext);
     auto Builder = IRBuilder<>(LLVMContext);
-
-    auto Context = GenerationContext{ LLVMContext, LLVMModule, Builder, {} };
+    auto Context = GenerationContext{ LLVMContext, LLVMModule, Builder, {}, {}, {} };
 
     for (auto&& CompilationUnit : CompilationUnits)
     {
@@ -382,7 +604,7 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     constexpr auto Features = "";
 
     auto Options = TargetOptions();
-    auto TargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, Options, std::nullopt);
+    auto TargetMachine = Target->createTargetMachine(TargetTriple, CPU, Features, Options, std::nullopt, std::nullopt, CodeGenOptLevel::None);
 
     fast_io::io::println("目标: ", TargetTriple, "\n", "线程模型: ", Options.ThreadModel == ThreadModel::POSIX ? fast_io::mnp::os_c_str("POSIX") : fast_io::mnp::os_c_str("单线程环境"));
 
@@ -392,11 +614,11 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     using namespace std::string_view_literals;
     auto FileName = fast_io::concat(ModuleName, Options::EmitLLVM ? ".ll"sv : ".o"sv);
 
-    auto error_code = std::error_code();
-    raw_fd_ostream Out(FileName, error_code, sys::fs::OF_None);
-    if (error_code)
+    auto ErrorCode = std::error_code();
+    raw_fd_ostream Out(FileName, ErrorCode, sys::fs::OF_None);
+    if (ErrorCode)
     {
-        Error("无法打开输出文件: ", error_code.message());
+        Error("无法打开输出文件: ", ErrorCode.message());
         return;
     }
 
@@ -407,6 +629,36 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
         fast_io::io::println("编译成功: ", FileName);
         return;
     }
+
+    // https://llvm.org/docs/NewPassManager.html
+
+    // Create the analysis managers.
+    // These must be declared in this order so that they are destroyed in the
+    // correct order due to inter-analysis-manager references.
+    auto LoopAnalysisManager = ::llvm::LoopAnalysisManager();
+    auto FunctionAnalysisManager = ::llvm::FunctionAnalysisManager();
+    auto CGSCCAnalysisManager = ::llvm::CGSCCAnalysisManager();
+    auto ModuleAnalysisManager = ::llvm::ModuleAnalysisManager();
+
+    // Create the new pass manager builder.
+    // Take a look at the PassBuilder constructor parameters for more
+    // customization, e.g. specifying a TargetMachine or various debugging
+    // options.
+    auto PassBuilder = ::llvm::PassBuilder();
+
+    // Register all the basic analyses with the managers.
+    PassBuilder.registerModuleAnalyses(ModuleAnalysisManager);
+    PassBuilder.registerCGSCCAnalyses(CGSCCAnalysisManager);
+    PassBuilder.registerFunctionAnalyses(FunctionAnalysisManager);
+    PassBuilder.registerLoopAnalyses(LoopAnalysisManager);
+    PassBuilder.crossRegisterProxies(LoopAnalysisManager, FunctionAnalysisManager, CGSCCAnalysisManager, ModuleAnalysisManager);
+
+    // Create the pass manager.
+    // This one corresponds to a typical -O3 optimization pipeline.
+    auto ModulePassManager = PassBuilder.buildPerModuleDefaultPipeline(OptimizationLevel::Os);
+
+    // Optimize the IR
+    ModulePassManager.run(LLVMModule, ModuleAnalysisManager);
 
     auto PassManager = legacy::PassManager();
     constexpr auto FileType = CodeGenFileType::ObjectFile;

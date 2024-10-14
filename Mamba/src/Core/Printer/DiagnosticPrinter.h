@@ -49,7 +49,7 @@ namespace Mamba
             auto Severity = SeverityString(Diagnostic.Severity);
 
             return fast_io::concat(
-                fast_io::mnp::code_cvt(Diagnostic.Location.FileName()),
+                Color(fast_io::mnp::code_cvt(Diagnostic.Location.FileName()), Colors::Ignore, true, false),
                 ":",
                 Diagnostic.LineNumber(),
                 ":",
@@ -90,12 +90,11 @@ namespace Mamba
 
         constexpr auto PointerCharacterSize = Fun ? 2 : 1;
 
-        // 5 = indent (2 spaces) + " | "
-        auto PrefixIndent = fast_io::concat(Diagnostic.LineNumber()).length() + 5;
-        auto ContentIndent = Diagnostic.Location.RelativeStartCharacter();
-        auto IndentLength = PrefixIndent + ContentIndent;
+        auto PrefixIndentLength = fast_io::concat(Diagnostic.LineNumber()).length() + 3; // + 3 for spaces before '|'
+        auto ContentIndentLength = Diagnostic.Location.RelativeStartCharacter() + 1;     // + 1 for space after '|'
 
-        auto Indent = std::views::repeat(IndentCharacter, IndentLength) | std::views::join | std::ranges::to<std::string>();
+        auto PrefixIndent = std::views::repeat(IndentCharacter, PrefixIndentLength) | std::views::join | std::ranges::to<std::string>();
+        auto ContentIndent = std::views::repeat(IndentCharacter, ContentIndentLength) | std::views::join | std::ranges::to<std::string>();
 
         auto Length = Diagnostic.Location.View.size();
         auto WaveLength = Length <= PointerCharacterSize ? 0 : Length - PointerCharacterSize;
@@ -103,10 +102,10 @@ namespace Mamba
 
         if constexpr (WithColor)
         {
-            return fast_io::concat(Indent, Color(PointerCharacter, Colors::BrightForegroundGreen), Color(Wave, Colors::BrightForegroundGreen));
+            return fast_io::concat(PrefixIndent, "|", ContentIndent, Color(PointerCharacter, Colors::BrightForegroundGreen), Color(Wave, Colors::BrightForegroundGreen));
         }
 
-        return fast_io::concat(Indent, PointerCharacter, Wave);
+        return fast_io::concat(PrefixIndent, "|", ContentIndent, PointerCharacter, Wave);
     }
 
     template<std::integral char_type>
