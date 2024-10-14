@@ -1,20 +1,20 @@
-## Introduction
+<h1 align="center">Jvav Programming Language</h1>
 
-Jvav is a programming language first purposed by Dr. Haoyang Zhang and implemented by [Heckerpowered](https://github.com/heckerpowered)
+Jvav is a programming language first purposed by Dr. Haoyang Zhang and implemented by Heckerpowered
 
-## Language Standard
+### Language Standard
 
-[Working draft for Jvav](docs/draft/Jvav%2024.pdf)
+Visit [Working Draft](docs/draft/Jvav%2024.pdf) for language standards. To contribute, please create Issue, or make changes to the Working Draft directly, then create a Pull Request.
 
-## Mamba
+### Mamba
 
-Mamba is the compiler of the Jvav programming language, it can compile Jvav code into source code of other programming languages such as C++, C#, Java and more.
+Mamba is the open-source implementation of the Jvav programming language with LLVM for building code.
 
-## Contributing
+### Contributing
 
-### Install LLVM
+#### Install LLVM
 
-*If you have installed LLVM via package manager (e.g. homebrew or scoop), make sure there's llvm-config in \<llvm-path\>/bin/ directory, then skip this step.*
+*Mamba requires a full LLVM to build the code. To verify that the existing LLVM is full, follow step 4 to verify*
 
 1. Download LLVM
 
@@ -22,37 +22,25 @@ Download the latest LLVM release from [LLVM repository](https://github.com/llvm/
 
 2. Extract the downloaded file
 
-Extract the downloaded file to a directory of your choice, we called it *installation path*.
+Extract the file downloaded in the first step.
 
 3. Set environment variables
 
-Add the bin directory of the LLVM installation path to your PATH environment variable.
+Add *llvm-path*/bin to the environment variable, ensure that the toolchain can find llvm related tools.
 
 4. Test LLVM
 
-Open a terminal and run the following command:
-
-Windows:
-
-```
-where.exe llvm-config
-```
-
-macOS/Linux:
-
-```
-which llvm-config
-```
-
-The which/where command should output the path to the llvm-config executable
+Run the command *llvm-config --version*, which should show the version of llvm-config.
 
 ### Clone repository
+
+Clone https://github.com/heckerpowered/Jvav
 
 ```
 git clone https://github.com/heckerpowered/Jvav.git
 ```
 
-#### Using CMake 
+#### Developing with CMake 
 
 ```
 cmake -B build
@@ -60,7 +48,7 @@ cmake --build build -j
 ln -s build/compile_commands.json compile_commands.json
 ```
 
-#### Using XMake
+#### Developing with XMake
 
 ```
 xmake
@@ -85,25 +73,31 @@ Following names are supported:
 
 After making a contribution, run the test to make sure everything is working as expected. Remember to change the test suite to include your new feature.
 
-#### Test via CMake
+#### Running Tests with CMake
+
+To run the tests with CMake, just build and run the mamba_tests target.
 
 ```
 cmake --build build -j
 build/mamba_tests
 ```
 
-#### Test via XMake
+#### Running Tests with XMake
+
+To run the tests with XMake, just build and run the test target.
 
 ```
 xmake
 xmake run test
 ```
 
-### Debugging
+### Debugging with Visual Studio Code
 
-We've adapted VSCode, if you are using VSCode, just press F5 to build with CMake and use LLDB to debug.
-
-You can also use XMake for debugging, ou only need to install the XMake plug-in in VSCode and click the debug button below.
+1. Install [Visual Studio Code](https://code.visualstudio.com)
+    - After install Visual Studio Code, install the [CodeLLDB](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) extension.
+2. You can build from VS Code by running the *Run Build Task* command, then selecting an appropriate task such as *CMake: Build*.
+3. You can launch debug session by running the *Start Debugging* command.
+    - Build task will run automatically before starting the debug session.
 
 ## Stats
 
