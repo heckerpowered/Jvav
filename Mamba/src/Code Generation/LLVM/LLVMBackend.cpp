@@ -398,6 +398,8 @@ Value* GenerateExpression(GenerationContext& Context, const BoundExpression& Sta
 
 void GenerateReturnStatement(GenerationContext& Context, const BoundReturnStatement& Statement) noexcept
 {
+    Context.IsTerminating = true;
+
     auto Value = GenerateExpression(Context, *Statement.Expression);
     Context.Builder.CreateStore(Value, Context.ReturnValue);
     Context.Builder.CreateBr(Context.ReturnBlock);
@@ -431,15 +433,22 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
 
     auto CurrentFunction = Context.Builder.GetInsertBlock()->getParent();
     auto ThenBlock = BasicBlock::Create(Context.Context, "then", CurrentFunction);
-    auto ElseBlock = BasicBlock::Create(Context.Context, "else", CurrentFunction);
-    auto MergeBlock = BasicBlock::Create(Context.Context, "merge", CurrentFunction);
+    auto ElseBlock = BasicBlock::Create(Context.Context, "else");
+    auto MergeBlock = static_cast<BasicBlock*>(nullptr);
+    auto MergeBlockContainsPredecessor = false;
 
     Context.Builder.CreateCondBr(Condition, ThenBlock, ElseBlock);
 
     Context.Builder.SetInsertPoint(ThenBlock);
     GenerateStatement(Context, *Statement.ThenStatement);
 
-    Context.Builder.CreateBr(MergeBlock);
+    if (!Context.IsTerminating)
+    {
+        MergeBlock = BasicBlock::Create(Context.Context, "merge");
+        Context.Builder.CreateBr(MergeBlock);
+        MergeBlockContainsPredecessor = true;
+    }
+
     ThenBlock = Context.Builder.GetInsertBlock();
 
     CurrentFunction->insert(CurrentFunction->end(), ElseBlock);
@@ -451,11 +460,23 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
 
     GenerateStatement(Context, *Statement.ElseStatement);
 
-    Context.Builder.CreateBr(MergeBlock);
-    ElseBlock = Context.Builder.GetInsertBlock();
+    if (!Context.IsTerminating)
+    {
+        if (!MergeBlock)
+        {
+            MergeBlock = BasicBlock::Create(Context.Context, "merge");
+        }
 
-    CurrentFunction->insert(CurrentFunction->end(), MergeBlock);
-    Context.Builder.SetInsertPoint(MergeBlock);
+        Context.Builder.CreateBr(MergeBlock);
+        MergeBlockContainsPredecessor = true;
+    }
+
+    if (MergeBlock)
+    {
+        ElseBlock = Context.Builder.GetInsertBlock();
+        CurrentFunction->insert(CurrentFunction->end(), MergeBlock);
+        Context.Builder.SetInsertPoint(MergeBlock);
+    }
 }
 
 void GenerateWhileStatement(GenerationContext& Context [[maybe_unused]], const BoundWhileStatement& Statement [[maybe_unused]]) noexcept
@@ -465,6 +486,7 @@ void GenerateWhileStatement(GenerationContext& Context [[maybe_unused]], const B
 
 void GenerateStatement(GenerationContext& Context, const BoundStatement& Statement) noexcept
 {
+    Context.IsTerminating = false;
     switch (Statement.Kind())
     {
         case BoundNodeKind::BlockStatement:

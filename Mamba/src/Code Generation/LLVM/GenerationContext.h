@@ -18,5 +18,9 @@ namespace Mamba
 
         llvm::AllocaInst* ReturnValue;
         llvm::BasicBlock* ReturnBlock;
+
+        // Indicates that an unconditional jump instruction has been generated,
+        // and subsequent code is considered DEAD code and should be excised
+        bool IsTerminating;
     };
 } // namespace Mamba

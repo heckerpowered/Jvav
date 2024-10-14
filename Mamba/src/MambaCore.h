@@ -72,6 +72,9 @@ namespace Mamba
     template<typename T>
     using NullablePointer = T*;
 
+    template<typename T>
+    using Nullable = T;
+
     namespace Private
     {
     } // namespace Private
