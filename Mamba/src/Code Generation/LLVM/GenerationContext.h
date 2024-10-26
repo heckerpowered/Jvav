@@ -21,6 +21,6 @@ namespace Mamba
 
         // Indicates that an unconditional jump instruction has been generated,
         // and subsequent code is considered DEAD code and should be excised
-        bool IsTerminating;
+        bool IsTerminating : 1;
     };
 } // namespace Mamba

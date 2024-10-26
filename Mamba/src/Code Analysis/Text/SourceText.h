@@ -34,11 +34,13 @@ namespace Mamba
         [[nodiscard]] std::size_t LineIndex(std::size_t Position) const noexcept;
         [[nodiscard]] const std::vector<TextLine>& Lines() const noexcept;
 
+#if __cpp_explicit_this_parameter >= 202110L
         template<typename SelfT>
         [[nodiscard]] auto&& ToString(this SelfT&& Self) noexcept
         {
             return std::forward_like<SelfT>(Self.PrivateInfo.Text);
         }
+#endif
 
         [[nodiscard]] StringView SubView(std::size_t Start, std::size_t Length) const noexcept;
 
