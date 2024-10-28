@@ -1,0 +1,39 @@
+---
+import { getCollection } from "astro:content";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+import ContactCTA from "../components/ContactCTA.astro";
+import Grid from "../components/Grid.astro";
+import Hero from "../components/Hero.astro";
+import PortfolioPreview from "../components/PortfolioPreview.astro";
+
+const projects = (await getCollection("features")).sort(
+    (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
+---
+
+<BaseLayout
+    title="Jvav | Getting Started"
+    description="Learn about how to make contributions to Jvav"
+>
+    <div class="stack gap-20">
+        <main class="wrapper stack gap-8">
+            <Hero
+                title="Getting Started"
+                tagline="Learn how to use, contribute Jvav"
+                align="start"
+            />
+            <Grid variant="offset">
+                {
+                    projects.map((project) => (
+                        <li>
+                            <PortfolioPreview project={project} />
+                        </li>
+                    ))
+                }
+            </Grid>
+        </main>
+        <ContactCTA />
+    </div>
+</BaseLayout>

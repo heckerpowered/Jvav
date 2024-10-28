@@ -7,6 +7,7 @@
     #pragma clang diagnostic ignored "-Weverything"
 #endif
 
+#include <llvm/IR/Type.h>
 #include <llvm/Target/TargetOptions.h>
 
 #ifdef __clang__
@@ -14,6 +15,7 @@
 #endif
 
 #include "Backend.h"
+#include "GenerationContext.h"
 
 namespace Mamba
 {
@@ -23,5 +25,10 @@ namespace Mamba
 
         static std::string TargetTriple() noexcept;
         static llvm::ThreadModel::Model ThreadModel() noexcept;
+
+        // Initialize all components of LLVM, call multiple times has no effect
+        static void InitializeLLVM() noexcept;
+
+        static llvm::Type* GetLLVMType(GenerationContext& Context, const TypeSymbol* Type) noexcept;
     };
 } // namespace Mamba

@@ -1,7 +1,3 @@
-#include "BoundAssignmentExpression.h"
-#include "BoundCompoundAssignmentExpression.h"
-#include "BoundVariableExpression.h"
-#include "CompareKind.h"
 #include <optional>
 #include <ranges>
 #include <source_location>
@@ -35,6 +31,7 @@
 #include <llvm/Target/TargetMachine.h>
 #include <llvm/Target/TargetOptions.h>
 #include <llvm/TargetParser/Host.h>
+#include <llvm/Transforms/Scalar/DCE.h>
 #include <llvm/Transforms/Scalar/LoopPassManager.h>
 #include <llvm/Transforms/Scalar/SimplifyCFG.h>
 
@@ -46,9 +43,11 @@
 
 #include "MambaCore.h"
 
+#include "BoundAssignmentExpression.h"
 #include "BoundBinaryExpression.h"
 #include "BoundBinaryOperatorKind.h"
 #include "BoundBlockStatement.h"
+#include "BoundCompoundAssignmentExpression.h"
 #include "BoundExpression.h"
 #include "BoundExpressionStatement.h"
 #include "BoundFunctionDeclaration.h"
@@ -58,7 +57,9 @@
 #include "BoundReturnStatement.h"
 #include "BoundStatement.h"
 #include "BoundVariableDeclaration.h"
+#include "BoundVariableExpression.h"
 #include "BoundWhileStatement.h"
+#include "CompareKind.h"
 #include "Constant.h"
 #include "FunctionSymbol.h"
 #include "MambaOptions.h"
@@ -68,7 +69,7 @@ using namespace std::string_literals;
 using namespace llvm;
 using namespace Mamba;
 
-void InitializeLLVM() noexcept
+void LLVMBackend::InitializeLLVM() noexcept
 {
     static bool Initialized = false;
     if (Initialized) [[unlikely]]
@@ -421,6 +422,9 @@ void GenerateVariableDeclaration(GenerationContext& Context, const BoundVariable
     BlockBuilder.CreateStore(InitValue, Alloca);
 }
 
+// Generate if statement, split the if statement into up to 3 basic blocks: then, else, and merge. the then block is
+// executed if the condition yields true, and the else block if the condition yields false, the merge block is executed
+// after the if statement, it is not a part of the if statement. Each basic block must have statements,
 void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Statement) noexcept
 {
     auto Condition = GenerateExpression(Context, *Statement.Condition);
@@ -429,9 +433,44 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
         return;
     }
 
+    if (!Statement.ThenStatement && !Statement.ElseStatement)
+    {
+        return;
+    }
+
+    auto ThenStatement = dynamic_cast<const BoundBlockStatement*>(Statement.ThenStatement);
+    auto ElseStatement = dynamic_cast<const BoundBlockStatement*>(Statement.ElseStatement);
+
+    if ((ThenStatement && ThenStatement->Statements.empty()) &&
+        ElseStatement && ElseStatement->Statements.empty())
+    {
+        return;
+    }
+
     Condition = Context.Builder.CreateICmpNE(Condition, ConstantInt::getFalse(Context.Context));
 
     auto CurrentFunction = Context.Builder.GetInsertBlock()->getParent();
+    auto ConstantCondition = Statement.Condition->ConstantValue();
+    if (ConstantCondition.HoldsAlternative<bool>())
+    {
+        if (ConstantCondition.Get<bool>() && Statement.ThenStatement)
+        {
+            GenerateStatement(Context, *Statement.ThenStatement);
+        }
+        else if (ConstantCondition.Get<bool>() && Statement.ElseStatement)
+        {
+            GenerateStatement(Context, *Statement.ElseStatement);
+        }
+
+        return;
+    }
+
+    if ((ThenStatement && ThenStatement->Statements.empty()) ||
+        ElseStatement && ElseStatement->Statements.empty())
+    {
+        return;
+    }
+
     auto ThenBlock = BasicBlock::Create(Context.Context, "then", CurrentFunction);
     auto ElseBlock = BasicBlock::Create(Context.Context, "else");
     auto MergeBlock = static_cast<BasicBlock*>(nullptr);
@@ -442,6 +481,7 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
     Context.Builder.SetInsertPoint(ThenBlock);
     GenerateStatement(Context, *Statement.ThenStatement);
 
+    // TODO: Make control path analysis
     if (!Context.IsTerminating)
     {
         MergeBlock = BasicBlock::Create(Context.Context, "merge");
@@ -454,6 +494,11 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
     CurrentFunction->insert(CurrentFunction->end(), ElseBlock);
     Context.Builder.SetInsertPoint(ElseBlock);
     if (!Statement.ElseStatement)
+    {
+        return;
+    }
+
+    if (auto ElseStatement = dynamic_cast<const BoundBlockStatement*>(Statement.ElseStatement); ElseStatement && ElseStatement->Statements.empty())
     {
         return;
     }
@@ -639,6 +684,9 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     auto FunctionAnalysisManager = ::llvm::FunctionAnalysisManager();
     auto CGSCCAnalysisManager = ::llvm::CGSCCAnalysisManager();
     auto ModuleAnalysisManager = ::llvm::ModuleAnalysisManager();
+    auto FunctionPassManager = ::llvm::FunctionPassManager();
+
+    FunctionPassManager.addPass(DCEPass());
 
     // Create the new pass manager builder.
     // Take a look at the PassBuilder constructor parameters for more
@@ -655,7 +703,9 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
 
     // Create the pass manager.
     // This one corresponds to a typical -O3 optimization pipeline.
-    auto ModulePassManager = PassBuilder.buildPerModuleDefaultPipeline(OptimizationLevel::Os);
+    auto ModulePassManager = PassBuilder.buildPerModuleDefaultPipeline(OptimizationLevel::O3);
+
+    ModulePassManager.addPass(createModuleToFunctionPassAdaptor(std::move(FunctionPassManager)));
 
     // Optimize the IR
     ModulePassManager.run(LLVMModule, ModuleAnalysisManager);

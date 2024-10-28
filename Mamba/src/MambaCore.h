@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Colors.h"
 #include <memory>
 #include <source_location>
 #include <string>
@@ -8,6 +7,8 @@
 
 #include <fast_io.h>
 #include <fast_io_unit/string.h>
+
+#include "Colors.h"
 
 #define MAMBA_NAMESPACE_BEGIN \
     namespace Mamba           \
@@ -52,8 +53,7 @@ namespace Mamba
 #endif
 
     static_assert(
-        std::is_same_v<Char, char> || std::is_same_v<Char, wchar_t> || std::is_same_v<Char, char8_t> ||
-            std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>,
+        std::is_same_v<Char, char> || std::is_same_v<Char, wchar_t> || std::is_same_v<Char, char8_t> || std::is_same_v<Char, char16_t> || std::is_same_v<Char, char32_t>,
         "Unsupported character type"
     );
 
