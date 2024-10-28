@@ -19,8 +19,6 @@ const projects = (await getCollection("features"))
     .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
     .slice(0, 4);
 
-export const prerender = true;
-
 // Full Astro Component Syntax:
 // https://docs.astro.build/basics/astro-components/
 ---
