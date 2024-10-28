@@ -4,6 +4,6 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://heckerpowered.github.io',
+    site: 'https://jvav.heckerpowered.net',
     base: '/docs/website',
 })
