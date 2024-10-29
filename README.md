@@ -105,7 +105,7 @@ xmake run test
 
 ## Website
 
-Our website is underway.
+Our website is available at [here](https://jvav.heckerpowered.net/).
 
 <img width="1512" alt="70d80c91d18ff0554455ba09eb219e88" src="https://github.com/user-attachments/assets/81a4aac1-d18c-4085-81dd-d3a0b008446c">
 
