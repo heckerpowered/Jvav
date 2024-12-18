@@ -182,6 +182,7 @@ namespace Mamba
                 ReportUnreachableCode(static_cast<const CallExpressionSyntax*>(Node)->Location());
                 return;
             default:
+                ReportUnreachableCode(static_cast<const CallExpressionSyntax*>(Node)->Location());
                 break;
         }
     }
