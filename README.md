@@ -42,9 +42,11 @@ git clone https://github.com/heckerpowered/Jvav.git
 
 #### Developing with CMake 
 
+Recommend use *ninja*
+
 ```
 cmake -B build
-cmake --build build -j
+cmake --build build -j$nproc
 ln -s build/compile_commands.json compile_commands.json
 ```
 
