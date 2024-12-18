@@ -124,16 +124,7 @@ FunctionDeclarationSyntax* Parser::ParseFunctionDeclaration() noexcept
     auto Type = ParseOptionalTypeClause();
     auto Body = ParseBlockStatement();
 
-    return new FunctionDeclarationSyntax(
-        SyntaxTree,
-        FunctionKeyword,
-        IdentifierToken,
-        OpenParenthesisToken,
-        std::move(Parameters),
-        CloseParenthesisToken,
-        Type,
-        Body
-    );
+    return new FunctionDeclarationSyntax(SyntaxTree, FunctionKeyword, IdentifierToken, OpenParenthesisToken, std::move(Parameters), CloseParenthesisToken, Type, Body);
 }
 
 SeperatedSyntaxList<ParameterSyntax*> Parser::ParseParameterList() noexcept
