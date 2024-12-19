@@ -1,6 +1,4 @@
-[submodule "llvm-project"]
-	path = llvm-project
-	url = https://github.com/llvm/llvm-project
 [submodule "fast_io"]
 	path = fast_io
 	url = https://github.com/cppfastio/fast_io
+    branch = next
