@@ -12,30 +12,24 @@ endif()
 
 include(FetchContent)
 FetchContent_Declare(
-        fastio
-        URL https://github.com/Adttil/fast_io/archive/refs/heads/master.zip
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-)
-FetchContent_Declare(
     googletest
     URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 
-FetchContent_MakeAvailable(fastio)
 FetchContent_MakeAvailable(googletest)
 
-include_directories("include" "src" "src/Core" "src/Core/Printer" "src/Core/International" "src/Code Analysis" "src/Code Analysis/Syntax" "src/Code Analysis/Text" "src/Code Analysis/Binding" "src/Code Analysis/Binding/Control Flow" "src/Code Analysis/Symbol" "src/Code Generation" "src/Code Generation/LLVM")
+include_directories("../fast_io/include" "include" "src" "src/Core" "src/Core/Printer" "src/Core/International" "src/Code Analysis" "src/Code Analysis/Syntax" "src/Code Analysis/Text" "src/Code Analysis/Binding" "src/Code Analysis/Binding/Control Flow" "src/Code Analysis/Symbol" "src/Code Generation" "src/Code Generation/LLVM")
 
 # set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 file(GLOB_RECURSE srcs "src/**.cpp")
 add_executable(mamba ${srcs})
-target_link_libraries(mamba PRIVATE FAST_IO)
+target_link_libraries(mamba PRIVATE)
 
 file(GLOB test_srcs "test/**.cpp")
 add_executable(mamba_tests ${srcs} ${test_srcs})
-target_link_libraries(mamba_tests PRIVATE FAST_IO GTest::gtest_main)
+target_link_libraries(mamba_tests PRIVATE GTest::gtest_main)
 target_compile_definitions(mamba_tests PRIVATE MAMBA_TEST)
 
 # LLVM Embedding

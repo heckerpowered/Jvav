@@ -2,13 +2,16 @@
 
 #include <memory>
 #include <source_location>
-#include <string>
+#include <string_view>
 #include <utility>
 
 #include <fast_io.h>
-#include <fast_io_unit/string.h>
+#include <fast_io_dsal/span.h>
+#include <fast_io_dsal/string.h>
+#include <fast_io_dsal/string_view.h>
 
 #include "Colors.h"
+#include "fast_io_dsal/impl/string_view.h"
 
 #define MAMBA_NAMESPACE_BEGIN \
     namespace Mamba           \
@@ -22,7 +25,7 @@
 // 2 - char8_t
 // 3 - char16_t
 // 4 - char32_t
-#define MAMBA_CHARACTER_TYPE 2
+#define MAMBA_CHARACTER_TYPE 0
 
 #if MAMBA_CHARACTER_TYPE == 0
     #define MAMBA_TEXT(x) x
@@ -57,8 +60,8 @@ namespace Mamba
         "Unsupported character type"
     );
 
-    using String = std::basic_string<Char>;
-    using StringView = std::basic_string_view<Char>;
+    using String = fast_io::containers::basic_string<Char, fast_io::native_global_allocator>;
+    using StringView = fast_io::containers::basic_string_view<Char>;
 
     // Always same as std::shared_ptr<T>, but semantically nullable (although shared_ptr is also nullable)
     // Use NullableSharedPtr when you want to represent a shared_ptr with a nullable value.
@@ -84,23 +87,23 @@ namespace Mamba
     {
         if constexpr (std::is_same_v<Char, char>)
         {
-            return fast_io::concat(std::forward<T>(Args)...);
+            return fast_io::concat_fast_io(std::forward<T>(Args)...);
         }
         else if constexpr (std::is_same_v<Char, wchar_t>)
         {
-            return fast_io::wconcat(std::forward<T>(Args)...);
+            return fast_io::wconcat_fast_io(std::forward<T>(Args)...);
         }
         else if constexpr (std::is_same_v<Char, char8_t>)
         {
-            return fast_io::u8concat(std::forward<T>(Args)...);
+            return fast_io::u8concat_fast_io(std::forward<T>(Args)...);
         }
         else if constexpr (std::is_same_v<Char, char16_t>)
         {
-            return fast_io::u16concat(std::forward<T>(Args)...);
+            return fast_io::u16concat_fast_io(std::forward<T>(Args)...);
         }
         else if constexpr (std::is_same_v<Char, char32_t>)
         {
-            return fast_io::u32concat(std::forward<T>(Args)...);
+            return fast_io::u32concat_fast_io(std::forward<T>(Args)...);
         }
 
         std::unreachable();
@@ -203,6 +206,17 @@ namespace Mamba
 #endif
 
 } // namespace Mamba
+
+// Temorary solution to put fast_io data structures into std::unordered_map, since fast_io
+// currently has no map-like container.
+template<std::integral CharType>
+struct std::hash<fast_io::containers::basic_string_view<CharType>>
+{
+    std::size_t operator()(fast_io::containers::basic_string_view<CharType> View) const
+    {
+        return std::hash<std::basic_string_view<CharType>>()({ View.begin(), View.end() });
+    }
+};
 
 #ifdef __cpp_exceptions
     #if defined(_MSC_VER) && (!defined(_HAS_EXCEPTIONS) || _HAS_EXCEPTIONS == 0)

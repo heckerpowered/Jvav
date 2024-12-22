@@ -7,7 +7,23 @@
             "command": "cmake --build build -j$nproc",
             "options": {
                 "cwd": "${workspaceFolder}"
-            },
+            }
+        },
+        {
+            "label": "XMake Build",
+            "type": "shell",
+            "command": "xmake",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "CMake Init",
+            "type": "shell",
+            "command": "cmake -B build -G Ninja",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
         }
     ]
 }

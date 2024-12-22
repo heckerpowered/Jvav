@@ -2,6 +2,7 @@ add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate")
 
 local includedirs = {
+    "../fast_io/include",
     "src", 
     "src/Core", 
     "src/Core/Printer",
@@ -43,7 +44,6 @@ do
 end
 rule_end()
 
-add_requires("fast_io")
 add_rules("libllvm")
 add_requires("gtest")
 
@@ -56,6 +56,7 @@ target("mamba")
     add_languages("clatest", "c++latest")
     set_warnings("all", "extra")
     add_includedirs(includedirs)
+    set_targetdir("../build/mamba/")
     if is_os("macosx") or is_os("linux") then
         add_linkdirs("/opt/homebrew/opt/llvm/lib/c++") -- macOS compability
         add_includedirs("/opt/homebrew/opt/llvm/include")
@@ -87,6 +88,7 @@ target("test")
     set_warnings("all", "extra")
     set_languages("c++latest")
     add_includedirs(includedirs)
+    set_targetdir("../build/mamba/")
     if is_os("macosx") or is_os("linux") then
         add_linkdirs("/opt/homebrew/opt/llvm/lib/c++")
         add_includedirs("/opt/homebrew/opt/llvm/include")

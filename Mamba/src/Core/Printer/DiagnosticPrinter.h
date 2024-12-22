@@ -5,6 +5,7 @@
 
 #include "Colors.h"
 #include "Diagnostic.h"
+#include "fast_io_dsal/string.h"
 #include "MambaCore.h"
 
 namespace Mamba
@@ -24,7 +25,7 @@ namespace Mamba
         }
     }
 
-    constexpr std::string_view SeverityString(DiagnosticSeverity Severity) noexcept
+    constexpr fast_io::string_view SeverityString(DiagnosticSeverity Severity) noexcept
     {
         switch (Severity)
         {
@@ -40,7 +41,7 @@ namespace Mamba
     }
 
     template<bool WithColor = true>
-    constexpr std::string SourceLocation(const Diagnostic& Diagnostic) noexcept
+    constexpr fast_io::string SourceLocation(const Diagnostic& Diagnostic) noexcept
     {
         // <FileName>:<StartLine>:<StartCharacter>: <Severity>: <Message>
         if constexpr (WithColor)
@@ -48,7 +49,7 @@ namespace Mamba
             auto SeverityColor = DiagnosticColor(Diagnostic.Severity);
             auto Severity = SeverityString(Diagnostic.Severity);
 
-            return fast_io::concat(
+            return fast_io::concat_fast_io(
                 Color(fast_io::mnp::code_cvt(Diagnostic.Location.FileName()), Colors::Ignore, true, false),
                 ":",
                 Diagnostic.LineNumber(),
@@ -62,7 +63,7 @@ namespace Mamba
         }
 
         auto Severity = SeverityString(Diagnostic.Severity);
-        return fast_io::concat(
+        return fast_io::concat_fast_io(
             fast_io::mnp::code_cvt(Diagnostic.Location.FileName()),
             ":",
             Diagnostic.LineNumber(),
@@ -75,14 +76,14 @@ namespace Mamba
         );
     }
 
-    constexpr std::string LineView(const Diagnostic& Diagnostic) noexcept
+    constexpr fast_io::string LineView(const Diagnostic& Diagnostic) noexcept
     {
         // <LineNumber> | <LineView>
-        return fast_io::concat("  ", Diagnostic.LineNumber(), " | ", fast_io::mnp::code_cvt(Diagnostic.LineView()));
+        return fast_io::concat_fast_io("  ", Diagnostic.LineNumber(), " | ", fast_io::mnp::code_cvt(Diagnostic.LineView()));
     }
 
     template<bool WithColor = true, bool Fun = true>
-    constexpr std::string LocationGuide(const Diagnostic& Diagnostic) noexcept
+    constexpr fast_io::string LocationGuide(const Diagnostic& Diagnostic) noexcept
     {
         constexpr std::string_view PointerCharacter = Fun ? "🤓👆" : "^";
         constexpr std::string_view WaveCharacter = Fun ? "👆" : "~";
@@ -90,8 +91,8 @@ namespace Mamba
 
         constexpr auto PointerCharacterSize = Fun ? 2 : 1;
 
-        auto PrefixIndentLength = fast_io::concat(Diagnostic.LineNumber()).length() + 3; // + 3 for spaces before '|'
-        auto ContentIndentLength = Diagnostic.Location.RelativeStartCharacter() + 1;     // + 1 for space after '|'
+        auto PrefixIndentLength = fast_io::concat_fast_io(Diagnostic.LineNumber()).size() + 3; // + 3 for spaces before '|'
+        auto ContentIndentLength = Diagnostic.Location.RelativeStartCharacter() + 1;           // + 1 for space after '|'
 
         auto PrefixIndent = std::views::repeat(IndentCharacter, PrefixIndentLength) | std::views::join | std::ranges::to<std::string>();
         auto ContentIndent = std::views::repeat(IndentCharacter, ContentIndentLength) | std::views::join | std::ranges::to<std::string>();
@@ -102,10 +103,10 @@ namespace Mamba
 
         if constexpr (WithColor)
         {
-            return fast_io::concat(PrefixIndent, "|", ContentIndent, Color(PointerCharacter, Colors::BrightForegroundGreen), Color(Wave, Colors::BrightForegroundGreen));
+            return fast_io::concat_fast_io(PrefixIndent, "|", ContentIndent, Color(PointerCharacter, Colors::BrightForegroundGreen), Color(Wave, Colors::BrightForegroundGreen));
         }
 
-        return fast_io::concat(PrefixIndent, "|", ContentIndent, PointerCharacter, Wave);
+        return fast_io::concat_fast_io(PrefixIndent, "|", ContentIndent, PointerCharacter, Wave);
     }
 
     template<std::integral char_type>

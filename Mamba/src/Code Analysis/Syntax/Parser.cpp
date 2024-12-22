@@ -330,7 +330,7 @@ ContinueStatementSyntax* Parser::ParseContinueStatement() noexcept
 
 ReturnStatementSyntax* Parser::ParseReturnStatement() noexcept
 {
-    auto Text = SyntaxTree->Text();
+    decltype(auto) Text = SyntaxTree->Text();
 
     auto Keyword = MatchToken(SyntaxKind::ReturnKeyword);
     auto KeywordLine = Text.LineIndex(Text.RelativeBegin(Keyword->Text()));

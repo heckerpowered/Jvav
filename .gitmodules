@@ -1,4 +1,4 @@
 [submodule "fast_io"]
 	path = fast_io
 	url = https://github.com/cppfastio/fast_io
-    branch = next
+	branch = next
