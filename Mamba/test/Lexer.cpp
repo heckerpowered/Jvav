@@ -7,13 +7,13 @@
 
 using namespace Mamba;
 
-String LexerSourceCode = TEXT(R"(
+StringView LexerSourceCode = TEXT(R"(
     fun main(): int {
         $
     }
 )");
 
-String LexerNormalCode = TEXT(R"(
+StringView LexerNormalCode = TEXT(R"(
     fun main(): int {
         
     }
@@ -22,10 +22,11 @@ String LexerNormalCode = TEXT(R"(
 TEST(Compile, Lexer)
 {
     auto Info = SourceTextInfo{
-        .FileName = TEXT("<testfile>"),
+        .FileLoader = fast_io::native_file_loader(),
+        .FileName = StringView(TEXT("<testfile>")),
         .Text = LexerNormalCode
     };
-    auto Source = SourceText(Info);
+    auto Source = SourceText(std::move(Info));
     auto Tree = new SyntaxTree(Source);
     auto Analyzer = new Lexer(Tree);
 
@@ -44,10 +45,11 @@ TEST(Compile, Lexer)
 TEST(Compile, LexerDiagnostic)
 {
     auto Info = SourceTextInfo{
+        .FileLoader = fast_io::native_file_loader(),
         .FileName = TEXT("<testfile>"),
         .Text = LexerSourceCode
     };
-    auto Source = SourceText(Info);
+    auto Source = SourceText(std::move(Info));
     auto Tree = new SyntaxTree(Source);
     auto Analyzer = new Lexer(Tree);
 

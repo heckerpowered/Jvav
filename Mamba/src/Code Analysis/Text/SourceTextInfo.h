@@ -6,7 +6,11 @@ namespace Mamba
 {
     struct SourceTextInfo
     {
-        String FileName;
-        String Text;
+        fast_io::native_file_loader FileLoader;
+        StringView FileName;
+
+        // The lifetime of the text is tied to the lifetime of the file loader, when the
+        // file loader is empty, the lifetime is unknown.
+        StringView Text;
     };
 } // namespace Mamba

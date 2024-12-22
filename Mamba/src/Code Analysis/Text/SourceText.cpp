@@ -9,7 +9,7 @@ using namespace Mamba;
 [[nodiscard]] constexpr std::size_t GetLineBreakWidth(StringView Text, std::size_t Position) noexcept
 {
     auto Character = Text[Position];
-    auto LineBreakCharacter = (Position + 1 >= Text.length() ? TEXT('\0') : Text[Position + 1]);
+    auto LineBreakCharacter = (Position + 1 >= Text.size() ? TEXT('\0') : Text[Position + 1]);
 
     if (Character == TEXT('\r') && LineBreakCharacter == TEXT('\n'))
     {
@@ -26,7 +26,7 @@ using namespace Mamba;
 
 std::size_t SourceText::Length() const noexcept
 {
-    return PrivateInfo.Text.length();
+    return PrivateInfo.Text.size();
 }
 
 std::size_t SourceText::LineIndex(const std::size_t Position) const noexcept
@@ -68,11 +68,8 @@ const std::vector<TextLine>& SourceText::Lines() const noexcept
 
 StringView SourceText::SubView(std::size_t Start, std::size_t Length) const noexcept
 {
-    auto End = Start + Length;
-    auto ViewBegin = PrivateInfo.Text.data() + Start;
-    auto ViewEnd = PrivateInfo.Text.data() + End;
-
-    return StringView(ViewBegin, ViewEnd);
+    auto ViewData = PrivateInfo.Text.data() + Start;
+    return StringView(ViewData, Length);
 }
 
 std::size_t SourceText::RelativeBegin(StringView View) const noexcept
@@ -82,11 +79,11 @@ std::size_t SourceText::RelativeBegin(StringView View) const noexcept
 
 std::size_t SourceText::RelativeEnd(StringView View) const noexcept
 {
-    return RelativeBegin(View) + View.length();
+    return RelativeBegin(View) + View.size();
 }
 
-SourceText::SourceText(const SourceTextInfo& Info) noexcept :
-    PrivateInfo(Info)
+SourceText::SourceText(SourceTextInfo&& Info) noexcept :
+    PrivateInfo(std::move(Info))
 {
 }
 
@@ -109,7 +106,7 @@ std::vector<TextLine> SourceText::SplitLines(const SourceTextInfo& Info)
 
     auto& Text = Info.Text;
 
-    while (Position < Text.length())
+    while (Position < Text.size())
     {
         auto LineBreakWidth = GetLineBreakWidth(Text, Position);
         if (LineBreakWidth == 0)

@@ -22,9 +22,9 @@ const SyntaxTree* Mamba::SyntaxNode::Tree() const noexcept
 
 StringView SyntaxNode::Text() const noexcept
 {
-    auto First = Children().front()->Text();
-    auto Last = Children().back()->Text();
-    return { First.begin(), Last.end() };
+    auto First = Children().front()->Text().begin();
+    auto Last = Children().back()->Text().end();
+    return StringView{ First, static_cast<std::size_t>(std::distance(First, Last)) }; // fast_io::string_view cannot be constructed from iterators, 2024.12.22.
 }
 
 TextLocation SyntaxNode::Location() const noexcept

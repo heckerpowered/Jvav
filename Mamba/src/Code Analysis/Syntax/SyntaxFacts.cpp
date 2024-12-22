@@ -3,6 +3,7 @@
 #include "MambaCore.h"
 #include "SyntaxKind.h"
 
+#include <string_view>
 #include <unordered_map>
 #include <utility>
 
@@ -59,29 +60,29 @@ namespace Mamba
     SyntaxKind SyntaxFacts::GetKeywordKind(const StringView Text) noexcept
     {
         static auto KeywordsMap = std::unordered_map<StringView, SyntaxKind>{
-            std::make_pair(TEXT("if"), SyntaxKind::IfKeyword),
-            std::make_pair(TEXT("else"), SyntaxKind::ElseKeyword),
+            std::make_pair(StringView(TEXT("if")), SyntaxKind::IfKeyword),
+            std::make_pair(StringView(TEXT("else")), SyntaxKind::ElseKeyword),
 
-            std::make_pair(TEXT("for"), SyntaxKind::ForKeyword),
-            std::make_pair(TEXT("while"), SyntaxKind::WhileKeyword),
-            std::make_pair(TEXT("do"), SyntaxKind::DoKeyword),
+            std::make_pair(StringView(TEXT("for")), SyntaxKind::ForKeyword),
+            std::make_pair(StringView(TEXT("while")), SyntaxKind::WhileKeyword),
+            std::make_pair(StringView(TEXT("do")), SyntaxKind::DoKeyword),
 
-            std::make_pair(TEXT("fun"), SyntaxKind::FunctionKeyword),
+            std::make_pair(StringView(TEXT("fun")), SyntaxKind::FunctionKeyword),
 
-            std::make_pair(TEXT("let"), SyntaxKind::LetKeyword),
-            std::make_pair(TEXT("var"), SyntaxKind::VarKeyword),
+            std::make_pair(StringView(TEXT("let")), SyntaxKind::LetKeyword),
+            std::make_pair(StringView(TEXT("var")), SyntaxKind::VarKeyword),
 
-            std::make_pair(TEXT("true"), SyntaxKind::TrueKeyword),
-            std::make_pair(TEXT("false"), SyntaxKind::FalseKeyword),
+            std::make_pair(StringView(TEXT("true")), SyntaxKind::TrueKeyword),
+            std::make_pair(StringView(TEXT("false")), SyntaxKind::FalseKeyword),
 
-            std::make_pair(TEXT("break"), SyntaxKind::BreakKeyword),
-            std::make_pair(TEXT("continue"), SyntaxKind::ContinueKeyword),
+            std::make_pair(StringView(TEXT("break")), SyntaxKind::BreakKeyword),
+            std::make_pair(StringView(TEXT("continue")), SyntaxKind::ContinueKeyword),
 
-            std::make_pair(TEXT("return"), SyntaxKind::ReturnKeyword),
+            std::make_pair(StringView(TEXT("return")), SyntaxKind::ReturnKeyword),
 
-            std::make_pair(TEXT("mut"), SyntaxKind::MutKeyword),
-            std::make_pair(TEXT("pure"), SyntaxKind::PureKeyword),
-            std::make_pair(TEXT("const"), SyntaxKind::ConstKeyword)
+            std::make_pair(StringView(TEXT("mut")), SyntaxKind::MutKeyword),
+            std::make_pair(StringView(TEXT("pure")), SyntaxKind::PureKeyword),
+            std::make_pair(StringView(TEXT("const")), SyntaxKind::ConstKeyword)
         };
 
         auto Iterator = KeywordsMap.find(Text);
@@ -412,9 +413,10 @@ namespace Mamba
 #ifdef DEBUG
                 auto Message =
                     Concat(TEXT("No binary operator for assignment operator: '"), GetText(Kind), TEXT("'"));
-                fast_io::io::perrln(fast_io::mnp::code_cvt(Message));
-#endif
+                InternalCompilerError(std::source_location::current(), Message);
+#else
                 std::unreachable();
+#endif
         }
     }
 } // namespace Mamba

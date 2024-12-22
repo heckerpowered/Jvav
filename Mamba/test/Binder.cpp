@@ -14,13 +14,13 @@ using namespace Mamba;
 
 // undeclared identifier 'y'
 // undefined operator '*' used for 'x' and 'y' (cannot deduce type of 'y')
-String BinderSourceCode = TEXT(R"(
+StringView BinderSourceCode = TEXT(R"(
     fun square(x: int): int {
         return x * y
     }
 )");
 
-String BinderNormalCode = TEXT(R"(
+StringView BinderNormalCode = TEXT(R"(
     fun main(): int {
         
     }
@@ -29,10 +29,11 @@ String BinderNormalCode = TEXT(R"(
 TEST(Compile, Binder)
 {
     auto Info = SourceTextInfo{
+        .FileLoader = fast_io::native_file_loader(),
         .FileName = TEXT("<testfile>"),
         .Text = BinderNormalCode
     };
-    auto Source = SourceText(Info);
+    auto Source = SourceText(std::move(Info));
     auto Tree = new SyntaxTree(Source);
     auto Analyzer = new Lexer(Tree);
 
@@ -68,10 +69,11 @@ TEST(Compile, Binder)
 TEST(Compile, BinderDiagnostic)
 {
     auto Info = SourceTextInfo{
+        .FileLoader = fast_io::native_file_loader(),
         .FileName = TEXT("<testfile>"),
         .Text = BinderSourceCode
     };
-    auto Source = SourceText(Info);
+    auto Source = SourceText(std::move(Info));
     auto Tree = new SyntaxTree(Source);
     auto Analyzer = new Lexer(Tree);
 

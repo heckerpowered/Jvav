@@ -1,5 +1,4 @@
 #include <ranges>
-#include <string_view>
 
 #include "Compiler.h"
 #include "Mamba.h"
@@ -15,7 +14,7 @@ std::int32_t Mamba::InitMamba(int ArgumentCount, [[maybe_unused]] char* Argument
 
     auto Begin = Arguments + 1;
     auto End = Arguments + ArgumentCount;
-    auto ArgumentRange = std::ranges::subrange(Begin, End) | std::views::transform([](auto&& Range) { return std::string_view(Range); }) | std::ranges::to<std::vector>();
+    auto ArgumentRange = std::ranges::subrange(Begin, End) | std::views::transform([](auto&& Range) { return fast_io::string_view(fast_io::mnp::os_c_str(Range)); }) | std::ranges::to<fast_io::vector>();
 
     InitMambaOptions(ArgumentRange);
 

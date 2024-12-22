@@ -4,13 +4,12 @@
 #include <string>
 #include <string_view>
 
-#include <fast_io.h>
-
 #ifdef __clang__
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Weverything"
 #endif
 
+#include <fast_io.h>
 #include <LLVM/GenerationContext.h>
 #include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/DerivedTypes.h>
@@ -203,7 +202,7 @@ Value* GenerateVariableExpression(GenerationContext& Context, const BoundVariabl
     }
 
     auto Alloca = Iterator->second;
-    return Context.Builder.CreateLoad(Alloca->getAllocatedType(), Alloca, fast_io::concat(fast_io::mnp::code_cvt(Expression.Variable->Name())));
+    return Context.Builder.CreateLoad(Alloca->getAllocatedType(), Alloca, fast_io::concat_std(fast_io::mnp::code_cvt(Expression.Variable->Name())));
 }
 
 Value* GenerateAsssignmentExpression(GenerationContext& Context, const BoundAssignmentExpression& Expression) noexcept
@@ -410,7 +409,7 @@ void GenerateVariableDeclaration(GenerationContext& Context, const BoundVariable
 {
     auto CurrentFunction = Context.Builder.GetInsertBlock()->getParent();
     auto BlockBuilder = IRBuilder<>(&CurrentFunction->getEntryBlock(), CurrentFunction->getEntryBlock().begin());
-    auto Alloca = BlockBuilder.CreateAlloca(GetLLVMType(Context, Statement.Variable->Type), nullptr, fast_io::concat(fast_io::mnp::code_cvt(Statement.Variable->Name())));
+    auto Alloca = BlockBuilder.CreateAlloca(GetLLVMType(Context, Statement.Variable->Type), nullptr, fast_io::concat_std(fast_io::mnp::code_cvt(Statement.Variable->Name())));
     Context.NamedValues[Statement.Variable->Name()] = Alloca;
 
     auto InitValue = GenerateExpression(Context, *Statement.Initializer);
@@ -466,7 +465,7 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
     }
 
     if ((ThenStatement && ThenStatement->Statements.empty()) ||
-        ElseStatement && ElseStatement->Statements.empty())
+        (ElseStatement && ElseStatement->Statements.empty()))
     {
         return;
     }
@@ -474,7 +473,7 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
     auto ThenBlock = BasicBlock::Create(Context.Context, "then", CurrentFunction);
     auto ElseBlock = BasicBlock::Create(Context.Context, "else");
     auto MergeBlock = static_cast<BasicBlock*>(nullptr);
-    auto MergeBlockContainsPredecessor = false;
+    // auto MergeBlockContainsPredecessor = false;
 
     Context.Builder.CreateCondBr(Condition, ThenBlock, ElseBlock);
 
@@ -486,7 +485,7 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
     {
         MergeBlock = BasicBlock::Create(Context.Context, "merge");
         Context.Builder.CreateBr(MergeBlock);
-        MergeBlockContainsPredecessor = true;
+        // MergeBlockContainsPredecessor = true;
     }
 
     ThenBlock = Context.Builder.GetInsertBlock();
@@ -513,7 +512,7 @@ void GenerateIfStatement(GenerationContext& Context, const BoundIfStatement& Sta
         }
 
         Context.Builder.CreateBr(MergeBlock);
-        MergeBlockContainsPredecessor = true;
+        // MergeBlockContainsPredecessor = true;
     }
 
     if (MergeBlock)
@@ -583,12 +582,12 @@ void GenerateFunction(GenerationContext& Context, const FunctionSymbol& Function
     auto ParameterTypes = GetFunctionArgumentTypes(Context, FunctionDeclaration);
 
     auto FunctionType = FunctionType::get(ReturnType, ParameterTypes, false);
-    auto Function = Function::Create(FunctionType, GlobalValue::ExternalLinkage, fast_io::concat(fast_io::mnp::code_cvt(FunctionDeclaration.Name())), &Context.Module);
+    auto Function = Function::Create(FunctionType, GlobalValue::ExternalLinkage, fast_io::concat_std(fast_io::mnp::code_cvt(FunctionDeclaration.Name())), &Context.Module);
 
     auto Index = std::size_t();
     for (auto&& Argument : Function->args())
     {
-        Argument.setName(fast_io::concat(fast_io::mnp::code_cvt(FunctionDeclaration.Parameters[Index++]->Name())));
+        Argument.setName(fast_io::concat_std(fast_io::mnp::code_cvt(FunctionDeclaration.Parameters[Index++]->Name())));
     }
 
     auto EntryBlock = BasicBlock::Create(Context.Context, "entry", Function);
@@ -630,7 +629,7 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     auto LLVMContext = ::llvm::LLVMContext();
     auto LLVMModule = Module(ModuleName, LLVMContext);
     auto Builder = IRBuilder<>(LLVMContext);
-    auto Context = GenerationContext{ LLVMContext, LLVMModule, Builder, {}, {}, {} };
+    auto Context = GenerationContext{ LLVMContext, LLVMModule, Builder, {}, {}, {}, {} };
 
     for (auto&& CompilationUnit : CompilationUnits)
     {
@@ -657,7 +656,7 @@ void LLVMBackend::GenerateCode(std::span<BoundCompilationUnit*> CompilationUnits
     LLVMModule.setTargetTriple(TargetTriple);
 
     using namespace std::string_view_literals;
-    auto FileName = fast_io::concat(ModuleName, Options::EmitLLVM ? ".ll"sv : ".o"sv);
+    auto FileName = fast_io::concat_std(ModuleName, Options::EmitLLVM ? ".ll"sv : ".o"sv);
 
     auto ErrorCode = std::error_code();
     raw_fd_ostream Out(FileName, ErrorCode, sys::fs::OF_None);

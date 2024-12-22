@@ -5,11 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "LLDB",
+            "name": "Debug (CMake)",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/build/mamba",
+            "program": "${workspaceFolder}/build/mamba/mamba",
             "preLaunchTask": "CMake Build",
+            "args": [
+                "main.jvav"
+            ],
+            "cwd": "${workspaceFolder}/build"
+        },
+        {
+            "name": "Debug (XMake)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/mamba/mamba",
+            "preLaunchTask": "XMake Build",
             "args": [
                 "main.jvav"
             ],

@@ -13,7 +13,7 @@ namespace Mamba
         std::vector<TextLine> PrivateLines = SplitLines(PrivateInfo);
 
     public:
-        [[nodiscard]] SourceText(const SourceTextInfo& Info) noexcept;
+        [[nodiscard]] SourceText(SourceTextInfo&& Info) noexcept;
 
         const SourceTextInfo& Info() const noexcept;
 

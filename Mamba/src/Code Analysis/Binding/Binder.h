@@ -42,14 +42,30 @@
 
 namespace Mamba
 {
+    // Binder associates syntax sequences, associates parameter with it's name and function. Associates
+    // declarations with it's name and scope, so that entities can be accessed by it's identifier. Associates
+    // the break/continue statement with a loop, associates type clauses with declarations.
     class Binder
     {
+        // The current scope, where each symbol is stored, and where symbols can be looked up by name in scope.
+        // Direct modification of this data member is not permitted; enter and exit the scope safely by modifying
+        // this data member to the return value of member function *EnterScope*.
         BoundScope* Scope;
+
+        // Stores a *SyntaxTree* whose data member *Root* is treated as the compilation unit and is only used when
+        // binding the compilation unit (calling member function *BindCompilationUnit*). Do not modify this data member
+        // unless this binder is being reused.
         const class SyntaxTree* SyntaxTree;
 
+        // Bind according to the actual type of the member. This function determines the type by trying to convert it,
+        // instead of the member function *Kind*.
         void BindMember(const MemberSyntax* Member) noexcept;
+
+        // Binding a function declaration creates a scope whose parameter declarations and all statements are inside this
+        // scope, and the function's BlockStatement creates a new scope inside the function's scope.
         void BindFunctionDeclaration(const FunctionDeclarationSyntax* FunctionDeclaration) noexcept;
 
+        //
         void DeclareFunction(const FunctionDeclarationSyntax* FunctionDeclaration, const BoundFunctionDeclaration* BoundFunctionDeclaration, std::vector<const ParameterSymbol*>&& Parameters) noexcept;
 
         VariableSymbol* BindVariableDeclaration(const SyntaxToken* Identifier, bool IsReadOnly, const TypeSymbol* Type, Constant Constant) noexcept;

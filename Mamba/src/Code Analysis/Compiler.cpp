@@ -7,7 +7,6 @@
 #include "Binder.h"
 #include "Colors.h"
 #include "Compiler.h"
-#include "fast_io.h"
 #include "Parser.h"
 
 using namespace fast_io::io;
@@ -32,24 +31,25 @@ void PrintDiagnostics(std::span<const Diagnostic> Diagnostics) noexcept
     }
 }
 
-void Compiler::PrivateAddSourceFile(const std::string_view FileName) noexcept
+void Compiler::AddSourceFile(StringView FileName) noexcept
 {
     try
     {
-        auto FileLoader = fast_io::native_file_loader(FileName);
+        auto FileLoader = fast_io::native_file_loader(String(FileName));
 
         auto Info = SourceTextInfo{
-            .FileName = Concat(fast_io::mnp::code_cvt(FileName)),
-            .Text = String(FileLoader.begin(), FileLoader.end())
+            .FileLoader = std::move(FileLoader),
+            .FileName = FileName,
+            .Text = StringView(reinterpret_cast<Char*>(FileLoader.data()), FileLoader.size())
         };
-        SourceTexts.emplace_back(Info);
+        SourceTexts.emplace_back(std::move(Info));
     }
     catch (fast_io::error error)
     {
         perrln(
             Color("error: ", Colors::BrightForegroundRed),
             Color("error reading '", Colors::BrightForegroundWhite),
-            Color(FileName, Colors::BrightForegroundWhite),
+            Color(fast_io::mnp::code_cvt(FileName), Colors::BrightForegroundWhite),
             Color("': ", Colors::BrightForegroundWhite),
             Color(error, Colors::BrightForegroundWhite)
         );
@@ -59,7 +59,7 @@ void Compiler::PrivateAddSourceFile(const std::string_view FileName) noexcept
 void Compiler::ReportNoInputFiles() noexcept
 {
     perrln(
-        "mamba: ",
+        Color("mamba: ", Colors::ForegroundWhite),
         Color("error: ", Colors::BrightForegroundRed),
         Color("no input files", Colors::BrightForegroundWhite)
     );

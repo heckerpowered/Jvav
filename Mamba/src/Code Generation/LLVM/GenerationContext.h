@@ -2,9 +2,18 @@
 
 #include "MambaCore.h"
 
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Weverything"
+#endif
+
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
+
+#ifdef __clang__
+    #pragma clang diagnostic pop
+#endif
 
 namespace Mamba
 {

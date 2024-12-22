@@ -13,20 +13,20 @@ using namespace std::string_view_literals;
 namespace Mamba::Options
 {
     bool SkipCompile;
-    std::vector<std::string_view> SourceFiles;
+    fast_io::vector<fast_io::string_view> SourceFiles;
     bool EmitLLVM;
 } // namespace Mamba::Options
 
 struct Command
 {
-    std::string_view Description;
+    fast_io::string_view Description;
     PackagedScanner Handler;
 };
 
-std::unordered_map<std::string_view, Command> Commands;
+std::unordered_map<fast_io::string_view, Command> Commands;
 
 template<typename T>
-void RegisterCommand(std::string_view Name, std::string_view ShortName, T&& Handler, std::string_view Description) noexcept
+void RegisterCommand(fast_io::string_view Name, fast_io::string_view ShortName, T&& Handler, fast_io::string_view Description) noexcept
 {
     Commands.emplace(Name, Command{ Description, PackagedScanner{ std::forward<T>(Handler) } });
 
@@ -37,11 +37,11 @@ void RegisterCommand(std::string_view Name, std::string_view ShortName, T&& Hand
     Commands.emplace(ShortName, Command{ Description, PackagedScanner{ std::forward<T>(Handler) } });
 }
 
-void Mamba::InitMambaOptions(std::span<std::string_view> Arguments) noexcept
+void Mamba::InitMambaOptions(fast_io::span<fast_io::string_view> Arguments) noexcept
 {
     RegisterCommand(
-        "--version"sv,
-        "-v"sv,
+        "--version",
+        "-v",
         Scanner([] {
             fast_io::io::println(
                 MambaVersion,
@@ -56,16 +56,16 @@ void Mamba::InitMambaOptions(std::span<std::string_view> Arguments) noexcept
             );
             Options::SkipCompile = true;
         }),
-        "查看版本信息"sv
+        "查看版本信息"
     );
 
     RegisterCommand(
-        "--emit-llvm"sv,
-        ""sv,
+        "--emit-llvm",
+        "",
         Scanner([] {
             Options::EmitLLVM = true;
         }),
-        ""sv
+        ""
     );
 
     for (auto&& Argument : Arguments)

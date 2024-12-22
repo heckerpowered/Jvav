@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "DiagnosticPrinter.h"
+#include "fast_io_hosted/file_loaders/impl.h"
 #include "Lexer.h"
 #include "Parser.h"
 #include "SourceText.h"
@@ -11,12 +12,12 @@
 using namespace Mamba;
 
 // Unexpected token, expected identifier
-String ParserSourceCode = TEXT(R"(
+StringView ParserSourceCode = TEXT(R"(
     fun main(parameter: ): int {
     }
 )");
 
-String ParserNormalCode = TEXT(R"(
+StringView ParserNormalCode = TEXT(R"(
     fun main(): int {
         
     }
@@ -25,10 +26,11 @@ String ParserNormalCode = TEXT(R"(
 TEST(Compile, Parser)
 {
     auto Info = SourceTextInfo{
+        .FileLoader = fast_io::native_file_loader(),
         .FileName = TEXT("<testfile>"),
         .Text = ParserNormalCode
     };
-    auto Source = SourceText(Info);
+    auto Source = SourceText(std::move(Info));
     auto Tree = new SyntaxTree(Source);
     auto Analyzer = new Lexer(Tree);
 
@@ -57,10 +59,11 @@ TEST(Compile, Parser)
 TEST(Compile, ParserDiagnostic)
 {
     auto Info = SourceTextInfo{
+        .FileLoader = fast_io::native_file_loader(),
         .FileName = TEXT("<testfile>"),
         .Text = ParserSourceCode
     };
-    auto Source = SourceText(Info);
+    auto Source = SourceText(std::move(Info));
     auto Tree = new SyntaxTree(Source);
     auto Analyzer = new Lexer(Tree);
 
