@@ -11,7 +11,6 @@
 #include <fast_io_dsal/string_view.h>
 
 #include "Colors.h"
-#include "fast_io_dsal/impl/string_view.h"
 
 #define MAMBA_NAMESPACE_BEGIN \
     namespace Mamba           \
