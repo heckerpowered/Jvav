@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Jvav — Purity of Form. Purity of Function.</title>
+  <meta name="description" content="Clear in semantics. Pure in computation. Explicit in effects. Explore the Jvav language design and read the working draft.">
+  <meta property="og:title" content="Jvav — Purity of Form. Purity of Function.">
+  <meta property="og:description" content="Clear in semantics. Pure in computation. Explicit in effects. Explore the Jvav language design and read the working draft.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jvav.heckerpowered.net/">
+  <link rel="canonical" href="https://jvav.heckerpowered.net/">
+  <link rel="alternate" hreflang="en" href="https://jvav.heckerpowered.net/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://jvav.heckerpowered.net/zh/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317191e'/%3E%3Cpath d='M39 15v26c0 8-5 12-13 12-5 0-9-2-12-5l6-6c2 2 3 3 6 3 4 0 5-2 5-5V15z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/pages.css">
+  <link rel="stylesheet" href="/surface.css">
+  <link rel="stylesheet" href="/visual-art.css">
+  <script src="/navigation.js" type="module"></script>
+  <script src="/capabilities.js" type="module"></script>
+  <script src="/app.js" type="module"></script>
+  <script src="/surface.js" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="navigation container" aria-label="Main navigation">
+      <a class="wordmark" href="/" aria-label="Jvav home">Jvav</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation-links" aria-label="Open navigation"><span></span><span></span></button>
+      <div class="navigation-links" id="navigation-links">
+        <a href="/" aria-current="page">Home</a>
+        <a href="/tour/">Language tour</a>
+        <a href="/design/">Language design</a>
+        <a href="/specification/">Specification</a>
+        <a class="navigation-external" href="https://github.com/heckerpowered/Jvav" target="_blank" rel="noopener noreferrer">GitHub <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only"> (opens in a new tab)</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero container" aria-labelledby="hero-heading">
+      <p class="hero-language-name">The Jvav programming language</p>
+      <h1 id="hero-heading" lang="en">Purity of Form.<br><span>Purity of Function.</span></h1>
+      <p class="hero-description">Clear in semantics. Pure in computation. Explicit in effects.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/tour/">Take a tour <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+        <a class="text-link" href="/documents/J0001.pdf" target="_blank" rel="noopener">Read the draft <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only"> (PDF, opens in a new tab)</span></a>
+      </div>
+      <figure class="state-art" id="visual" data-stage="initial" data-renderer="svg" aria-label="An illustration of a state and a computed change">
+        <div class="state-art-scene">
+          <canvas class="state-art-canvas" aria-hidden="true"></canvas>
+          <svg class="state-art-outline" viewBox="0 0 1200 430" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="surface-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#536fce"/><stop offset=".42" stop-color="#94c9eb"/><stop offset=".7" stop-color="#536ad8"/><stop offset="1" stop-color="#3447ac"/></linearGradient>
+              <linearGradient id="surface-preview-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d9eeff" stop-opacity=".8"/><stop offset="1" stop-color="#a4b9e7" stop-opacity=".16"/></linearGradient>
+              <radialGradient id="surface-shadow"><stop stop-color="#758ab3" stop-opacity=".12"/><stop offset="1" stop-color="#758ab3" stop-opacity="0"/></radialGradient>
+            </defs>
+            <ellipse class="state-art-shadow" cx="615" cy="338" rx="340" ry="42" fill="url(#surface-shadow)"/>
+            <path class="state-art-fallback" d="M344.38 97.01 L371.60 96.78 L398.40 97.13 L424.87 97.63 L451.03 97.97 L476.92 97.97 L502.58 97.53 L528.02 96.62 L553.24 95.28 L578.27 93.59 L603.11 91.68 L627.76 89.70 L652.23 87.85 L676.52 86.34 L700.63 85.39 L724.55 85.24 L748.28 86.11 L771.81 88.22 L795.14 91.79 L818.24 96.99 L841.10 104.00 L863.70 112.93 L886.00 123.89 L907.95 136.93 L929.49 152.06 L948.91 167.88 L965.05 182.77 L978.46 196.54 L989.50 209.05 L998.44 220.24 L1005.48 230.08 L1010.76 238.57 L1014.39 245.74 L1016.45 251.60 L1017.01 256.21 L1016.09 259.61 L1013.73 261.85 L1009.94 263.00 L1004.70 263.13 L997.99 262.31 L989.77 260.63 L979.98 258.20 L968.55 255.13 L955.35 251.59 L940.26 247.76 L923.06 243.90 L903.50 240.34 L881.20 237.54 L855.62 236.15 L828.40 236.93 L801.60 240.02 L775.13 245.30 L748.97 252.64 L723.08 261.83 L697.42 272.66 L671.98 284.85 L646.76 298.13 L621.73 312.18 L596.89 326.67 L572.24 341.28 L547.77 355.64 L523.48 369.40 L499.37 382.24 L475.45 393.79 L451.72 403.75 L428.19 411.80 L404.86 417.65 L381.76 421.02 L358.90 421.66 L336.30 419.31 L314.00 413.72 L292.05 404.61 L270.51 391.63 L251.09 375.81 L234.95 358.92 L221.54 341.45 L210.50 323.74 L201.56 306.04 L194.52 288.52 L189.24 271.30 L185.61 254.49 L183.55 238.16 L182.99 222.39 L183.91 207.24 L186.27 192.79 L190.06 179.08 L195.30 166.19 L202.01 154.19 L210.23 143.15 L220.02 133.13 L231.45 124.22 L244.65 116.48 L259.74 109.98 L276.94 104.77 L296.50 100.89 L318.80 98.32 Z" fill="url(#surface-fill)"/>
+            <g class="state-art-contours"></g>
+            <g class="state-art-preview" opacity="0"><path class="state-art-preview-area" fill="url(#surface-preview-fill)"/></g>
+          </svg>
+        </div>
+        <div class="state-art-footer">
+          <figcaption id="surface-caption" role="status" aria-live="polite" aria-atomic="true">The surface is the current state.</figcaption>
+          <div class="state-art-controls" hidden><button class="surface-action" type="button">Preview a change <span aria-hidden="true">→</span></button><button class="surface-reset" type="button" aria-label="Reset the surface illustration">Reset</button></div>
+        </div>
+      </figure>
+      <p class="hero-status">A language design in progress. <span class="hero-credit" lang="en">First proposed by Dr. Haoyang Zhang.</span></p>
+    </section>
+
+    <section class="practice-section container" id="in-practice" aria-labelledby="practice-heading">
+      <div class="section-introduction">
+        <h2 id="practice-heading">Value computation<br>and side effects.</h2>
+        <p>A transition describes a computation you can preview. See its result before you apply it to state.</p>
+      </div>
+      <div class="transition-lab" data-stage="initial">
+        <div class="code-pane">
+          <div class="code-toolbar"><span>move.jvav</span><button class="copy-button" id="copy-example" type="button" aria-label="Copy the Jvav transition example"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h4"/></svg><span>Copy</span></button></div>
+          <pre tabindex="0" aria-label="Jvav movement transition"><code id="transition-source"><span class="syntax-keyword">pure fun</span> <span class="syntax-function">move</span>(
+    entity: <span class="syntax-keyword">transition</span> <span class="syntax-type">Entity</span>,
+    dt: <span class="syntax-type">Float</span>
+): <span class="syntax-keyword">transition</span> <span class="syntax-type">Entity</span> {
+    <span class="syntax-keyword">val</span> nextVelocity = entity.velocity +
+        entity.acceleration * dt
+
+    <span class="syntax-keyword">return</span> {
+        position = entity.position +
+            nextVelocity * dt
+        velocity = nextVelocity
+    }
+}</code></pre>
+          <div class="code-application"><span class="code-application-label">When you choose to apply it</span><code><span class="syntax-keyword">val</span> change = move(entity, <span class="syntax-number">1</span>)<br><span class="syntax-keyword">transition</span>(entity) = change</code></div>
+        </div>
+        <div class="state-pane">
+          <h3>See the next move.</h3>
+          <p class="state-description">Preview the position and velocity produced by <code>move</code>. Apply the result when you choose to update the entity.</p>
+          <div class="state-table-label"><code>entity</code><span>dt = 1</span></div>
+          <table class="state-table">
+            <caption class="sr-only">Current entity state and the computed changes</caption>
+            <thead><tr><th scope="col">Field</th><th scope="col">Current</th><th scope="col" id="change-column">Preview</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">position</th><td id="position-value">10</td><td id="position-change" class="change-value">—</td></tr>
+              <tr><th scope="row">velocity</th><td id="velocity-value">3</td><td id="velocity-change" class="change-value">—</td></tr>
+              <tr><th scope="row">acceleration</th><td>2</td><td class="unchanged-value"><span aria-label="Not changed">—</span></td></tr>
+            </tbody>
+          </table>
+          <div class="demo-controls" hidden>
+            <button class="button button-primary" id="advance-demo" type="button">Preview the result <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+            <button class="reset-button" id="reset-demo" type="button">Reset</button>
+          </div>
+          <p class="demo-status" id="demo-status" role="status" aria-live="polite" aria-atomic="true">Preview the computation while the entity stays unchanged.</p>
+          <noscript><p class="demo-status">With dt = 1, the computed changes are position = 15 and velocity = 5. Applying them changes the entity; acceleration stays at 2.</p></noscript>
+        </div>
+      </div>
+      <div class="example-caption"><span>A semantic illustration from the working draft.</span><a href="/documents/J0001.pdf#page=24" target="_blank" rel="noopener">Transitions · §12 <span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a></div>
+    </section>
+
+    <section class="language-section container" id="language" aria-labelledby="language-heading">
+      <h2 class="sr-only" id="language-heading">The Jvav language design</h2>
+      <article class="language-feature" id="pure"><div class="feature-copy"><h3>Same inputs.<br>Same result.</h3><p>A <code>pure</code> function describes a pure computation. Given the same inputs and context, it always produces the same result, without modifying external state or producing observable side effects.</p><p>The same computation can support previews, simulations, and tests, and directly inform decisions during execution.</p><a class="clause-link" href="/design/#pure">Explore pure computation <span aria-hidden="true">→</span></a></div><div class="feature-example"><pre tabindex="0" aria-label="Pure computation: calculate distance from speed and time"><code><span class="syntax-keyword">pure</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">distance</span>(
+    speed: <span class="syntax-type">Float</span>,
+    time: <span class="syntax-type">Float</span>
+): <span class="syntax-type">Float</span> {
+    <span class="syntax-keyword">return</span> speed * time
+}</code></pre><p class="code-explanation">Inputs determine the result. A <code>pure</code> function only computes and returns a value. It neither reads hidden state nor changes the outside world.</p></div></article>
+      <article class="capability-section" id="capabilities" aria-labelledby="capabilities-heading">
+        <div class="capability-introduction">
+          <div class="capability-heading">
+            <h3 id="capabilities-heading">Start with pure computation.</h3>
+            <p class="capability-lead">Fewer capabilities mean less state to reason about.</p>
+          </div>
+          <p class="capability-description"><code>pure</code> functions depend only on their inputs and return results, making them easier to reuse, test, parallelize, and optimize. Use <code>const</code> when you need to interact with external state while guaranteeing that <code>this</code> stays unchanged. Use <code>mut</code> only when you need to change the object. If you prefer, use <code>auto</code> and let the implementation determine the capabilities it needs.</p>
+        </div>
+        <div class="capability-content">
+          <div class="capability-comparison">
+            <div class="capability-table-wrap" role="region" aria-label="Member access to this and external side effects" tabindex="0">
+          <table class="capability-table">
+            <caption class="sr-only">Member access to this and external side effects</caption>
+            <thead><tr><th scope="col">Modifier</th><th scope="col"><code>this</code></th><th scope="col">External effects</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><code>pure</code></th><td>Read-only</td><td>None</td></tr>
+              <tr><th scope="row"><code>const</code></th><td>Read-only</td><td>Allowed</td></tr>
+              <tr><th scope="row"><code>mut</code></th><td>May mutate</td><td>Allowed</td></tr>
+              <tr><th scope="row"><code>auto</code></th><td>From implementation</td><td>From implementation</td></tr>
+            </tbody>
+          </table>
+        </div>
+            <a class="clause-link" href="/design/#capabilities">Explore member capabilities <span aria-hidden="true">→</span></a>
+          </div>
+          <div class="capability-examples feature-example" data-capability-examples>
+          <div class="capability-tabs" role="tablist" aria-label="Typical uses of each modifier" hidden>
+            <button class="capability-tab" type="button" role="tab" id="capability-tab-pure" aria-controls="capability-example-pure" aria-selected="true" tabindex="0">pure</button>
+            <button class="capability-tab" type="button" role="tab" id="capability-tab-const" aria-controls="capability-example-const" aria-selected="false" tabindex="-1">const</button>
+            <button class="capability-tab" type="button" role="tab" id="capability-tab-mut" aria-controls="capability-example-mut" aria-selected="false" tabindex="-1">mut</button>
+            <button class="capability-tab" type="button" role="tab" id="capability-tab-auto" aria-controls="capability-example-auto" aria-selected="false" tabindex="-1">auto</button>
+          </div>
+          <div class="capability-panels">
+            <div class="capability-panel" id="capability-example-pure">
+              <h4>Compute a return value</h4>
+              <pre aria-label="pure: Compute a return value"><code><span class="syntax-keyword">pure</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">doubled</span>(): <span class="syntax-type">Int</span> {
+    <span class="syntax-keyword">return</span> value * 2
+}</code></pre>
+              <p class="code-explanation"><code>doubled</code> reads the current value and returns twice that value. It only computes, without changing the object or producing external side effects.</p>
+            </div>
+            <div class="capability-panel" id="capability-example-const">
+              <h4>Output the current value</h4>
+              <pre aria-label="const: Output the current value"><code><span class="syntax-keyword">const</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">report</span>() {
+    <span class="syntax-function">println</span>(value)
+}</code></pre>
+              <p class="code-explanation"><code>report</code> needs to produce output, but does not need to change the current object. It receives only the capabilities it needs.</p>
+            </div>
+            <div class="capability-panel" id="capability-example-mut">
+              <h4>Reset object state</h4>
+              <pre aria-label="mut: Reset object state"><code><span class="syntax-keyword">mut</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">reset</span>() {
+    value = 0
+}</code></pre>
+              <p class="code-explanation"><code>reset</code> sets the current object’s <code>value</code> to zero. When an operation needs to change the object, <code>mut</code> makes that capability explicit.</p>
+            </div>
+            <div class="capability-panel" id="capability-example-auto">
+              <h4>Let the implementation decide</h4>
+              <pre aria-label="auto: Let the implementation decide"><code><span class="syntax-keyword">auto</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">next</span>(): <span class="syntax-type">Int</span> {
+    <span class="syntax-keyword">return</span> value + 1
+}</code></pre>
+              <p class="code-explanation"><code>next</code> only reads <code>value</code> and returns a result, so it can be inferred as <code>pure</code>. The compiler determines the required capabilities from the implementation.</p>
+            </div>
+          </div>
+        </div>
+        </div>
+
+      </article>
+      <article class="language-feature" id="targets"><div class="feature-copy"><p class="feature-status">Compilation targets · Planned</p><h3>One codebase.<br>Different runtimes.</h3><p>Jvav plans to support compilation to native code, .NET, JVM, and other targets. Choose the runtime that suits your project without switching languages, rewriting your core logic, or learning a different semantic model.</p><p>Language features such as <code>pure</code>, access capabilities, and state transitions will remain consistent across compilation targets.</p><a class="clause-link" href="/design/#targets">Explore the compilation plans <span aria-hidden="true">→</span></a></div><figure class="compilation-map" aria-label="Planned compilation paths">
+      <div class="compilation-source"><strong>Jvav</strong><span>Purity · Capabilities · Transitions</span></div>
+      <div class="compilation-ir"><code>Jvav IR</code><span>Preserve semantics. Lower for each target.</span></div>
+      <ul class="compilation-targets"><li><strong>Native code</strong><code>LLVM IR</code></li><li><strong>.NET</strong><code>CIL (MSIL)</code></li><li><strong>JVM</strong><code>Bytecode</code></li></ul>
+      <figcaption>Planned compilation targets</figcaption>
+    </figure></article>
+      <p class="design-note">Jvav is under active design. Complete member classifications and multi-target backends remain in development planning; open questions in the current draft remain pending.</p>
+    </section>
+
+    <section class="specification-section" id="specification" aria-labelledby="specification-heading">
+      <div class="specification-inner container">
+        <div class="specification-copy"><h2 class="section-heading" id="specification-heading">The Jvav<br>specification.</h2><p>Explore Jvav’s syntax, types, and evaluation rules. The working draft explains how values, effects, and state transitions behave, with definitions and examples.</p><a class="button button-light" href="/documents/J0001.pdf" target="_blank" rel="noopener">Read the draft <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="download-link" href="/documents/J0001.pdf" download="J0001.pdf">Download PDF <span aria-hidden="true">↓</span></a><a class="specification-details" href="/specification/">Explore the specification <span aria-hidden="true">→</span></a></div>
+        <a class="document-preview" href="/documents/J0001.pdf" target="_blank" rel="noopener" aria-label="Read the Jvav language specification, working draft PDF (opens in a new tab)"><span class="document-number">WORKING DRAFT</span><span class="document-title">Jvav<br><span>Language Specification</span></span><span class="document-edition">SYNTAX · TYPES · SEMANTICS</span><span class="document-footer">PDF · English <span>51 pages <span aria-hidden="true">↗</span></span></span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer container">
+    <span class="copyright">© 2026 Heckerpowered</span>
+    <details class="language-picker">
+      <summary aria-label="Site language: English"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg><span>English</span><svg class="icon language-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 14 5-5 5 5"/></svg></summary>
+      <nav class="language-options" aria-label="Choose a language"><a href="/" hreflang="en" lang="en" aria-current="page">English<span aria-hidden="true">✓</span></a><a href="/zh/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a></nav>
+    </details>
+  </footer>
+</body>
+</html>

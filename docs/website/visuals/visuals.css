@@ -1,0 +1,24 @@
+.shape-studies { padding-block: 4.5rem 5rem; }
+.studies-heading { max-width: 42rem; margin-bottom: 4rem; }
+.studies-heading h1 { font-size: clamp(2.6rem, 5vw, 4rem); font-weight: 610; line-height: 1.15; letter-spacing: -.045em; }
+.studies-heading p { color: var(--muted); font-size: 1.0625rem; line-height: 1.8; margin-top: 1.25rem; }
+.studies-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4rem 3rem; }
+.shape-study { min-width: 0; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.shape-study h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -.03em; }
+.shape-study header p { color: var(--muted); line-height: 1.7; font-size: .875rem; margin-top: .6rem; min-height: 3rem; max-width: 25rem; }
+.shape-study .state-art { margin-top: 1.5rem; }
+.shape-study .state-art-scene { aspect-ratio: 3.2; }
+.shape-study .state-art-footer { display: block; padding: 1rem 0 0; font-size: .75rem; }
+.shape-study figcaption { min-height: 2.6rem; }
+.shape-study .state-art-controls { justify-content: space-between; }
+.shape-preview-link { display: inline-flex; align-items: center; gap: .7rem; min-height: 2.75rem; margin-top: .5rem; font-size: .875rem; font-weight: 500; }
+.shape-preview-link:hover { color: var(--accent); }
+.shape-studies + .site-footer { border-top: 1px solid var(--line); }
+@media (max-width: 700px) {
+  .shape-studies { padding-block: 2.5rem 3rem; }
+  .studies-heading { margin-bottom: 2.5rem; }
+  .studies-grid { grid-template-columns: minmax(0, 1fr); gap: 2.75rem; }
+  .shape-study header p { min-height: 0; }
+  .shape-study .state-art-scene { aspect-ratio: 2.7; }
+  .shape-study .state-art-footer { text-align: left; }
+}

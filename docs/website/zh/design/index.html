@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>语言设计 — Jvav</title>
+  <meta name="description" content="计算依赖什么，可以修改什么，会产生什么副作用。Jvav 让这些意图成为语言语义，供程序员表达，也供编译器理解。">
+  <meta property="og:title" content="语言设计 — Jvav">
+  <meta property="og:description" content="计算依赖什么，可以修改什么，会产生什么副作用。Jvav 让这些意图成为语言语义，供程序员表达，也供编译器理解。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jvav.heckerpowered.net/zh/design/">
+  <link rel="canonical" href="https://jvav.heckerpowered.net/zh/design/">
+  <link rel="alternate" hreflang="en" href="https://jvav.heckerpowered.net/design/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://jvav.heckerpowered.net/zh/design/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317191e'/%3E%3Cpath d='M39 15v26c0 8-5 12-13 12-5 0-9-2-12-5l6-6c2 2 3 3 6 3 4 0 5-2 5-5V15z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/navigation.js" type="module"></script>
+  <script src="/capabilities.js" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至正文</a>
+  <header class="site-header">
+    <nav class="navigation container" aria-label="主导航">
+      <a class="wordmark" href="/zh/" aria-label="Jvav 首页">Jvav</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation-links" aria-label="打开导航"><span></span><span></span></button>
+      <div class="navigation-links" id="navigation-links">
+        <a href="/zh/">首页</a>
+        <a href="/zh/tour/">语言导览</a>
+        <a href="/zh/design/" aria-current="page">语言设计</a>
+        <a href="/zh/specification/">语言规范</a>
+        <a class="navigation-external" href="https://github.com/heckerpowered/Jvav" target="_blank" rel="noopener noreferrer">GitHub <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only">（在新标签页打开）</span></a>
+      </div>
+    </nav>
+  </header>
+  <main class="reading-page container" id="main">
+    <header class="page-introduction"><p class="page-label">语言设计</p><h1>把意图，<br><span>写进语言。</span></h1><p>计算依赖什么，可以修改什么，会产生什么副作用。Jvav 让这些意图成为语言语义，供程序员表达，也供编译器理解。</p></header>
+    <section class="design-section" id="transitions" aria-labelledby="transitions-heading"><div class="design-section-copy"><h2 id="transitions-heading">先看结果。<br>再让它发生。</h2><p><code>transition</code> 描述一次针对状态的计算，让计算的结果可以被预览。移动到哪里、速度变成多少，都可以先算清楚。</p><p>同一次计算可用于预览、模拟与实际更新。应用结果是显式的操作：这一步才改变目标状态。</p><a class="clause-link" href="/zh/#in-practice">试试移动计算 <span aria-hidden="true">→</span></a></div><div class="feature-example"><pre tabindex="0" aria-label="试试移动计算"><code><span class="syntax-keyword">val</span> result = move(entity, 1)
+<span class="syntax-keyword">transition</span>(entity) = result</code></pre><p class="code-explanation">第一行得到计算结果，第二行将它应用到实体。预览时，当前状态保持原样。</p></div></section>
+    <section class="design-section" id="pure" aria-labelledby="pure-heading"><div class="design-section-copy"><h2 id="pure-heading">输入确定，<br>结果确定。</h2><p><code>pure</code> 函数只描述一次纯粹的计算。同样的输入与上下文，始终得到同样的结果，不修改外部状态，也不产生可观察的副作用。</p><p>一套计算逻辑，可以用于预览、模拟、测试，也可以直接参与实际执行时的决策。</p></div><div class="feature-example"><pre tabindex="0" aria-label="纯计算：根据速度与时间计算距离"><code><span class="syntax-keyword">pure</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">distance</span>(
+    speed: <span class="syntax-type">Float</span>,
+    time: <span class="syntax-type">Float</span>
+): <span class="syntax-type">Float</span> {
+    <span class="syntax-keyword">return</span> speed * time
+}</code></pre><p class="code-explanation">输入决定结果。<code>pure</code> 函数只进行计算并返回值，不读取隐藏状态，也不会改变外部世界。</p></div><p class="section-footnote">在保持可观察行为的前提下，纯计算可以被重排、复用、合并或消除；依赖允许时，也可以并行执行。具体优化仍须遵守数值、失败和终止行为等语义约束。</p></section>
+    <section class="capability-section member-section" id="capabilities" aria-labelledby="capabilities-heading">
+        <div class="capability-introduction">
+          <div class="capability-heading">
+            <h2 id="capabilities-heading">从纯计算开始。</h2>
+            <p class="capability-lead">越少的能力，意味着越少需要考虑的状态。</p>
+          </div>
+          <p class="capability-description"><code>pure</code> 函数只依赖输入并返回结果，因此更容易复用、测试、并行和优化；需要与外部状态交互时使用 <code>const</code>，仍然可以保证 <code>this</code> 不被修改；只有真正需要改变对象时，才使用 <code>mut</code>。如果你不关心，也可以使用 <code>auto</code>，让函数实现决定实际所需的能力。</p>
+        </div>
+        <div class="capability-content">
+          <div class="capability-comparison">
+            <div class="capability-table-wrap" role="region" aria-label="成员函数对 this 的访问与外部副作用" tabindex="0">
+          <table class="capability-table">
+            <caption class="sr-only">成员函数对 this 的访问与外部副作用</caption>
+            <thead><tr><th scope="col">修饰符</th><th scope="col">对 <code>this</code></th><th scope="col">外部副作用</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><code>pure</code></th><td>只读</td><td>无</td></tr>
+              <tr><th scope="row"><code>const</code></th><td>只读</td><td>允许</td></tr>
+              <tr><th scope="row"><code>mut</code></th><td>可修改</td><td>允许</td></tr>
+              <tr><th scope="row"><code>auto</code></th><td>由实现确定</td><td>由实现确定</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+          </div>
+          <div class="capability-examples feature-example" data-capability-examples>
+          <div class="capability-tabs" role="tablist" aria-label="修饰符的典型用途" hidden>
+            <button class="capability-tab" type="button" role="tab" id="capability-tab-pure" aria-controls="capability-example-pure" aria-selected="true" tabindex="0">pure</button>
+            <button class="capability-tab" type="button" role="tab" id="capability-tab-const" aria-controls="capability-example-const" aria-selected="false" tabindex="-1">const</button>
+            <button class="capability-tab" type="button" role="tab" id="capability-tab-mut" aria-controls="capability-example-mut" aria-selected="false" tabindex="-1">mut</button>
+            <button class="capability-tab" type="button" role="tab" id="capability-tab-auto" aria-controls="capability-example-auto" aria-selected="false" tabindex="-1">auto</button>
+          </div>
+          <div class="capability-panels">
+            <div class="capability-panel" id="capability-example-pure">
+              <h3>计算返回值</h3>
+              <pre aria-label="pure: 计算返回值"><code><span class="syntax-keyword">pure</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">doubled</span>(): <span class="syntax-type">Int</span> {
+    <span class="syntax-keyword">return</span> value * 2
+}</code></pre>
+              <p class="code-explanation"><code>doubled</code> 读取当前值，返回它的两倍。只进行计算，不修改对象，也不产生外部副作用。</p>
+            </div>
+            <div class="capability-panel" id="capability-example-const">
+              <h3>输出当前值</h3>
+              <pre aria-label="const: 输出当前值"><code><span class="syntax-keyword">const</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">report</span>() {
+    <span class="syntax-function">println</span>(value)
+}</code></pre>
+              <p class="code-explanation"><code>report</code> 需要产生输出，但不需要修改当前对象，因此只获得它所需要的能力。</p>
+            </div>
+            <div class="capability-panel" id="capability-example-mut">
+              <h3>重置对象状态</h3>
+              <pre aria-label="mut: 重置对象状态"><code><span class="syntax-keyword">mut</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">reset</span>() {
+    value = 0
+}</code></pre>
+              <p class="code-explanation"><code>reset</code> 将当前对象的 <code>value</code> 归零。需要改变对象时，用 <code>mut</code> 明确表达修改能力。</p>
+            </div>
+            <div class="capability-panel" id="capability-example-auto">
+              <h3>由实现确定能力</h3>
+              <pre aria-label="auto: 由实现确定能力"><code><span class="syntax-keyword">auto</span> <span class="syntax-keyword">fun</span> <span class="syntax-function">next</span>(): <span class="syntax-type">Int</span> {
+    <span class="syntax-keyword">return</span> value + 1
+}</code></pre>
+              <p class="code-explanation"><code>next</code> 只读取 <code>value</code> 并返回结果，因此可被推导为 <code>pure</code>。实际所需的能力由编译器根据实现判断。</p>
+            </div>
+          </div>
+        </div>
+        </div>
+        <p class="section-footnote">这是 Jvav 的成员函数设计方向。const / auto 等分类的完整推导与组合规则尚未纳入当前规范草案；成员函数上的 mut 与参数类型中的 mut T 也需要分别理解。</p>
+      </section>
+    <section class="design-section" id="targets" aria-labelledby="targets-heading"><div class="design-section-copy"><p class="feature-status">编译目标 · 规划中</p><h2 id="targets-heading">一份代码，<br>面向不同运行时。</h2><p>Jvav 计划支持原生代码、.NET 和 JVM 等不同编译目标。你可以根据项目选择运行平台，而不需要因此更换语言、重写核心逻辑，或重新适应另一套语义模型。</p><p><code>pure</code>、访问能力与状态转换等语言特性，会在不同编译目标上保持一致。</p></div><figure class="compilation-map" aria-label="规划中的多目标编译路径">
+      <div class="compilation-source"><strong>Jvav</strong><span>纯计算 · 修改能力 · 状态转换</span></div>
+      <div class="compilation-ir"><code>Jvav IR</code><span>保留语义，分目标编译</span></div>
+      <ul class="compilation-targets"><li><strong>原生代码</strong><code>LLVM IR</code></li><li><strong>.NET</strong><code>CIL (MSIL)</code></li><li><strong>JVM</strong><code>Bytecode</code></li></ul>
+      <figcaption>编译目标规划</figcaption>
+    </figure><p class="section-footnote">编译目标仍在规划中。这些方向不表示相应后端已可用，也不承诺各平台具有相同的对象布局或可以直接互操作。</p></section>
+    <section class="page-next"><h2>每个承诺，都有语义依据。</h2><p>在规范草案中阅读已经确定的规则、示例，以及仍待决定的问题。</p><a class="button button-primary" href="/zh/specification/">阅读语言规范 <span aria-hidden="true">→</span></a></section>
+  </main>
+  <footer class="site-footer container">
+    <span class="copyright">© 2026 Heckerpowered</span>
+    <details class="language-picker">
+      <summary aria-label="网站语言：简体中文"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg><span>简体中文</span><svg class="icon language-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 14 5-5 5 5"/></svg></summary>
+      <nav class="language-options" aria-label="选择语言"><a href="/design/" hreflang="en" lang="en">English</a><a href="/zh/design/" hreflang="zh-Hans" lang="zh-Hans" aria-current="page">简体中文<span aria-hidden="true">✓</span></a></nav>
+    </details>
+  </footer>
+</body>
+</html>

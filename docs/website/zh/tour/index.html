@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>初识 Jvav — 语言导览</title>
+  <meta name="description" content="通过简短的语言导览了解 Jvav：普通值、纯计算、状态转换、显式应用与有类型的依赖。">
+  <meta property="og:title" content="初识 Jvav">
+  <meta property="og:description" content="从函数、值、状态转换与显式依赖出发，了解 Jvav。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jvav.heckerpowered.net/zh/tour/">
+  <link rel="canonical" href="https://jvav.heckerpowered.net/zh/tour/">
+  <link rel="alternate" hreflang="en" href="https://jvav.heckerpowered.net/tour/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://jvav.heckerpowered.net/zh/tour/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317191e'/%3E%3Cpath d='M39 15v26c0 8-5 12-13 12-5 0-9-2-12-5l6-6c2 2 3 3 6 3 4 0 5-2 5-5V15z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/tour/tour.css">
+  <script src="/navigation.js" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至正文</a>
+  <header class="site-header">
+    <nav class="navigation container" aria-label="主导航">
+      <a class="wordmark" href="/zh/" aria-label="Jvav 首页">Jvav</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation-links" aria-label="打开导航"><span></span><span></span></button>
+      <div class="navigation-links" id="navigation-links">
+        <a href="/zh/">首页</a>
+        <a href="/zh/tour/" aria-current="page">语言导览</a>
+        <a href="/zh/design/">语言设计</a>
+        <a href="/zh/specification/">语言规范</a>
+        <a class="navigation-external" href="https://github.com/heckerpowered/Jvav" target="_blank" rel="noopener noreferrer">GitHub <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only">（在新标签页打开）</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="tour container" id="main">
+    <header class="tour-header">
+      <h1>初识 Jvav。</h1>
+      <p>从熟悉的函数和值开始，预览一次计算，再把结果应用到状态。</p>
+      <p class="tour-draft-note">Jvav 仍在设计中。以下示例依据当前的<a href="/documents/J0001.pdf">规范草案</a>编写。</p>
+    </header>
+
+    <div class="tour-layout">
+      <nav class="tour-contents" aria-label="本页目录">
+        <p>本篇导览</p>
+        <a href="#values">函数与值</a>
+        <a href="#transitions">可以预览的计算</a>
+        <a href="#application">应用变化</a>
+        <a href="#dependencies">访问与依赖</a>
+        <a href="#representation">表示方式</a>
+      </nav>
+
+      <div class="tour-body">
+        <section id="values" aria-labelledby="values-heading">
+          <h2 id="values-heading">函数与值</h2>
+          <p>函数声明自己的参数与返回类型。这里，<code>twice</code> 接收一个整数，返回这个值与自身的和。</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="Jvav 纯函数示例"><code><span class="syntax-keyword">pure fun</span> <span class="syntax-function">twice</span>(x: <span class="syntax-type">Int</span>): <span class="syntax-type">Int</span> {
+    <span class="syntax-keyword">return</span> x + x
+}
+
+<span class="syntax-keyword">val</span> result = twice(21)</code></pre></div>
+          <p><code>pure</code> 声明计算的结果来自其声明的依赖，并且不产生外部可观察的副作用。仅仅返回一个值，并不意味着函数是纯函数。</p>
+          <p>Jvav 保留了熟悉的控制流，包括条件、循环与提前返回。这些语法本身并不意味着会产生外部副作用。</p>
+        </section>
+
+        <section id="transitions" aria-labelledby="transitions-heading">
+          <h2 id="transitions-heading">可以预览的计算</h2>
+          <p><code>transition</code> 描述一次针对状态的计算，结果可以在应用前预览。纯函数可以算出这个结果，以 <code>transition T</code> 返回，而不修改原来的状态。</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="交换两个字段的 transition"><code><span class="syntax-keyword">pure fun</span> <span class="syntax-function">swap</span>(
+    pair: <span class="syntax-keyword">transition</span> <span class="syntax-type">Pair</span>
+): <span class="syntax-keyword">transition</span> <span class="syntax-type">Pair</span> {
+    <span class="syntax-keyword">return</span> {
+        a = pair.b
+        b = pair.a
+    }
+}</code></pre></div>
+          <p>输入提供特定 pair 的旧状态。两次读取都指向这个状态：描述新的 <code>a</code>，不会改变 <code>pair.a</code> 读到的值。</p>
+          <p>结果描述 <code>a</code> 与 <code>b</code> 的替换值。在有效应用时，未列出的字段保留原值。计算或返回这个结果，都不会修改 pair。</p>
+        </section>
+
+        <section id="application" aria-labelledby="application-heading">
+          <h2 id="application-heading">应用变化</h2>
+          <p>调用方决定何时应用计算所得的变化。在具备必要的修改权限、且目标有效的前提下，草案采用以下写法：</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="显式应用 transition"><code><span class="syntax-keyword">val</span> change = swap(pair)
+<span class="syntax-keyword">transition</span>(pair) = change</code></pre>
+            <div class="swap-result"><div><span>应用前</span><code>a = 2, b = 7</code></div><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg><div><span>应用后</span><code>a = 7, b = 2</code></div></div>
+          </div>
+          <p>第一行计算一个值，第二行执行一个副作用。将两者分开，同一套决策逻辑就可以用于检查、模拟与执行。</p>
+          <p>已保存的 transition 表示已经完成的计算；稍后应用它时，不会重新执行计算。如果目标在此期间发生了变化，应如何处理，草案中仍标记为待定（<em>Pending</em>）。</p>
+          <a class="clause-link" href="/zh/#in-practice">查看移动示例 <span aria-hidden="true">→</span></a>
+        </section>
+
+        <section id="dependencies" aria-labelledby="dependencies-heading">
+          <h2 id="dependencies-heading">访问与依赖</h2>
+          <p>参数类型让访问权限变得明确。<code>view T</code> 提供只读、不拥有所有权的访问。<code>mut T</code> 授予修改现有状态的权限，并受函数的副作用契约约束。</p>
+          <p><code>context T</code> 声明可由调用环境提供的有类型依赖。伤害计算可以读取实体、查询战斗规则，而不改变世界：</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="带有 view 与 context 参数的函数"><code><span class="syntax-keyword">pure fun</span> <span class="syntax-function">resolve</span>(
+    damage: <span class="syntax-type">Damage</span>,
+    target: <span class="syntax-keyword">view</span> <span class="syntax-type">Entity</span>,
+    context: <span class="syntax-keyword">context</span> <span class="syntax-type">CombatContext</span>
+): <span class="syntax-type">DamageResult</span></code></pre></div>
+          <p>不同的战斗规则可能产生不同的结果。即使实参由环境隐式提供，上下文也是真实的依赖，相应的访问与副作用限制仍然适用。</p>
+        </section>
+
+        <section id="representation" aria-labelledby="representation-heading">
+          <h2 id="representation-heading">表示透明性</h2>
+          <p>无论值来自存储，还是来自跨越调用边界的计算，普通 <code>Vec3</code> 参数的含义都相同。</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="普通向量参数示例"><code><span class="syntax-keyword">pure fun</span> <span class="syntax-function">lengthSquared</span>(v: <span class="syntax-type">Vec3</span>): <span class="syntax-type">Float</span> {
+    <span class="syntax-keyword">return</span> v.x * v.x +
+        v.y * v.y +
+        v.z * v.z
+}
+
+lengthSquared(a + b)</code></pre></div>
+          <p>当分量运算满足相应的纯计算条件时，实现可以将加法与后续计算合并，而不构造完整的中间向量。它必须保持所要求的数值结果、副作用与其他可观察行为。</p>
+          <p>这种表示选择并不意味着普通值采用惰性求值。显式的运行时延迟计算使用 <code>defer T</code>，属于设计中的另一部分。</p>
+        </section>
+
+        <section class="tour-next" aria-labelledby="next-heading">
+          <h2 id="next-heading">继续阅读草案。</h2>
+          <p>在草案中查阅精确定义、求值规则与更多示例。所有权、捕获、transition 有效性等仍需作出设计决策的问题，标记为待定（<em>Pending</em>）。</p>
+          <div class="tour-next-links"><a class="button button-primary" href="/documents/J0001.pdf" target="_blank" rel="noopener">阅读草案 <span aria-hidden="true">↗</span><span class="sr-only">（PDF，在新标签页打开）</span></a><a class="text-link" href="https://github.com/heckerpowered/Jvav" target="_blank" rel="noopener noreferrer">浏览项目 <span aria-hidden="true">↗</span><span class="sr-only">（在新标签页打开）</span></a></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer container">
+    <span class="copyright">© 2026 Heckerpowered</span>
+    <details class="language-picker">
+      <summary aria-label="网站语言：简体中文"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg><span>简体中文</span><svg class="icon language-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 14 5-5 5 5"/></svg></summary>
+      <nav class="language-options" aria-label="选择语言"><a href="/tour/" hreflang="en" lang="en">English</a><a href="/zh/tour/" hreflang="zh-Hans" lang="zh-Hans" aria-current="page">简体中文<span aria-hidden="true">✓</span></a></nav>
+    </details>
+  </footer>
+</body>
+</html>
