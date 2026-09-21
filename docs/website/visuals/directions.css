@@ -1,0 +1,31 @@
+.visual-directions { padding-block: 4rem 3rem; }
+.directions-heading { max-width: 44rem; margin-bottom: 4.5rem; }
+.directions-heading h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 600; letter-spacing: -.045em; line-height: 1.2; }
+.directions-heading p { margin-top: 1.25rem; font-size: 1.0625rem; line-height: 1.85; color: var(--muted); }
+.direction-jumps { display: flex; flex-wrap: wrap; column-gap: 2rem; row-gap: .5rem; margin-top: 1.6rem; }
+.direction-jumps a { display: flex; align-items: center; gap: 1rem; min-height: 2.75rem; font-size: .875rem; }
+.direction-jumps a:hover { color: var(--accent); }
+.visual-direction + .visual-direction { margin-top: 5rem; }
+.direction-description { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); margin-bottom: 1.5rem; }
+.direction-description h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -.03em; }
+.direction-description p { margin-top: .7rem; color: var(--muted); line-height: 1.7; font-size: .9375rem; }
+.direction-description .text-link { flex-shrink: 0; }
+.direction-preview { margin-top: 0 !important; }
+.direction-preview .hero-heading { font-size: clamp(2.5rem, 6vw, 5.3rem); margin-top: 1.2rem; }
+.direction-preview .hero-description { font-size: 1.0625rem; }
+.direction-preview .state-art-footer { font-size: .75rem; }
+.previous-studies { display: inline-flex; align-items: center; gap: 1rem; margin-top: 3rem; min-height: 2.75rem; color: var(--muted); font-size: .875rem; }
+.previous-studies:hover { color: var(--ink); }
+.visual-directions + .site-footer { border-top: 1px solid var(--line); }
+@media (max-width: 700px) {
+  .visual-directions { padding-top: 2.5rem; }
+  .directions-heading { margin-bottom: 2.75rem; }
+  .direction-description { flex-direction: column; align-items: flex-start; gap: .4rem; }
+  .direction-preview .hero-heading { font-size: clamp(1.55rem, 6.7vw, 2.7rem); }
+  .direction-preview .hero-description { font-size: .9375rem; }
+  .visual-direction + .visual-direction { margin-top: 3rem; }
+  .direction-preview .hero-actions { gap: .65rem 1rem; }
+  .direction-preview .hero-actions .button { padding-inline: 1rem; font-size: .8125rem; }
+  .direction-preview .text-link { font-size: .8125rem; }
+  .direction-preview .state-art-footer { flex-direction: column; align-items: center; text-align: center; }
+}

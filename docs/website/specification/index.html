@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Specification — Jvav</title>
+  <meta name="description" content="How types constrain values. When computations are evaluated. Where side effects occur. Read Jvav’s definitions, examples, and open questions.">
+  <meta property="og:title" content="Specification — Jvav">
+  <meta property="og:description" content="How types constrain values. When computations are evaluated. Where side effects occur. Read Jvav’s definitions, examples, and open questions.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jvav.heckerpowered.net/specification/">
+  <link rel="canonical" href="https://jvav.heckerpowered.net/specification/">
+  <link rel="alternate" hreflang="en" href="https://jvav.heckerpowered.net/specification/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://jvav.heckerpowered.net/zh/specification/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317191e'/%3E%3Cpath d='M39 15v26c0 8-5 12-13 12-5 0-9-2-12-5l6-6c2 2 3 3 6 3 4 0 5-2 5-5V15z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/pages.css">
+  <script src="/navigation.js" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="navigation container" aria-label="Main navigation">
+      <a class="wordmark" href="/" aria-label="Jvav home">Jvav</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation-links" aria-label="Open navigation"><span></span><span></span></button>
+      <div class="navigation-links" id="navigation-links">
+        <a href="/">Home</a>
+        <a href="/tour/">Language tour</a>
+        <a href="/design/">Language design</a>
+        <a href="/specification/" aria-current="page">Specification</a>
+        <a class="navigation-external" href="https://github.com/heckerpowered/Jvav" target="_blank" rel="noopener noreferrer">GitHub <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only"> (opens in a new tab)</span></a>
+      </div>
+    </nav>
+  </header>
+  <main class="reading-page container" id="main">
+    <header class="page-introduction"><p class="page-label">Specification</p><h1>From syntax.<br><span>To semantics.</span></h1><p>How types constrain values. When computations are evaluated. Where side effects occur. Read Jvav’s definitions, examples, and open questions.</p></header>
+    <section class="draft-download" aria-labelledby="draft-heading"><div><p class="feature-status">Working draft</p><h2 id="draft-heading">The Jvav working draft.</h2><p>The current draft covers values, pure computation, access capabilities, transitions, deferred evaluation, and context dependencies.</p><span class="draft-metadata">PDF · English · 51 pages</span></div><div class="draft-actions"><a class="button button-primary" href="/documents/J0001.pdf" target="_blank" rel="noopener">Read the draft <span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="text-link" href="/documents/J0001.pdf" download="J0001.pdf">Download PDF <span aria-hidden="true">↓</span></a></div></section>
+    <section class="chapter-section" aria-labelledby="chapters-heading"><div class="section-introduction"><h2 id="chapters-heading">Start with what interests you.</h2><p>These links open the corresponding chapter in the PDF.</p></div><div class="chapter-links"><a class="chapter-link" href="/documents/J0001.pdf#page=15" target="_blank" rel="noopener"><div><h3>Types and modifiers</h3><p>Values, representations, and modifier dimensions</p></div><span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="chapter-link" href="/documents/J0001.pdf#page=21" target="_blank" rel="noopener"><div><h3>Effects and purity</h3><p>Pure computation and its optimization boundaries</p></div><span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="chapter-link" href="/documents/J0001.pdf#page=23" target="_blank" rel="noopener"><div><h3>Views and mutable capabilities</h3><p>Access rules for view and mut</p></div><span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="chapter-link" href="/documents/J0001.pdf#page=24" target="_blank" rel="noopener"><div><h3>State transitions</h3><p>Computation, preview, and explicit application</p></div><span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="chapter-link" href="/documents/J0001.pdf#page=30" target="_blank" rel="noopener"><div><h3>Deferred evaluation</h3><p>Explicit deferral and when computation is demanded</p></div><span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="chapter-link" href="/documents/J0001.pdf#page=32" target="_blank" rel="noopener"><div><h3>Context dependencies</h3><p>Typed inputs supplied by the calling environment</p></div><span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="chapter-link" href="/documents/J0001.pdf#page=35" target="_blank" rel="noopener"><div><h3>Libraries and platforms</h3><p>The boundary between language and backend</p></div><span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="chapter-link" href="/documents/J0001.pdf#page=46" target="_blank" rel="noopener"><div><h3>Open design questions</h3><p>Rules that still need a design decision</p></div><span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a></div></section>
+    <section class="specification-note"><h2>The open questions are part of the draft.</h2><p>Unsettled rules for lifetimes, capture, ownership, and transition validity are marked Pending. The complete member const / auto model is not yet included in this edition; multi-target compilation remains a development direction.</p><a class="clause-link" href="/design/">Explore the language design <span aria-hidden="true">→</span></a></section>
+    <section class="page-next"><h2>New to Jvav?</h2><p>Start with a few functions and computations to get a feel for the language.</p><a class="button button-primary" href="/tour/">Take the language tour <span aria-hidden="true">→</span></a></section>
+  </main>
+  <footer class="site-footer container">
+    <span class="copyright">© 2026 Heckerpowered</span>
+    <details class="language-picker">
+      <summary aria-label="Site language: English"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg><span>English</span><svg class="icon language-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 14 5-5 5 5"/></svg></summary>
+      <nav class="language-options" aria-label="Choose a language"><a href="/specification/" hreflang="en" lang="en" aria-current="page">English<span aria-hidden="true">✓</span></a><a href="/zh/specification/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a></nav>
+    </details>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>视觉方向 — Jvav</title>
+  <meta name="description" content="比较纸面印记、光学叠影和像素排布三种完整的首页视觉方向。">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://jvav.heckerpowered.net/zh/visuals/">
+  <link rel="alternate" hreflang="en" href="https://jvav.heckerpowered.net/visuals/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://jvav.heckerpowered.net/zh/visuals/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317191e'/%3E%3Cpath d='M39 15v26c0 8-5 12-13 12-5 0-9-2-12-5l6-6c2 2 3 3 6 3 4 0 5-2 5-5V15z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/surface.css">
+  <link rel="stylesheet" href="/visual-art.css">
+  <link rel="stylesheet" href="/visuals/directions.css">
+  <script src="/navigation.js" type="module"></script>
+  <script src="/surface.js" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至正文</a>
+  <header class="site-header">
+    <nav class="navigation container" aria-label="主导航">
+      <a class="wordmark" href="/zh/" aria-label="Jvav 首页">Jvav</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation-links" aria-label="打开导航"><span></span><span></span></button>
+      <div class="navigation-links" id="navigation-links">
+        <a href="/zh/">首页</a>
+        <a href="/zh/tour/">语言导览</a>
+        <a href="/zh/design/">语言设计</a>
+        <a href="/zh/specification/">语言规范</a>
+        <a class="navigation-external" href="https://github.com/heckerpowered/Jvav" target="_blank" rel="noopener noreferrer">GitHub <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only">（在新标签页打开）</span></a>
+      </div>
+    </nav>
+  </header>
+  <main class="visual-directions container" id="main">
+    <header class="directions-heading"><h1>三种视觉方向。</h1><p>从材质、排印和构图出发，重新理解 Jvav 的首屏。每个方向都保留“计算变化，再决定何时应用”的交互。</p><nav class="direction-jumps" aria-label="视觉方向"><a href="#imprint">纸面印记<span aria-hidden="true">↓</span></a><a href="#optics">光学叠影<span aria-hidden="true">↓</span></a><a href="#pixels">像素排布<span aria-hidden="true">↓</span></a></nav></header>
+    <article class="visual-direction" id="imprint" aria-labelledby="direction-imprint">
+      <header class="direction-description"><div><h2 id="direction-imprint">纸面印记</h2><p>纸张、油墨与衬线排印，构图更偏印刷海报。</p></div><a class="text-link" href="/zh/?visual=imprint#main" aria-label="纸面印记：在首页预览">在首页预览 <span aria-hidden="true">↗</span></a></header>
+      <section class="hero direction-preview" data-visual="imprint" aria-labelledby="headline-imprint">
+      <p class="hero-language-name">Jvav 编程语言</p>
+      <h3 class="hero-heading" id="headline-imprint">形式的纯粹<br><span>功能的纯粹</span></h3>
+      <p class="hero-description">语义清晰，计算纯粹，副作用显式。</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/zh/tour/">开始了解 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+        <a class="text-link" href="/documents/J0001.pdf" target="_blank" rel="noopener">阅读草案 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only">（PDF，在新标签页打开）</span></a>
+      </div>
+      <figure class="state-art" id="study-imprint" data-visual="imprint" data-stage="initial" data-renderer="vector" aria-label="纸面印记">
+        <div class="state-art-scene"><svg class="visual-scene-svg" data-visual-scene viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <filter id="study-imprint-shadow" x="-20%" y="-25%" width="140%" height="160%"><feDropShadow dx="0" dy="13" stdDeviation="14" flood-color="#77664e" flood-opacity=".13"/></filter>
+      <pattern id="study-imprint-paper" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 1h2M4 5h1" stroke="#827660" stroke-width=".7" opacity=".12"/></pattern>
+      <clipPath id="study-imprint-print"><path d="M330 279C334 143 434 116 555 133C678 150 807 89 865 189C926 294 797 373 668 373C516 373 326 414 330 279Z"/></clipPath>
+      <mask id="study-imprint-old"><rect width="1200" height="500" fill="white"/><rect x="665" y="171" width="168" height="130" fill="black"/></mask>
+      <clipPath id="study-imprint-patch"><rect x="665" y="171" width="168" height="130"/></clipPath>
+    </defs>
+    <g transform="rotate(-4 600 255)">
+      <rect x="251" y="58" width="698" height="387" rx="2" fill="#fffdf7" filter="url(#study-imprint-shadow)"/>
+      <rect x="251" y="58" width="698" height="387" rx="2" fill="url(#study-imprint-paper)"/>
+      <g fill="none" stroke="#ada797" stroke-width=".8"><path d="M281 93h20m-10-10v20M899 410h20m-10-10v20"/></g>
+      <g class="visual-current" clip-path="url(#study-imprint-print)" fill="none" stroke="#1d4542" stroke-width="3.1">
+        <g mask="url(#study-imprint-old)"><path d="M290 80 C435 2 596 162 895 46"/><path d="M290 88 C435 10 596 170 895 54"/><path d="M290 96 C435 18 596 178 895 62"/><path d="M290 104 C435 26 596 186 895 70"/><path d="M290 112 C435 34 596 194 895 78"/><path d="M290 120 C435 42 596 202 895 86"/><path d="M290 128 C435 50 596 210 895 94"/><path d="M290 136 C435 58 596 218 895 102"/><path d="M290 144 C435 66 596 226 895 110"/><path d="M290 152 C435 74 596 234 895 118"/><path d="M290 160 C435 82 596 242 895 126"/><path d="M290 168 C435 90 596 250 895 134"/><path d="M290 176 C435 98 596 258 895 142"/><path d="M290 184 C435 106 596 266 895 150"/><path d="M290 192 C435 114 596 274 895 158"/><path d="M290 200 C435 122 596 282 895 166"/><path d="M290 208 C435 130 596 290 895 174"/><path d="M290 216 C435 138 596 298 895 182"/><path d="M290 224 C435 146 596 306 895 190"/><path d="M290 232 C435 154 596 314 895 198"/><path d="M290 240 C435 162 596 322 895 206"/><path d="M290 248 C435 170 596 330 895 214"/><path d="M290 256 C435 178 596 338 895 222"/><path d="M290 264 C435 186 596 346 895 230"/><path d="M290 272 C435 194 596 354 895 238"/><path d="M290 280 C435 202 596 362 895 246"/><path d="M290 288 C435 210 596 370 895 254"/><path d="M290 296 C435 218 596 378 895 262"/><path d="M290 304 C435 226 596 386 895 270"/><path d="M290 312 C435 234 596 394 895 278"/><path d="M290 320 C435 242 596 402 895 286"/><path d="M290 328 C435 250 596 410 895 294"/><path d="M290 336 C435 258 596 418 895 302"/><path d="M290 344 C435 266 596 426 895 310"/><path d="M290 352 C435 274 596 434 895 318"/><path d="M290 360 C435 282 596 442 895 326"/><path d="M290 368 C435 290 596 450 895 334"/><path d="M290 376 C435 298 596 458 895 342"/><path d="M290 384 C435 306 596 466 895 350"/><path d="M290 392 C435 314 596 474 895 358"/><path d="M290 400 C435 322 596 482 895 366"/><path d="M290 408 C435 330 596 490 895 374"/><path d="M290 416 C435 338 596 498 895 382"/></g>
+        <g class="imprint-change" clip-path="url(#study-imprint-patch)"><path d="M290 80 C435 2 596 162 895 46"/><path d="M290 88 C435 10 596 170 895 54"/><path d="M290 96 C435 18 596 178 895 62"/><path d="M290 104 C435 26 596 186 895 70"/><path d="M290 112 C435 34 596 194 895 78"/><path d="M290 120 C435 42 596 202 895 86"/><path d="M290 128 C435 50 596 210 895 94"/><path d="M290 136 C435 58 596 218 895 102"/><path d="M290 144 C435 66 596 226 895 110"/><path d="M290 152 C435 74 596 234 895 118"/><path d="M290 160 C435 82 596 242 895 126"/><path d="M290 168 C435 90 596 250 895 134"/><path d="M290 176 C435 98 596 258 895 142"/><path d="M290 184 C435 106 596 266 895 150"/><path d="M290 192 C435 114 596 274 895 158"/><path d="M290 200 C435 122 596 282 895 166"/><path d="M290 208 C435 130 596 290 895 174"/><path d="M290 216 C435 138 596 298 895 182"/><path d="M290 224 C435 146 596 306 895 190"/><path d="M290 232 C435 154 596 314 895 198"/><path d="M290 240 C435 162 596 322 895 206"/><path d="M290 248 C435 170 596 330 895 214"/><path d="M290 256 C435 178 596 338 895 222"/><path d="M290 264 C435 186 596 346 895 230"/><path d="M290 272 C435 194 596 354 895 238"/><path d="M290 280 C435 202 596 362 895 246"/><path d="M290 288 C435 210 596 370 895 254"/><path d="M290 296 C435 218 596 378 895 262"/><path d="M290 304 C435 226 596 386 895 270"/><path d="M290 312 C435 234 596 394 895 278"/><path d="M290 320 C435 242 596 402 895 286"/><path d="M290 328 C435 250 596 410 895 294"/><path d="M290 336 C435 258 596 418 895 302"/><path d="M290 344 C435 266 596 426 895 310"/><path d="M290 352 C435 274 596 434 895 318"/><path d="M290 360 C435 282 596 442 895 326"/><path d="M290 368 C435 290 596 450 895 334"/><path d="M290 376 C435 298 596 458 895 342"/><path d="M290 384 C435 306 596 466 895 350"/><path d="M290 392 C435 314 596 474 895 358"/><path d="M290 400 C435 322 596 482 895 366"/><path d="M290 408 C435 330 596 490 895 374"/><path d="M290 416 C435 338 596 498 895 382"/></g>
+      </g>
+      <rect x="873" y="377" width="16" height="16" fill="#ce5337"/>
+      <g class="visual-proposal imprint-proposal">
+        <rect x="650" y="157" width="198" height="158" fill="#fffcf4" fill-opacity=".85" stroke="#cb5339" stroke-width="1"/>
+        <g clip-path="url(#study-imprint-patch)" fill="none" stroke="#c45336" stroke-width="2.5"><path d="M290 80 C435 2 596 162 895 46"/><path d="M290 88 C435 10 596 170 895 54"/><path d="M290 96 C435 18 596 178 895 62"/><path d="M290 104 C435 26 596 186 895 70"/><path d="M290 112 C435 34 596 194 895 78"/><path d="M290 120 C435 42 596 202 895 86"/><path d="M290 128 C435 50 596 210 895 94"/><path d="M290 136 C435 58 596 218 895 102"/><path d="M290 144 C435 66 596 226 895 110"/><path d="M290 152 C435 74 596 234 895 118"/><path d="M290 160 C435 82 596 242 895 126"/><path d="M290 168 C435 90 596 250 895 134"/><path d="M290 176 C435 98 596 258 895 142"/><path d="M290 184 C435 106 596 266 895 150"/><path d="M290 192 C435 114 596 274 895 158"/><path d="M290 200 C435 122 596 282 895 166"/><path d="M290 208 C435 130 596 290 895 174"/><path d="M290 216 C435 138 596 298 895 182"/><path d="M290 224 C435 146 596 306 895 190"/><path d="M290 232 C435 154 596 314 895 198"/><path d="M290 240 C435 162 596 322 895 206"/><path d="M290 248 C435 170 596 330 895 214"/><path d="M290 256 C435 178 596 338 895 222"/><path d="M290 264 C435 186 596 346 895 230"/><path d="M290 272 C435 194 596 354 895 238"/><path d="M290 280 C435 202 596 362 895 246"/><path d="M290 288 C435 210 596 370 895 254"/><path d="M290 296 C435 218 596 378 895 262"/><path d="M290 304 C435 226 596 386 895 270"/><path d="M290 312 C435 234 596 394 895 278"/><path d="M290 320 C435 242 596 402 895 286"/><path d="M290 328 C435 250 596 410 895 294"/><path d="M290 336 C435 258 596 418 895 302"/><path d="M290 344 C435 266 596 426 895 310"/><path d="M290 352 C435 274 596 434 895 318"/><path d="M290 360 C435 282 596 442 895 326"/><path d="M290 368 C435 290 596 450 895 334"/><path d="M290 376 C435 298 596 458 895 342"/><path d="M290 384 C435 306 596 466 895 350"/><path d="M290 392 C435 314 596 474 895 358"/><path d="M290 400 C435 322 596 482 895 366"/><path d="M290 408 C435 330 596 490 895 374"/><path d="M290 416 C435 338 596 498 895 382"/></g>
+        <path d="M647 146v-12m-6 6h12M851 326v12m-6-6h12" stroke="#cb5339" fill="none"/>
+      </g>
+    </g>
+  </svg></div>
+        <div class="state-art-footer">
+          <figcaption id="caption-imprint" role="status" aria-live="polite" aria-atomic="true">纸上的印记表示当前状态。</figcaption>
+          <div class="state-art-controls" hidden><button class="surface-action" type="button">预览变化 <span aria-hidden="true">→</span></button><button class="surface-reset" type="button" aria-label="重置视觉示意">重置</button></div>
+        </div>
+      </figure>
+      <p class="hero-status">一门仍在设计中的语言。 <span class="hero-credit">最初由张浩扬博士提出。</span></p>
+    </section>
+    </article>
+    <article class="visual-direction" id="optics" aria-labelledby="direction-optics">
+      <header class="direction-description"><div><h2 id="direction-optics">光学叠影</h2><p>深色背景、半透明镜面与连续反射的光束。</p></div><a class="text-link" href="/zh/?visual=optics#main" aria-label="光学叠影：在首页预览">在首页预览 <span aria-hidden="true">↗</span></a></header>
+      <section class="hero direction-preview" data-visual="optics" aria-labelledby="headline-optics">
+      <p class="hero-language-name">Jvav 编程语言</p>
+      <h3 class="hero-heading" id="headline-optics">形式的纯粹<br><span>功能的纯粹</span></h3>
+      <p class="hero-description">语义清晰，计算纯粹，副作用显式。</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/zh/tour/">开始了解 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+        <a class="text-link" href="/documents/J0001.pdf" target="_blank" rel="noopener">阅读草案 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only">（PDF，在新标签页打开）</span></a>
+      </div>
+      <figure class="state-art" id="study-optics" data-visual="optics" data-stage="initial" data-renderer="vector" aria-label="光学叠影">
+        <div class="state-art-scene"><svg class="visual-scene-svg" data-visual-scene viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="study-optics-incoming" gradientUnits="userSpaceOnUse" x1="85" y1="310" x2="865" y2="175"><stop stop-color="#ffd99a" stop-opacity=".2"/><stop offset=".13" stop-color="#ffefc2"/><stop offset=".55" stop-color="#eaffca"/><stop offset="1" stop-color="#b6f8e9"/></linearGradient>
+      <linearGradient id="study-optics-outgoing" gradientUnits="userSpaceOnUse" x1="865" y1="175" x2="1115" y2="285"><stop stop-color="#c0ffe9"/><stop offset=".6" stop-color="#a9f4e4"/><stop offset="1" stop-color="#9cdded" stop-opacity=".12"/></linearGradient>
+      <linearGradient id="study-optics-glass" x1="0" y1="0" x2=".3" y2="1"><stop stop-color="#b1d7dc" stop-opacity=".16"/><stop offset=".4" stop-color="#b0d1d8" stop-opacity=".045"/><stop offset="1" stop-color="#c6f5dd" stop-opacity=".13"/></linearGradient>
+      <linearGradient id="study-optics-edge" gradientUnits="userSpaceOnUse" x1="-87" y1="0" x2="87" y2="0"><stop stop-color="#a4d3c7" stop-opacity=".12"/><stop offset=".5" stop-color="#edfdeb" stop-opacity=".9"/><stop offset="1" stop-color="#9ac5c9" stop-opacity=".15"/></linearGradient>
+      <radialGradient id="study-optics-halo"><stop stop-color="#7aaf99" stop-opacity=".13"/><stop offset="1" stop-color="#59988e" stop-opacity="0"/></radialGradient>
+      <filter id="study-optics-glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1200" height="500"><feGaussianBlur stdDeviation="5"/></filter>
+      <filter id="study-optics-atmosphere" filterUnits="userSpaceOnUse" x="0" y="0" width="1200" height="500"><feGaussianBlur stdDeviation="17"/></filter>
+    </defs>
+    <ellipse cx="598" cy="270" rx="487" ry="213" fill="url(#study-optics-halo)"/>
+
+    <g transform="translate(325 190) rotate(1.8)">
+      <path d="M-87 0H87L104 -74H-70Z" fill="url(#study-optics-glass)" stroke="#b3d6d2" stroke-opacity=".24" stroke-width=".9"/>
+      <path d="M-87 0H87L88 5H-86Z" fill="#bce8df" fill-opacity=".13"/>
+      <path d="M-70 -74H104" stroke="#d4e9eb" stroke-opacity=".15" stroke-width=".7"/>
+      <path d="M-87 0H87" stroke="url(#study-optics-edge)" stroke-width="2"/>
+    </g>
+
+    <g transform="translate(600 350) rotate(-1.6)">
+      <path d="M-87 0H87L104 70H-70Z" fill="url(#study-optics-glass)" stroke="#b3d6d2" stroke-opacity=".24" stroke-width=".9"/>
+      <path d="M-87 0H87L88 5H-86Z" fill="#bce8df" fill-opacity=".13"/>
+      <path d="M-70 70H104" stroke="#d4e9eb" stroke-opacity=".15" stroke-width=".7"/>
+      <path d="M-87 0H87" stroke="url(#study-optics-edge)" stroke-width="2"/>
+    </g>
+    <g class="optics-turning">
+    <g transform="translate(865 175) rotate(-4.8)">
+      <path d="M-87 0H87L104 -74H-70Z" fill="url(#study-optics-glass)" stroke="#b3d6d2" stroke-opacity=".24" stroke-width=".9"/>
+      <path d="M-87 0H87L88 5H-86Z" fill="#bce8df" fill-opacity=".13"/>
+      <path d="M-70 -74H104" stroke="#d4e9eb" stroke-opacity=".15" stroke-width=".7"/>
+      <path d="M-87 0H87" stroke="url(#study-optics-edge)" stroke-width="2"/>
+    </g></g>
+
+    <g fill="none" stroke="url(#study-optics-incoming)" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M85 310 325 190 600 350 865 175" stroke-width="30" opacity=".28" filter="url(#study-optics-atmosphere)"/>
+      <path d="M85 310 325 190 600 350 865 175" stroke-width="12" opacity=".75" filter="url(#study-optics-glow)"/>
+      <path d="M85 310 325 190 600 350 865 175" stroke-width="3.2"/>
+      <path d="M85 310 325 190 600 350 865 175" stroke="#fcfff2" stroke-width="1" opacity=".8"/>
+    </g>
+    <g class="visual-current optics-current">
+    <g fill="none" stroke="url(#study-optics-outgoing)" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M865 175 1115 285" stroke-width="30" opacity=".28" filter="url(#study-optics-atmosphere)"/>
+      <path d="M865 175 1115 285" stroke-width="12" opacity=".75" filter="url(#study-optics-glow)"/>
+      <path d="M865 175 1115 285" stroke-width="3.2"/>
+      <path d="M865 175 1115 285" stroke="#fcfff2" stroke-width="1" opacity=".8"/>
+    </g></g>
+    <g class="visual-proposal optics-proposal" fill="none">
+      <path d="M865 175 1115 285" stroke="#cbfff3" stroke-width="2" stroke-dasharray="5 8"/>
+      <circle cx="1115" cy="285" r="6" stroke="#cbfff3" stroke-width="1.5"/>
+    </g>
+    <g class="visual-proposal optics-mirror-proposal" fill="none" stroke="#d1f8e7" stroke-opacity=".45" stroke-width="1" stroke-dasharray="3 5">
+      <path transform="translate(865 175) rotate(-4.8)" d="M-87 0H87L104 -74H-70Z"/>
+    </g>
+
+    <circle cx="325" cy="190" r="18" fill="#e0ffe8" opacity=".6" filter="url(#study-optics-glow)"/>
+    <ellipse cx="325" cy="190" rx="13" ry="2" fill="#f2ffe8" opacity=".9"/>
+    <circle cx="325" cy="190" r="3.8" fill="#fffef0"/>
+
+    <circle cx="600" cy="350" r="18" fill="#e0ffe8" opacity=".6" filter="url(#study-optics-glow)"/>
+    <ellipse cx="600" cy="350" rx="13" ry="2" fill="#f2ffe8" opacity=".9"/>
+    <circle cx="600" cy="350" r="3.8" fill="#fffef0"/>
+
+    <circle cx="865" cy="175" r="18" fill="#e0ffe8" opacity=".6" filter="url(#study-optics-glow)"/>
+    <ellipse cx="865" cy="175" rx="13" ry="2" fill="#f2ffe8" opacity=".9"/>
+    <circle cx="865" cy="175" r="3.8" fill="#fffef0"/>
+
+  </svg></div>
+        <div class="state-art-footer">
+          <figcaption id="caption-optics" role="status" aria-live="polite" aria-atomic="true">光路表示当前状态。</figcaption>
+          <div class="state-art-controls" hidden><button class="surface-action" type="button">预览变化 <span aria-hidden="true">→</span></button><button class="surface-reset" type="button" aria-label="重置视觉示意">重置</button></div>
+        </div>
+      </figure>
+      <p class="hero-status">一门仍在设计中的语言。 <span class="hero-credit">最初由张浩扬博士提出。</span></p>
+    </section>
+    </article>
+    <article class="visual-direction" id="pixels" aria-labelledby="direction-pixels">
+      <header class="direction-description"><div><h2 id="direction-pixels">像素排布</h2><p>用字块构成 Jvav，让对齐和重排成为画面的一部分。</p></div><a class="text-link" href="/zh/?visual=pixels#main" aria-label="像素排布：在首页预览">在首页预览 <span aria-hidden="true">↗</span></a></header>
+      <section class="hero direction-preview" data-visual="pixels" aria-labelledby="headline-pixels">
+      <p class="hero-language-name">Jvav 编程语言</p>
+      <h3 class="hero-heading" id="headline-pixels">形式的纯粹<br><span>功能的纯粹</span></h3>
+      <p class="hero-description">语义清晰，计算纯粹，副作用显式。</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/zh/tour/">开始了解 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+        <a class="text-link" href="/documents/J0001.pdf" target="_blank" rel="noopener">阅读草案 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only">（PDF，在新标签页打开）</span></a>
+      </div>
+      <figure class="state-art" id="study-pixels" data-visual="pixels" data-stage="initial" data-renderer="vector" aria-label="像素排布">
+        <div class="state-art-scene"><svg class="visual-scene-svg" data-visual-scene viewBox="0 0 1200 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g fill="none" stroke="#a1afb1" stroke-opacity=".2" stroke-width=".6"><path d="M229 151v244"/><path d="M261 151v244"/><path d="M293 151v244"/><path d="M325 151v244"/><path d="M357 151v244"/><path d="M389 151v244"/><path d="M421 151v244"/><path d="M453 151v244"/><path d="M485 151v244"/><path d="M517 151v244"/><path d="M549 151v244"/><path d="M581 151v244"/><path d="M613 151v244"/><path d="M645 151v244"/><path d="M677 151v244"/><path d="M709 151v244"/><path d="M741 151v244"/><path d="M773 151v244"/><path d="M805 151v244"/><path d="M837 151v244"/><path d="M869 151v244"/><path d="M901 151v244"/><path d="M933 151v244"/><path d="M965 151v244"/><path d="M229 160h736"/><path d="M229 192h736"/><path d="M229 224h736"/><path d="M229 256h736"/><path d="M229 288h736"/><path d="M229 320h736"/><path d="M229 352h736"/><path d="M229 384h736"/></g>
+    <g class="visual-current pixels-current">
+      <g fill="#14262b"><rect x="328" y="195" width="26" height="26" rx=".8"/><rect x="328" y="227" width="26" height="26" rx=".8"/><rect x="328" y="259" width="26" height="26" rx=".8"/><rect x="232" y="291" width="26" height="26" rx=".8"/><rect x="328" y="291" width="26" height="26" rx=".8"/><rect x="232" y="323" width="26" height="26" rx=".8"/><rect x="328" y="323" width="26" height="26" rx=".8"/><rect x="264" y="355" width="26" height="26" rx=".8"/><rect x="296" y="355" width="26" height="26" rx=".8"/><rect x="424" y="163" width="26" height="26" rx=".8"/><rect x="552" y="163" width="26" height="26" rx=".8"/><rect x="424" y="195" width="26" height="26" rx=".8"/><rect x="552" y="195" width="26" height="26" rx=".8"/><rect x="424" y="227" width="26" height="26" rx=".8"/><rect x="552" y="227" width="26" height="26" rx=".8"/><rect x="424" y="259" width="26" height="26" rx=".8"/><rect x="552" y="259" width="26" height="26" rx=".8"/><rect x="424" y="291" width="26" height="26" rx=".8"/><rect x="552" y="291" width="26" height="26" rx=".8"/><rect x="456" y="323" width="26" height="26" rx=".8"/><rect x="520" y="323" width="26" height="26" rx=".8"/><rect x="488" y="355" width="26" height="26" rx=".8"/><rect x="616" y="195" width="26" height="26" rx=".8"/><rect x="744" y="195" width="26" height="26" rx=".8"/><rect x="616" y="227" width="26" height="26" rx=".8"/><rect x="744" y="227" width="26" height="26" rx=".8"/><rect x="616" y="259" width="26" height="26" rx=".8"/><rect x="648" y="259" width="26" height="26" rx=".8"/><rect x="680" y="259" width="26" height="26" rx=".8"/><rect x="712" y="259" width="26" height="26" rx=".8"/><rect x="744" y="259" width="26" height="26" rx=".8"/><rect x="616" y="291" width="26" height="26" rx=".8"/><rect x="744" y="291" width="26" height="26" rx=".8"/><rect x="616" y="323" width="26" height="26" rx=".8"/><rect x="744" y="323" width="26" height="26" rx=".8"/><rect x="616" y="355" width="26" height="26" rx=".8"/><rect x="744" y="355" width="26" height="26" rx=".8"/><rect x="808" y="195" width="26" height="26" rx=".8"/><rect x="936" y="195" width="26" height="26" rx=".8"/><rect x="808" y="227" width="26" height="26" rx=".8"/><rect x="936" y="227" width="26" height="26" rx=".8"/><rect x="808" y="259" width="26" height="26" rx=".8"/><rect x="936" y="259" width="26" height="26" rx=".8"/><rect x="808" y="291" width="26" height="26" rx=".8"/><rect x="936" y="291" width="26" height="26" rx=".8"/><rect x="840" y="323" width="26" height="26" rx=".8"/><rect x="904" y="323" width="26" height="26" rx=".8"/><rect x="872" y="355" width="26" height="26" rx=".8"/></g>
+      <g class="pixels-moving" fill="#bdd835"><rect x="232" y="163" width="26" height="26" rx=".8"/><rect x="264" y="163" width="26" height="26" rx=".8"/><rect x="296" y="163" width="26" height="26" rx=".8"/><rect x="328" y="163" width="26" height="26" rx=".8"/><rect x="360" y="163" width="26" height="26" rx=".8"/><rect x="648" y="163" width="26" height="26" rx=".8"/><rect x="680" y="163" width="26" height="26" rx=".8"/><rect x="712" y="163" width="26" height="26" rx=".8"/><rect x="808" y="163" width="26" height="26" rx=".8"/><rect x="936" y="163" width="26" height="26" rx=".8"/></g>
+    </g>
+    <g class="visual-proposal pixels-proposal" fill="none" stroke="#425762" stroke-width="1.3" stroke-dasharray="3 3"><rect x="232" y="163" width="26" height="26" rx=".8"/><rect x="264" y="163" width="26" height="26" rx=".8"/><rect x="296" y="163" width="26" height="26" rx=".8"/><rect x="328" y="163" width="26" height="26" rx=".8"/><rect x="360" y="163" width="26" height="26" rx=".8"/><rect x="648" y="163" width="26" height="26" rx=".8"/><rect x="680" y="163" width="26" height="26" rx=".8"/><rect x="712" y="163" width="26" height="26" rx=".8"/><rect x="808" y="163" width="26" height="26" rx=".8"/><rect x="936" y="163" width="26" height="26" rx=".8"/></g>
+    <path d="M232 415h114" stroke="#14262b" stroke-width="2"/>
+    <path d="M861 415h106" stroke="#14262b" stroke-width=".7"/>
+    <path d="m961 411 6 4-6 4" fill="none" stroke="#14262b" stroke-width=".7"/>
+  </svg></div>
+        <div class="state-art-footer">
+          <figcaption id="caption-pixels" role="status" aria-live="polite" aria-atomic="true">字块组成当前状态。</figcaption>
+          <div class="state-art-controls" hidden><button class="surface-action" type="button">预览变化 <span aria-hidden="true">→</span></button><button class="surface-reset" type="button" aria-label="重置视觉示意">重置</button></div>
+        </div>
+      </figure>
+      <p class="hero-status">一门仍在设计中的语言。 <span class="hero-credit">最初由张浩扬博士提出。</span></p>
+    </section>
+    </article>
+    <a class="previous-studies" href="/zh/visuals/forms/">查看之前的曲面造型 <span aria-hidden="true">→</span></a>
+  </main>
+  <footer class="site-footer container">
+    <span class="copyright">© 2026 Heckerpowered</span>
+    <details class="language-picker">
+      <summary aria-label="网站语言：简体中文"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg><span>简体中文</span><svg class="icon language-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 14 5-5 5 5"/></svg></summary>
+      <nav class="language-options" aria-label="选择语言"><a href="/visuals/" hreflang="en" lang="en">English</a><a href="/zh/visuals/" hreflang="zh-Hans" lang="zh-Hans" aria-current="page">简体中文<span aria-hidden="true">✓</span></a></nav>
+    </details>
+  </footer>
+</body>
+</html>

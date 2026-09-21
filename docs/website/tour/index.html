@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>A first look at Jvav — Language tour</title>
+  <meta name="description" content="Get to know Jvav through a short language tour: ordinary values, pure computations, state transitions, explicit application, and typed dependencies.">
+  <meta property="og:title" content="A first look at Jvav">
+  <meta property="og:description" content="Get to know Jvav through functions, values, state transitions, and explicit dependencies.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jvav.heckerpowered.net/tour/">
+  <link rel="canonical" href="https://jvav.heckerpowered.net/tour/">
+  <link rel="alternate" hreflang="en" href="https://jvav.heckerpowered.net/tour/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://jvav.heckerpowered.net/zh/tour/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317191e'/%3E%3Cpath d='M39 15v26c0 8-5 12-13 12-5 0-9-2-12-5l6-6c2 2 3 3 6 3 4 0 5-2 5-5V15z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/tour/tour.css">
+  <script src="/navigation.js" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="navigation container" aria-label="Main navigation">
+      <a class="wordmark" href="/" aria-label="Jvav home">Jvav</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation-links" aria-label="Open navigation"><span></span><span></span></button>
+      <div class="navigation-links" id="navigation-links">
+        <a href="/">Home</a>
+        <a href="/tour/" aria-current="page">Language tour</a>
+        <a href="/design/">Language design</a>
+        <a href="/specification/">Specification</a>
+        <a class="navigation-external" href="https://github.com/heckerpowered/Jvav" target="_blank" rel="noopener noreferrer">GitHub <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M7 6h11v11"/></svg><span class="sr-only"> (opens in a new tab)</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="tour container" id="main">
+    <header class="tour-header">
+      <h1>A first look at Jvav.</h1>
+      <p>Start with familiar functions and values. Then preview a computation before applying its result to state.</p>
+      <p class="tour-draft-note">Jvav is under active design. These examples follow the <a href="/documents/J0001.pdf">working draft</a>.</p>
+    </header>
+
+    <div class="tour-layout">
+      <nav class="tour-contents" aria-label="On this page">
+        <p>In this tour</p>
+        <a href="#values">Functions and values</a>
+        <a href="#transitions">A computation you can preview</a>
+        <a href="#application">Applying a change</a>
+        <a href="#dependencies">Access and dependencies</a>
+        <a href="#representation">Representation</a>
+      </nav>
+
+      <div class="tour-body">
+        <section id="values" aria-labelledby="values-heading">
+          <h2 id="values-heading">Functions and values</h2>
+          <p>A function declares its parameters and result type. Here, <code>twice</code> takes an integer and returns the sum of that value with itself.</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="A pure Jvav function"><code><span class="syntax-keyword">pure fun</span> <span class="syntax-function">twice</span>(x: <span class="syntax-type">Int</span>): <span class="syntax-type">Int</span> {
+    <span class="syntax-keyword">return</span> x + x
+}
+
+<span class="syntax-keyword">val</span> result = twice(21)</code></pre></div>
+          <p><code>pure</code> declares that the computation derives its result from its declared dependencies and produces no externally observable side effect. Returning a value does not, on its own, make a function pure.</p>
+          <p>Jvav keeps familiar control flow, including conditions, loops, and early returns. Their syntax does not by itself imply an external effect.</p>
+        </section>
+
+        <section id="transitions" aria-labelledby="transitions-heading">
+          <h2 id="transitions-heading">A computation you can preview</h2>
+          <p>A <code>transition</code> describes a computation over state that can be previewed before its result is applied. A pure function can calculate that result and return a <code>transition T</code> without changing the original state.</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="A transition that swaps two fields"><code><span class="syntax-keyword">pure fun</span> <span class="syntax-function">swap</span>(
+    pair: <span class="syntax-keyword">transition</span> <span class="syntax-type">Pair</span>
+): <span class="syntax-keyword">transition</span> <span class="syntax-type">Pair</span> {
+    <span class="syntax-keyword">return</span> {
+        a = pair.b
+        b = pair.a
+    }
+}</code></pre></div>
+          <p>The input provides the old state of a particular pair. Both reads refer to that state: describing the new <code>a</code> does not change the value read by <code>pair.a</code>.</p>
+          <p>The result describes replacement values for <code>a</code> and <code>b</code>. Any omitted fields retain their old values on a valid application. Computing or returning this result does not modify the pair.</p>
+        </section>
+
+        <section id="application" aria-labelledby="application-heading">
+          <h2 id="application-heading">Applying a change</h2>
+          <p>The caller chooses the point at which a computed change is applied. With the necessary mutation authority and a valid target, the working notation is:</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="Explicit transition application"><code><span class="syntax-keyword">val</span> change = swap(pair)
+<span class="syntax-keyword">transition</span>(pair) = change</code></pre>
+            <div class="swap-result"><div><span>Before application</span><code>a = 2, b = 7</code></div><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg><div><span>After application</span><code>a = 7, b = 2</code></div></div>
+          </div>
+          <p>The first line calculates a value. The second line performs a side effect. This separation lets the same decision logic support inspection, simulation, and execution.</p>
+          <p>A stored transition represents the calculation already performed; applying it later does not rerun that calculation. The rules for a target that has changed in the meantime remain <em>Pending</em> in the working draft.</p>
+          <a class="clause-link" href="/#in-practice">Explore the movement example <span aria-hidden="true">→</span></a>
+        </section>
+
+        <section id="dependencies" aria-labelledby="dependencies-heading">
+          <h2 id="dependencies-heading">Access and dependencies</h2>
+          <p>Parameter types make access explicit. <code>view T</code> provides read-only, non-owning access. <code>mut T</code> grants authority to modify existing state, subject to the function's effect contract.</p>
+          <p><code>context T</code> declares a typed dependency that the calling environment can supply. A damage calculation can read an entity and consult combat rules without changing the world:</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="A function with view and context parameters"><code><span class="syntax-keyword">pure fun</span> <span class="syntax-function">resolve</span>(
+    damage: <span class="syntax-type">Damage</span>,
+    target: <span class="syntax-keyword">view</span> <span class="syntax-type">Entity</span>,
+    context: <span class="syntax-keyword">context</span> <span class="syntax-type">CombatContext</span>
+): <span class="syntax-type">DamageResult</span></code></pre></div>
+          <p>Different combat rules can produce a different result. The context remains a real dependency even when its argument is supplied implicitly. Its access and effect restrictions still apply.</p>
+        </section>
+
+        <section id="representation" aria-labelledby="representation-heading">
+          <h2 id="representation-heading">Representation transparency</h2>
+          <p>An ordinary <code>Vec3</code> parameter means the same thing whether its value comes from storage or from a computation carried across the call boundary.</p>
+          <div class="feature-example"><pre tabindex="0" aria-label="An ordinary vector parameter"><code><span class="syntax-keyword">pure fun</span> <span class="syntax-function">lengthSquared</span>(v: <span class="syntax-type">Vec3</span>): <span class="syntax-type">Float</span> {
+    <span class="syntax-keyword">return</span> v.x * v.x +
+        v.y * v.y +
+        v.z * v.z
+}
+
+lengthSquared(a + b)</code></pre></div>
+          <p>With suitable pure component arithmetic, an implementation can combine the addition with the calculation without constructing a complete intermediate vector. It must preserve the required numerical results, effects, and other observable behavior.</p>
+          <p>This representation choice does not make ordinary values lazy. Explicit runtime deferral uses <code>defer T</code>, a separate part of the design.</p>
+        </section>
+
+        <section class="tour-next" aria-labelledby="next-heading">
+          <h2 id="next-heading">Continue with the draft.</h2>
+          <p>Find precise definitions, evaluation rules, and more examples in the working draft. Questions that still need a design decision, including ownership, capture, and transition validity, are marked <em>Pending</em>.</p>
+          <div class="tour-next-links"><a class="button button-primary" href="/documents/J0001.pdf" target="_blank" rel="noopener">Read the draft <span aria-hidden="true">↗</span><span class="sr-only"> (PDF, opens in a new tab)</span></a><a class="text-link" href="https://github.com/heckerpowered/Jvav" target="_blank" rel="noopener noreferrer">Browse the project <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer container">
+    <span class="copyright">© 2026 Heckerpowered</span>
+    <details class="language-picker">
+      <summary aria-label="Site language: English"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg><span>English</span><svg class="icon language-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 14 5-5 5 5"/></svg></summary>
+      <nav class="language-options" aria-label="Choose a language"><a href="/tour/" hreflang="en" lang="en" aria-current="page">English<span aria-hidden="true">✓</span></a><a href="/zh/tour/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a></nav>
+    </details>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,40 @@
+.tour { padding-bottom: 3rem; }
+.tour-header { margin-left: 17rem; max-width: 44rem; padding-block: 4.5rem 3.75rem; }
+.tour-header h1 { font-size: clamp(2.5rem, 4.5vw, 4rem); font-weight: 610; line-height: 1.08; letter-spacing: -.045em; }
+.tour-header > p { margin-top: 1.5rem; font-size: 1.2rem; line-height: 1.65; color: var(--muted); }
+.tour-header .tour-draft-note { margin-top: 1.25rem; font-size: .875rem; }
+.tour-draft-note a { text-decoration: underline; text-underline-offset: .2em; }
+.tour-layout { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: 4rem; align-items: start; }
+.tour-contents { position: sticky; top: 7rem; display: flex; flex-direction: column; gap: .15rem; }
+.tour-contents p { margin-bottom: .8rem; font-size: .875rem; font-weight: 550; }
+.tour-contents a { padding: .6rem 0; font-size: .875rem; color: var(--muted); line-height: 1.4; }
+.tour-contents a:hover { color: var(--accent); }
+.navigation-links [aria-current="page"] { color: var(--accent); }
+.tour-body { max-width: 44rem; min-width: 0; }
+.tour-body section { padding-bottom: 3.5rem; }
+.tour-body section + section { padding-top: 3.5rem; border-top: 1px solid var(--line); }
+.tour-body h2 { font-size: clamp(1.7rem, 2.5vw, 2rem); font-weight: 600; letter-spacing: -.03em; line-height: 1.2; }
+.tour-body section > p { color: #515762; font-size: 1.0625rem; line-height: 1.8; margin-top: 1.25rem; }
+.tour-body p code { color: var(--ink); font-size: .88em; }
+.tour-body .feature-example { margin-block: 1.75rem; }
+.tour-body .clause-link { margin-top: .75rem; }
+.tour-next-links { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.75rem; }
+.tour + .site-footer { border-top: 1px solid var(--line); }
+@media (max-width: 1100px) {
+  .tour-layout { grid-template-columns: 11rem minmax(0, 1fr); gap: 2.5rem; }
+  .tour-header { margin-left: 13.5rem; }
+}
+@media (max-width: 800px) {
+  .tour-header { margin-left: 0; padding-block: 3.5rem 2rem; }
+  .tour-layout { grid-template-columns: minmax(0, 1fr); gap: 2.75rem; }
+  .tour-contents { position: static; flex-direction: row; flex-wrap: wrap; column-gap: 1.5rem; border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; }
+  .tour-contents p { flex-basis: 100%; margin-bottom: .25rem; }
+}
+@media (max-width: 600px) {
+  .tour-header h1 { font-size: 2.5rem; }
+  .tour-header > p { font-size: 1.0625rem; }
+  .tour-body section > p { font-size: 1rem; }
+  .tour-body section { padding-bottom: 2.5rem; }
+  .tour-body section + section { padding-top: 2.5rem; }
+  .tour-next-links { align-items: flex-start; flex-direction: column; gap: .75rem; }
+}

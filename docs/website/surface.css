@@ -1,0 +1,35 @@
+.hero { padding-top: 2.75rem; padding-bottom: 3.5rem; }
+.hero h1 { margin-top: 1.2rem; }
+.hero-description { margin-top: 1.35rem; }
+.hero-actions { margin-top: 1.45rem; }
+.hero-status { margin-top: 1.75rem; }
+.state-art { margin: .25rem 0 0; text-align: left; }
+.state-art-scene { position: relative; width: 100%; aspect-ratio: 3.2; isolation: isolate; background: radial-gradient(ellipse at 50% 58%, #edf4ff 0%, #f8faff 38%, #fff 72%); }
+.state-art-canvas, .state-art-outline { position: absolute; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
+.state-art-canvas { z-index: 1; }
+.state-art-outline { z-index: 2; overflow: visible; }
+.state-art[data-renderer="webgl"] .state-art-fallback { display: none; }
+.state-art[data-renderer="webgl"] .state-art-preview-area { fill: none; }
+.state-art-fallback { fill-rule: evenodd; }
+.state-art-contours { fill: none; stroke: #ebf7ff; stroke-opacity: .65; stroke-width: 1.2; }
+.state-art-preview-area { stroke: #94b0e7; stroke-width: 1; stroke-opacity: .6; }
+.state-art-footer { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: .5rem 2rem 0; color: var(--muted); font-size: .8125rem; line-height: 1.6; }
+.state-art-controls { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
+.surface-action, .surface-reset { border: 0; background: transparent; min-height: 2.75rem; padding: .5rem 0; font-size: .875rem; }
+.surface-action { color: #384f9d; font-weight: 550; display: flex; align-items: center; gap: .65rem; }
+.surface-action:hover { color: #172964; }
+.surface-reset { color: var(--muted); padding-inline: .25rem; }
+.surface-reset:hover { color: var(--ink); }
+.state-art[data-stage="initial"] .surface-reset { visibility: hidden; }
+@media (max-width: 600px) {
+  .hero { padding-top: 2.5rem; }
+  .state-art { margin-top: 1rem; }
+  .state-art-scene { aspect-ratio: 2.1; }
+  .state-art-footer { padding-inline: 0; flex-direction: column; gap: .2rem; text-align: center; }
+  .state-art-controls { justify-content: center; }
+  .surface-action, .surface-reset { min-height: 2.75rem; }
+}
+@media (prefers-contrast: more) {
+  .state-art-preview-area { stroke: #35468f; stroke-width: 2; stroke-opacity: 1; }
+  .state-art-contours { stroke-opacity: .7; }
+}
